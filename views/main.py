@@ -1,10 +1,10 @@
-from flask import Module
-from fossix.utils import cached
+from flask import Module, render_template
+from fossix.utils import cached, render_page
 
 main = Module(__name__)
 
-@cached()
+#@cached()
 @main.route('/')
 @main.route('/index')
 def index():
-    return "hello, World!"
+    return render_template('index.html')

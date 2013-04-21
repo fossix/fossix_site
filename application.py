@@ -1,7 +1,7 @@
 from flask import Flask
 from fossix.extensions import fdb, oid, cache
 from fossix import views
-from fossix.config import DefaultConfig
+from fossix.config import DebugConfig
 
 __all__ = ['create_app']
 
@@ -18,7 +18,7 @@ def create_app():
     for module, url_prefix in modules:
         app.register_module(module, url_prefix=url_prefix)
 
-        app.config.from_object(DefaultConfig())
+    app.config.from_object(DebugConfig())
 
     configure_logging(app)
     configure_errorhandlers(app)

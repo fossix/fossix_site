@@ -1,0 +1,13 @@
+.navbar .brand:hover,
+.navbar .brand:focus {
+    text-decoration: none;
+    color: #000000;
+    font-weight: 250;
+    -o-transition:color 1s ease-out;
+    -ms-transition:color 1s ease-out;
+    -moz-transition:color 1s ease-out;
+    -webkit-transition:color 1s ease-out;
+    /* ...and now for the proper property */
+    transition:color .5s ease-out;
+    text-shadow: 0 0 0.2em #87f, 0 0 0.2em #87f;
+}

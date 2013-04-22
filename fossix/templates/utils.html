@@ -1,0 +1,56 @@
+{% macro content_node(content, tag='') -%}
+<div class="taglist pull-right">
+  {% for t in content.tags %}
+  <a href="/tag/{{ t.keyword }}">
+    <span class="label
+                 {% if t.keyword == tag %} label-inverse
+                 {% endif %}">{{ t.keyword }}</span>
+  </a>
+  {% endfor %}
+</div>
+<div class="alist">
+  {% if content.is_published() %}
+  <a href="/articles/{{content.title}}" class="alist">{{
+    content.title }}</a>
+  {% else %}
+  <a href="/articles/{{content.title}}" class="alist">{{
+    content.title }}</a><a href="/articles?do=edit&item={{ content.id
+    }}"><i class="icon-edit"> </i></a>
+  {% endif %}
+</div>
+<blockquote>
+  Posted on {{content.get_create_date()}}
+  by <a href="/profiles/{{content.author.username}}">{{content.author.username}}</a>
+</blockquote>
+{%- endmacro %}
+
+{% macro error_alert(errors) -%}
+{% if errors %}
+<div id="form-error" class="alert alert-error">
+<ul class="unstyled">
+  {% for e in errors %}
+<li> {{ e }}
+  {% endfor %}
+</ul>
+</div>
+{% endif %}
+{%- endmacro %}
+
+{% macro field_errors(field) -%}
+{% if field.errors %}
+<div id="form-error" class="alert alert-error">
+  <ul class="unstyled">
+    {% for error in field.errors %}
+    <li>{{ error }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+{%- endmacro %}
+
+{% macro render_field(field) -%}
+<dt>{{ field.label }}
+  <dd>{{ field(**kwargs)|safe }}
+    {{ field_errors(field) }}
+  </dd>
+{%- endmacro %}

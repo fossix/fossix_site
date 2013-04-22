@@ -34,11 +34,11 @@ class DebugConfig(DefaultConfig):
     _basedir = os.path.abspath(os.path.dirname(__file__))
 
     DEBUG = True
-    SQLALCHEMY_ECHO = True
+    SQLALCHEMY_ECHO = False
     DB_SERVER = 'localhost'
     DB_PORT = 5432
     DB_NAME = 'fossix'
-    DB_USER = 'fuser'
+    DB_USER = 'fossguy'
     DB_PASSWD  = 'db_password'
 
     SQLALCHEMY_DATABASE_URI = get_dburi('postgresql', DB_SERVER, DB_PORT,
@@ -46,4 +46,3 @@ class DebugConfig(DefaultConfig):
 
     SQLALCHEMY_MIGRATE_REPO = os.path.join(_basedir, 'fdb_repo')
     SITE_CDN = 'http://fcdn.fossix.org/fossix'
-

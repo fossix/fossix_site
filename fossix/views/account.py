@@ -1,9 +1,11 @@
 from flask import Module, render_template, request, session, g, redirect, \
     url_for, flash
-from fossix.utils import cached, render_page, get_uniqueid
+from fossix.utils import cached, render_page, get_uniqueid, redirect_url, redirect_back
 from fossix.forms import OpenID_LoginForm, ProfileEdit_Form
 from fossix.extensions import oid, fdb as db
 from fossix.models import User
+from flask.ext.login import login_user, logout_user, current_user, \
+    login_required, fresh_login_required
 
 account = Module(__name__)
 
@@ -23,8 +25,9 @@ def create_or_login(resp):
 	    db.session.commit()
 
     if user is not None:
-        flash(u'Successfully signed in')
         g.user = user
+	login_user(user, remember=True)
+	flash(u'Successfully signed in')
         return redirect(oid.get_next_url())
 
     return redirect(url_for('account.create_profile', next=oid.get_next_url(),
@@ -34,7 +37,7 @@ def create_or_login(resp):
 @account.route('/', methods=("GET", "POST"))
 @oid.loginhandler
 def login():
-    if g.user is not None:
+    if g.user.is_authenticated():
 	return redirect(oid.get_next_url())
     login_form = OpenID_LoginForm(next=request.args.get("next"))
     if login_form.validate_on_submit():
@@ -65,12 +68,34 @@ def create_profile():
 
     form.username.data = get_uniqueid()
     print form.username.data
-    form.name.data = request.args['name']
+    form.fullname.data = request.args['name']
     form.email.data = request.args['email']
+    return render_template('account/edit_profile.html', form=form)
+
+@account.route('/profile/')
+@login_required
+def profile():
+    return render_template('account/profile.html')
+
+@account.route('/edit_profile/', methods=['GET', 'POST'])
+@login_required
+def edit_profile():
+    user = g.user
+
+    form = ProfileEdit_Form(obj=user)
+
+    if request.method == 'POST' and form.validate():
+	form.populate_obj(user)
+	db.session.add(user)
+	db.session.commit()
+	return redirect_back('main.index')
+
+    form.next.data = redirect_url()
     return render_template('account/edit_profile.html', form=form)
 
 @account.route('/logout')
 def logout():
     session.pop('openid', None)
+    logout_user()
     flash(u'You were signed out')
     return redirect(oid.get_next_url())

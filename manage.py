@@ -1,13 +1,5 @@
-# -*- coding: utf-8 -*-
-"""
-    manage.py
-    ~~~~~~~~~
+# based on Dan Jacob's manage.py from newsmeme
 
-    Description of the module goes here...
-
-    :copyright: (c) 2010 by Dan Jacob.
-    :license: BSD, see LICENSE for more details.
-"""
 import sys
 import os
 

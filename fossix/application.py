@@ -1,8 +1,9 @@
-from flask import Flask, g, session
-from fossix.extensions import fdb, oid, cache
+from flask import Flask, g
+from fossix.extensions import fdb, oid, cache, lm
 from fossix import views
 from fossix.models import User
 from fossix.config import DebugConfig
+from flask.ext.login import current_user
 
 __all__ = ['create_app']
 
@@ -36,16 +37,20 @@ def configure_logging(app):
 def configure_before_handlers(app):
     @app.before_request
     def lookup_current_user():
-	g.user = None
-	if 'openid' in session:
-	    openid = session['openid']
-	    g.user = User.query.filter_by(openid=openid).first()
+	g.user = current_user
+
+    # for login manager
+    @lm.user_loader
+    def load_user(id):
+	return User.query.get(int(id))
 
 def configure_extensions(app):
     fdb.init_app(app)
     oid.init_app(app)
     cache.init_app(app, config={'CACHE_TYPE' : 'memcached',
 				'CACHE_DEFAULT_TIMEOUT' : 86400}) # one day
+    lm.init_app(app)
+    lm.login_view = "account.login"
 
 def configure_errorhandlers(app):
     pass

@@ -1,4 +1,3 @@
 import sys, os
-sys.path.append(os.path.realpath(__file__))
-sys.path.append('/home/santosh/repos')
+sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 from fossix import fapp as application

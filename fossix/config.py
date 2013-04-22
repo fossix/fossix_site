@@ -18,11 +18,32 @@ class DefaultConfig(object):
     SITE_URL = 'http://fossix.org'
     SITE_MOTTO = ''
 
+def get_dburi(dbcon, server, port, dbname, user, password):
+    uri = dbcon + "://"
+    if server:
+	if user:
+	    uri = uri + user + ":" + password + "@"
+	uri = uri + server + ":" + str(port)
+
+    uri = uri + "/" + dbname
+
+    return uri
+
 class DebugConfig(DefaultConfig):
-    DEBUG = True
-    SQLALCHEMY_ECHO = True
 
     _basedir = os.path.abspath(os.path.dirname(__file__))
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(_basedir, 'fapp.db')
+
+    DEBUG = True
+    SQLALCHEMY_ECHO = True
+    DB_SERVER = 'localhost'
+    DB_PORT = 5432
+    DB_NAME = 'fossix'
+    DB_USER = 'fuser'
+    DB_PASSWD  = 'db_password'
+
+    SQLALCHEMY_DATABASE_URI = get_dburi('postgresql', DB_SERVER, DB_PORT,
+					DB_NAME,DB_USER, DB_PASSWD)
+
     SQLALCHEMY_MIGRATE_REPO = os.path.join(_basedir, 'fdb_repo')
     SITE_CDN = 'http://fcdn.fossix.org/fossix'
+

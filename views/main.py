@@ -1,4 +1,4 @@
-from flask import Module, render_template
+from flask import Module, render_template, flash
 from fossix.utils import cached, render_page
 
 main = Module(__name__)

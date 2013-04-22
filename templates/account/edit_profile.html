@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% from "utils.html" import field_errors %}
+{% from "utils.html" import render_field %}
+
+{% set title="Create Profile" %}
+
+{% block content %}
+  <p>
+    This is your profile editing page..  If this is the first time you signed
+    in on this website, your need to select a unique username. But no worries,
+    if you don't want to do it now, we will give you a temporary name until you
+    come up with a nice one.
+  </p>
+  <form action="." method="post">
+    {{ form.hidden_tag() }}
+    <div style="display:none;">
+      {{ form.next }}
+    </div>
+    <dl>
+      {{ render_field(form.name, size=30) }}
+      {{ render_field(form.email, size=30) }}
+      {{ render_field(form.username, size=30) }}
+    </dl>
+    <p>
+      <input type=submit value="Create profile">
+      <input type=hidden name=next value="{{ next }}">
+  </form>
+  <p>
+    If you don't want to proceed, you can <a href="{{ url_for('logout') }}">
+      sign out</a> again.
+{% endblock %}

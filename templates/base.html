@@ -11,7 +11,7 @@
           media="screen">
     <script src="{{ config['SITE_CDN'] }}/jquery-latest.js"></script>
     <script src="{{ config['SITE_CDN'] }}/js/bootstrap.min.js"></script>
-    <script src="{{ config['SITE_CDN'] }}/js/fossix.js"></script>
+    <script src="/static/js/fossix.js"></script>
     <script language="javascript">
       var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
       $(function() {
@@ -46,7 +46,18 @@
           </a>
           <ul class="nav">
             <li><a href="/index"><i class="icon-home"> </i>Home</a></li>
+            {% if g.user %}
+            <li class="dropdown">
+	      <a href="#" class="dropdown-toggle"
+	         data-toggle="dropdown"><i class="icon-user"> </i>
+                {{ g.user.username }}<b class="caret"></b></a>
+	      <ul class="dropdown-menu">
+                <li><a href="{{ url_for('account.logout') }}">Logout</a></li>
+	      </ul>
+	    </li>
+            {% else %}
             <li><a href="/login"><i class="icon-user"> </i>Login</a></li>
+            {% endif %}
           </ul>
          <form class="navbar-search pull-right">
             <input type="text" class="search-query" placeholder="Search">
@@ -83,10 +94,13 @@
           </div>
         </div>
 
+        <!-- Error content -->
+        <div class="span6" id="info">
+          <div id="message"></div>
+        </div>
+
         <!-- The middle content -->
         <div class="span6" id="main">
-          <div id="message">
-          </div>
             <div id="content-title" class="heading1">
               {% block title %}
               {% if title %}
@@ -124,13 +138,13 @@
             </script>
           </div>
         </div> <!-- rsb -->
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+        <script>flash_info("{{ message }}")</script>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
       </div>
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    {% for message in messages %}
-    <script>flash_info("{{ message }}")</script>
-    {% endfor %}
-    {% endif %}
-    {% endwith %}
   </body>
 </html>

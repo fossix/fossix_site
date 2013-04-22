@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% from "utils.html" import field_errors %}
+
+{% block title %} <h2>Login</h2> {% endblock %}
+
+{% block content %}
+<p>
+Sign in with <a target="_blank" href="http://openid.net/get-an-openid/">OpenID</a>
+</p>
+<form method="POST" action=".">
+    {{ form.hidden_tag() }}
+    <div style="display:none;">
+        {{ form.next }}
+    </div>
+    <div>
+      <div style="float:left;">
+        {{ form.openid(size=30, class_="openid") }}
+      </div>
+      <div style="float:right;">
+        {{ field_errors(form.openid) }}
+      </div>
+      <br><br>
+    </div>
+    <div style="align:center;">
+      {{ form.submit }}
+    </div>
+</form>
+{% endblock %}

@@ -1,10 +1,11 @@
 from flask import Module, render_template, request, session, g, redirect, \
     url_for, flash
-from fossix.utils import cached, render_page, get_uniqueid, redirect_url, redirect_back
+from fossix.utils import cached, render_page, get_uniqueid, redirect_url, \
+    redirect_back, is_safe_url
 from fossix.forms import OpenID_LoginForm, ProfileEdit_Form
 from fossix.extensions import oid, fdb as db
 from fossix.models import User
-from flask.ext.login import login_user, logout_user, current_user, \
+from flask.ext.login import login_user, logout_user, \
     login_required, fresh_login_required
 
 account = Module(__name__)
@@ -28,7 +29,7 @@ def create_or_login(resp):
         g.user = user
 	login_user(user, remember=True)
 	flash(u'Successfully signed in')
-        return redirect(oid.get_next_url())
+	return redirect_back('main.index')
 
     return redirect(url_for('account.create_profile', next=oid.get_next_url(),
                             name=resp.fullname or resp.nickname,
@@ -38,7 +39,7 @@ def create_or_login(resp):
 @oid.loginhandler
 def login():
     if g.user.is_authenticated():
-	return redirect(oid.get_next_url())
+	return redirect(url_for('main.index'))
     login_form = OpenID_LoginForm(next=request.args.get("next"))
     if login_form.validate_on_submit():
 	openid = request.form.get('openid')
@@ -53,7 +54,7 @@ def login():
 
 @account.route('/create/', methods=['GET', 'POST'])
 def create_profile():
-    if g.user is not None or 'openid' not in session:
+    if g.user is not None and g.user.is_authenticated() or 'openid' not in session:
         return redirect(url_for('main.index'))
 
     form = ProfileEdit_Form(next=oid.get_next_url())
@@ -64,6 +65,7 @@ def create_profile():
 	db.session.add(user)
 	db.session.commit()
 	flash(u'Profile successfully created')
+	login_user(user, False)
 	return redirect(oid.get_next_url())
 
     form.username.data = get_uniqueid()
@@ -78,7 +80,7 @@ def profile():
     return render_template('account/profile.html')
 
 @account.route('/edit_profile/', methods=['GET', 'POST'])
-@login_required
+@fresh_login_required
 def edit_profile():
     user = g.user
 

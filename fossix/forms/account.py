@@ -1,10 +1,11 @@
 from flask.ext.wtf import Form, HiddenField, TextField, RecaptchaField, \
     SubmitField, ValidationError, required, email, url, validators
+from flask.ext.wtf.html5 import URLField, EmailField
 from fossix.models import User
 
 class OpenID_LoginForm(Form):
     next = HiddenField()
-    openid = TextField("OpenID", validators=
+    openid = URLField("OpenID", validators=
 		       [required("You didn't enter a OpenID URL"),
 			url("OpenID must be a valid URL")])
 
@@ -20,6 +21,8 @@ class ProfileEdit_Form(Form):
 
     next = HiddenField()
     fullname = TextField("Name")
-    email = TextField("Email", validators=
+    email = EmailField("Email", validators=
 		       [required("You have to provide an email address")])
     username = TextField("Nick Name", validators=[check_uniqueid])
+    recaptcha = RecaptchaField()
+    submit = SubmitField("Update Profile")

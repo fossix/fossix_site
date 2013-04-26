@@ -1,13 +1,31 @@
 {% extends "base.html" %}
 
 {% set title="My Profile" %}
-
-{% block title %} <h3>My Profile ({{ g.user.username }})</h3> {% endblock %}
+{% set pagetitle=g.user.fullname or g.user.username %}
+{% set subtitle="Profile View
+  [<a href=" + url_for('account.edit_profile') +">Edit</a>]" %}
 
 {% block content %}
-<p>
-  My Profile View
-</p>
 
-<a href="{{ url_for('account.edit_profile') }}">Edit Profile</a>
+<div class="row">
+  <div class="span4">
+    <ul class="thumbnails">
+      <li class="span8">
+        <div class="thumbnail">
+          <img src="{{g.user.avatar(128)}}" alt="{{ g.user.fullname or
+                                                 g.user.username }}">
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="span5">
+    <dl>
+    {% if g.user.fullname  %}
+    <dt>Name</dt>
+    <dd>{{ g.user.fullname }}</dd>
+    {% endif %}
+    <dt>Email</dt> <dd>{{ g.user.email }}</dd>
+  </div>
+</div>
 {% endblock %}

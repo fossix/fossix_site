@@ -7,55 +7,72 @@
           media="screen">
     <link href="/static/css/fossix.css" rel="stylesheet"
           media="screen">
-    <link href="{{ config['SITE_CDN'] }}/css/zocial/zocial.css" rel="stylesheet"
-          media="screen">
-    <script src="{{ config['SITE_CDN'] }}/jquery-latest.js"></script>
+    <!-- <link href="{{ config['SITE_CDN'] }}/css/zocial/zocial.css" rel="stylesheet" -->
+    <!--       media="screen"> -->
+    <script src="{{ config['SITE_CDN'] }}/js/jquery-latest.js"></script>
+    <script src="{{ config['SITE_CDN'] }}/js/jquery-ui.min.js"></script>
     <script src="{{ config['SITE_CDN'] }}/js/bootstrap.min.js"></script>
     <script src="/static/js/fossix.js"></script>
+    <!-- Perpage head extension -->
+    {% block head %}
+    {% endblock %}
+
     <script language="javascript">
       var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-      $(function() {
-          $('.nav-list > li').click(function (e) {
-              e.preventDefault();
-              $('.nav-list > li').removeClass('active');
-              $(this).addClass('active');
-          });
-
-          fossix_event_setup();
-      });
+      {% block script %}{% endblock %}
     </script>
+
+    <style>
+      {% block style %}{% endblock %}
+    </style>
+
     <!-- For different screen types -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>
-      {{ config['SITE_TITLE'] }} - {% block frametitle %}{% if title %} {{ title }}
-      {% else %}Home{% endif %}{% endblock %}
+      {{ config['SITE_TITLE'] }} - {% if title %} {{ title }}{% else %}
+      {% if pagetitle %} {{ pagetitle }} {% else %} Home {% endif %}
+      {% endif %}
     </title>
   </head>
+
   <body>
-    <div id="ajax-load" class="ajax-load" hidden>
-      <center>
-        <img src="http://fcdn.fossix.org/fossix/img/pacman-spinner.gif"/>
-        Loading..
-      </center>
-    </div>
+    <!-- <div id="ajax-load" class="ajax-load" hidden> -->
+    <!--   <center> -->
+    <!--     <img src="{{ config['SITE_CDN'] }}/img/pacman-spinner.gif"/> -->
+    <!--     Loading.. -->
+    <!--   </center> -->
+    <!-- </div> -->
     <div class="row-fluid" id="header">
       <div class="navbar">
         <div class="navbar-inner">
-          <a class="brand" href="{{ config['SITE_URL'] }}">
+          <a class="brand" href="{{ url_for('main.index') }}" title="Home">
             {{ config['SITE_TITLE'] }}
           </a>
           <ul class="nav">
-            <li><a href="/index"><i class="icon-home"> </i>Home</a></li>
             {% if g.user.is_authenticated() %}
             <li class="dropdown">
-	      <a href="#" class="dropdown-toggle"
-	         data-toggle="dropdown"><i class="icon-user"> </i>
-                {{ g.user.username }}<b class="caret"></b></a>
+	      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <img src="{{ g.user.avatar(16) }}">{{ g.user.username }}
+                <b class="caret"></b>
+              </a>
 	      <ul class="dropdown-menu">
                 <li><a href="{{ url_for('account.profile') }}">Profile</a></li>
                 <li><a href="{{ url_for('account.logout') }}">Logout</a></li>
 	      </ul>
 	    </li>
+
+            <li class="dropdown">
+	      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <i class="icon-pencil"> </i>Content <b class="caret"></b>
+              </a>
+	      <ul class="dropdown-menu">
+                <li><a href="#">Submit News</a></li>
+                <li><a href="{{ url_for('content.create_content') }}">Create Content</a></li>
+                <li><a href="#">Review</a></li>
+	      </ul>
+	    </li>
+
             {% else %}
             <li><a href="{{ url_for('account.login') }}"><i class="icon-user"> </i>Login</a></li>
             {% endif %}
@@ -99,19 +116,23 @@
         <!-- The middle content -->
         <div class="span6" id="main">
           <!-- Error content -->
-          <div id="info"">
+          <div id="info">
             <div id="message"></div>
           </div>
 
-            <div id="content-title" class="heading1">
-              {% block title %}
-              {% if title %}
-              {{ title|safe }}
-              {% else %}
-              Error!!
-              {% endif %}
-              {% endblock %}
+          <div id="content-title" class="heading1">
+            {% block title %}
+            {% if pagetitle %}
+            <div class="page-header">
+              <h3> {{ pagetitle|safe }}
+                {% if subtitle %} <small>{{ subtitle|safe }} </small>{% endif %}
+              </h3>
             </div>
+            {% else %}
+            Error!!
+            {% endif %}
+            {% endblock %}
+          </div>
           <div id="content">
             {% block content %}
             {% if content %}
@@ -148,5 +169,40 @@
         {% endif %}
         {% endwith %}
       </div>
+
+    <!-- <div class="navbar navbar-fixed-bottom"> -->
+    <div class="container-fluid">
+      <div class="row-fluid">
+
+        <hr>
+
+        <div class="span3">
+          <a href="#" class="muted">About us</a><br/>
+          <a href="#" class="muted">Contact</a><br/>
+        </div>
+
+        <div class="span4">
+          <p align="center">
+          <a rel="license"
+             href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US">
+            <img alt="Creative Commons License" style="border-width:0"
+            src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png"/></a><br/>
+            Unless and otherwise specified by the author of a content, all work
+            in <a xmlns:cc="http://creativecommons.org/ns#"
+            href="http://fossix.org" property="cc:attributionName"
+            rel="cc:attributionURL">http://fossix.org</a> is licensed under
+            a <a rel="license"
+            href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US">Creative
+            Commons Attribution-ShareAlike 3.0 Unported
+            License</a>. <br/>Permissions beyond the scope of this license may
+            be available at <a xmlns:cc="http://creativecommons.org/ns#"
+            href="http://fossix.org/contact"
+            rel="cc:morePermissions">http://fossix.org/contact</a>.
+        </div>
+
+        <div class="span3 offset1">
+        </div>
+      </div>
+    <!-- </div> -->
   </body>
 </html>

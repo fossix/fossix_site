@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% from "utils.html" import render_field, field_errors %}
+
+{% block head %}
+<link href="{{ config['SITE_CDN'] }}/css/bootstrap-tagmanager.css" rel="stylesheet"
+      media="screen">
+<script src="{{ config['SITE_CDN'] }}/js/bootstrap-tagmanager.js"></script>
+{% endblock %}
+
+{% set pagetitle="Submit New Content" %}
+{% block style %}
+.ui-autocomplete-loading {
+  background: white url('{{ config['SITE_CDN'] }}/img/spin-16x16.gif') right center no-repeat;
+}
+{% endblock %}
+
+{% block script %}
+      $(function() {
+          $('.tags').tagsManager({
+              prefilled: "{{ form.tags_csv.data }}",
+              preventSubmitOnEnter: true,
+              typeahead: true,
+              typeaheadAjaxSource: "/content/__tags_get",
+              //typeaheadAjaxPolling: true,
+              blinkBGColor_1: '#FFFF9C',
+              blinkBGColor_2: '#CDE69C',
+              hiddenTagListName: 'tags_csv'
+          });
+      });
+{% endblock %}
+
+{% block content %}
+<p>
+  Create a new content here
+</p>
+  <form action="." method="post">
+    {{ form.hidden_tag() }}
+    <dl>
+      {{ render_field(form.title, max=128, class="span7",
+      placeholder="A captivating title!!", required=True) }}
+      <dt>Tags
+        <dd><input type="text" name="tagsdummy" class="tags" autocomplete="off"
+        placeholder="dfdf"/></dd>
+      {{ render_field(form.content, rows=20, required=True, class="span12") }}
+      {{ render_field(form.recaptcha) }}
+      <br />
+      {{ form.submit }}
+    </dl>
+  </form>
+{% endblock %}

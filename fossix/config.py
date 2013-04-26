@@ -18,6 +18,10 @@ class DefaultConfig(object):
     SITE_URL = 'http://fossix.org'
     SITE_MOTTO = ''
 
+    RECAPTCHA_PUBLIC_KEY = "YOUR_RECAPTCHA_PUBLIC_KEY"
+    RECAPTCHA_PRIVATE_KEY = "YOUR_RECAPTCHA_PRIVATE_KEY"
+    RECAPTCHA_OPTIONS = ""
+
 def get_dburi(dbcon, server, port, dbname, user, password):
     uri = dbcon + "://"
     if server:
@@ -45,4 +49,4 @@ class DebugConfig(DefaultConfig):
 					DB_NAME,DB_USER, DB_PASSWD)
 
     SQLALCHEMY_MIGRATE_REPO = os.path.join(_basedir, 'fdb_repo')
-    SITE_CDN = 'http://fcdn.fossix.org/fossix'
+    SITE_CDN = '/static'

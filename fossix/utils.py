@@ -13,11 +13,14 @@ def render_page(page, title = None, content = None, **kwargs):
 def get_uniqueid():
     last = User.query.order_by(User.id.desc()).first()
     if last is not None:
-	return 'penguin'+ str(last.id) + str(1)
+	return 'penguin'+ str(last.id + 1)
     else:
 	return 'penguin' + str(1)
 
 def is_safe_url(target):
+    if request.referrer == target:
+	return 0
+
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))
     return test_url.scheme in ('http', 'https') and \
@@ -31,7 +34,12 @@ def redirect_url():
 	    return target
 
 def redirect_back(endpoint, **values):
-    target = request.form['next']
+    if 'next' in request.form:
+	target = request.form['next']
+    else:
+	target = redirect_url()
+
     if not target or not is_safe_url(target):
 	target = url_for(endpoint, **values)
+
     return redirect(target)

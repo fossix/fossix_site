@@ -1,5 +1,6 @@
 from fossix.extensions import fdb as db
 from datetime import datetime
+from hashlib import md5
 
 class User(db.Model):
     # user roles
@@ -8,7 +9,6 @@ class User(db.Model):
     MODERATOR = 30
     ADMIN = 100
 
-    # __bind_key__ = 'user'
     __tablename__ = "user"
 
     id = db.Column(db.Integer, primary_key = True)
@@ -22,7 +22,6 @@ class User(db.Model):
     receive_email = db.Column(db.Boolean, default=False)
     email_alerts = db.Column(db.Boolean, default=False)
     suspended = db.Column(db.Boolean, default=False)
-    #posts = db.relationship('Content', backref = 'author', lazy = 'dynamic')
 
     def is_authenticated(self):
 	return True
@@ -38,3 +37,7 @@ class User(db.Model):
 
     def __repr__(self):
 	return '<User %r>' % (self.username)
+
+    def avatar(self, size):
+	return 'http://www.gravatar.com/avatar/' + md5(self.email).hexdigest() \
+	    + '?d=mm&s=' + str(size)

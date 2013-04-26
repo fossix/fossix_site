@@ -11,7 +11,8 @@ APP_NAME = 'fossix'
 
 DEFAULT_MODULES = (
     (views.main, ""),
-    (views.account, "/login")
+    (views.account, "/account"),
+    (views.content, "/content"),
 )
 
 def create_app(config=None):

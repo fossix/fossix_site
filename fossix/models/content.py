@@ -85,8 +85,8 @@ class Content(db.Model):
     def get_create_date(self):
 	return self.create_date.strftime("%A %d. %B %Y")
 
-    def is_owner(self, user):
-	if not user.is_anonymous() and (self.author == user or user.is_editor()):
+    def is_owner(self, user, author):
+	if not user.is_anonymous() and (author == user or user.is_editor()):
 	    return True
 
 	return False

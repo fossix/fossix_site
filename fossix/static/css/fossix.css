@@ -11,3 +11,9 @@
     transition:color .5s ease-out;
     text-shadow: 0 0 0.2em #87f, 0 0 0.2em #87f;
 }
+
+.contenthead {
+    padding-bottom:10px;
+    pading-top:15px;
+    height:125%;
+}

@@ -1,7 +1,76 @@
-{% extends 'base.html' %}
+{% extends 'master.html' %}
 {% set title="Home" %}
-{% set pagetitle="What's trending today?" %}
+{% block style %}
+    .teaser {
+        overflow: hidden;
+        height: 3em;
+    }
+{% endblock %}
+{% block body_container %}
+<div class="clearfix row-fluid">
+  <div class="hero-unit">
+      <h1>Fossix <small>The Opensource way</small></h1>
+        <p>To get and give back to the community is how we live, be it open
+        source or life, the rules of the game are same.</p>
+  </div>
+</div>
 
-{% block content %}
-Here is a cool new home page
+<div class="container">
+  <div class="row-fluid">
+    <div class="span7">
+      <!-- Error content -->
+      <div id="info">
+        <div id="message"></div>
+      </div>
+
+      <!-- <p> -->
+      <!--   Fossix is a group of volunteers trying to give back what we have gotten -->
+      <!--   from the open source community. If you have anything to contribute please -->
+      <!--   feel free to do so. -->
+      <!-- </p> -->
+
+      {% if c %}
+      {% for i in c %}
+      <div class="box">
+        <a href="{{ url_for('content.view_article', title=i.title) }}" style="display:block;"><h3>{{ i.title }}</h3></a>
+        <div class="teaser">
+          {{ i.content[:200]|safe }}
+        </div>
+      </div>
+      <hr>
+      {% endfor %}
+      {% endif %}
+    </div>
+
+    <div class="span3">
+      {% if c %}
+      <ul class="nav nav-list">
+        <li class="nav-header">Most Popular</li>
+        {% for i in c %}
+        <li>
+          <a href="#">{{ i.title[:25] }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div id="add_block_1" class="span2">
+      Google ads here
+      <script type="text/javascript">
+        <!--
+        google_ad_client = "ca-pub-0086577717613608";
+        /* side_bar_fossix_small */
+        google_ad_slot = "5485177940";
+        google_ad_width = 200;
+        google_ad_height = 200;
+        //-->
+      </script>
+      <script type="text/javascript"
+              src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+      </script>
+    </div>
+  </div>
+</div>
+
+{% endif %}
 {% endblock %}

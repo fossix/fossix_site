@@ -2,8 +2,9 @@ from flask.ext.login import login_required, current_user
 from flask import Module, jsonify, request, g, flash, url_for
 from fossix.utils import render_template, redirect_back
 from fossix.forms import ContentCreate_Form
-from fossix.models import Content, Keywords
+from fossix.models import Content, Keywords, User
 from fossix.extensions import fdb as db
+from sqlalchemy import func
 
 content = Module(__name__)
 
@@ -33,3 +34,17 @@ def get_tags():
     for tag in tags:
 	result.append({'tag': str(tag)})
     return jsonify(tags=result)
+
+@content.route('/<title>')
+def view_article(title):
+    c = Content.query.filter(func.lower(Content.title) == func.lower(title))
+
+    if c and c.count() == 1:
+	c = c.one()
+    else:
+	c = get_recent(1)[0]
+	if not c:
+	    c = abort(404)
+
+    author = User.query.get(c.author_id)
+    return render_template('content/article.html', content=c, author=author)

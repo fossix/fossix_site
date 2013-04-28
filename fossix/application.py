@@ -4,6 +4,7 @@ from fossix import views
 from fossix.models import User
 from fossix.config import DebugConfig
 from flask.ext.login import current_user
+from flask.ext.markdown import Markdown
 
 __all__ = ['create_app']
 
@@ -52,6 +53,11 @@ def configure_extensions(app):
 				'CACHE_DEFAULT_TIMEOUT' : 86400}) # one day
     lm.init_app(app)
     lm.login_view = "account.login"
+
+    Markdown(app, extensions = ["extra", "sane_lists", "codehilite",
+			      "smartypants"],
+	     safe_mode='remove',
+	     output_format="html5")
 
 def configure_errorhandlers(app):
     pass

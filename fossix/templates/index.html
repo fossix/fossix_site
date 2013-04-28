@@ -6,6 +6,7 @@
         height: 3em;
     }
 {% endblock %}
+
 {% block body_container %}
 <div class="clearfix row-fluid">
   <div class="hero-unit">
@@ -34,7 +35,7 @@
       <div class="box">
         <a href="{{ url_for('content.view_article', title=i.title) }}" style="display:block;"><h3>{{ i.title }}</h3></a>
         <div class="teaser">
-          {{ i.content[:200]|safe }}
+          {{ i.content[:200] }}
         </div>
       </div>
       <hr>
@@ -73,4 +74,38 @@
 </div>
 
 {% endif %}
+{% endblock %}
+
+{% block body_footer %}
+  <div class="row-fluid">
+
+    <hr>
+
+    <div class="span3">
+      <a href="#" class="muted">About us</a><br/>
+      <a href="#" class="muted">Contact</a><br/>
+    </div>
+
+    <div class="span4">
+      <p align="center">
+        <a rel="license"
+           href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US">
+          <img alt="Creative Commons License" style="border-width:0"
+               src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png"/></a><br/>
+        Unless and otherwise specified by the author of a content, all work
+        in <a xmlns:cc="http://creativecommons.org/ns#"
+              href="http://fossix.org" property="cc:attributionName"
+              rel="cc:attributionURL">http://fossix.org</a> is licensed under
+        a <a rel="license"
+             href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US">Creative
+          Commons Attribution-ShareAlike 3.0 Unported
+          License</a>. <br/>Permissions beyond the scope of this license may
+        be available at <a xmlns:cc="http://creativecommons.org/ns#"
+                           href="http://fossix.org/contact"
+                           rel="cc:morePermissions">http://fossix.org/contact</a>.
+    </div>
+
+    <div class="span3 offset1">
+    </div>
+  </div>
 {% endblock %}

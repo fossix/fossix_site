@@ -1,65 +1,89 @@
 {% extends 'master.html' %}
 
 {% block master_head %}
-<!-- Perpage head extension -->
-{% block head_extension %}
-{% endblock %}
-
+  <!-- Perpage head extension -->
+  {% block head %}
+  {% endblock %}
 {% endblock %}
 
 {% block body_container %}
-<div class="container-fluid">
+  <div class="container-fluid">
   <div class="row-fluid">
 
-    <!-- The left sidebar -->
-    <div class="span1" id="lsb">
-    </div>
-
-    <!-- The middle content -->
-    <div class="span7" id="main">
-      <!-- Error content -->
-      <div id="info">
-        <div id="message"></div>
-      </div>
-
-      <div id="content-title" class="heading1">
-        {% block title %}
-        {% if pagetitle %}
-        <div class="page-header">
-          <h3> {{ pagetitle }}
-            {% if subtitle %} <small>{{ subtitle }} </small>{% endif %}
-          </h3>
-        </div>
-        {% endif %}
+    {% block __block_1 %}
+      <div class="span1" id="lsb" style="margin-top:100px;">
+        {% block lsb_content %}
+          <!-- The social sharing -->
+          <div id="share-buttons" data-spy="affix" data-affix-top="200">
+            <ul class="nav">
+              <li class="nav-header">Share</li>
+            <li><div class="g-plusone" data-size="medium"></div></li>
+            <!-- Place this tag after the last +1 button tag. -->
+            <script type="text/javascript">
+              window.___gcfg = {lang: 'en-GB'};
+              (function() {var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;po.src = 'https://apis.google.com/js/plusone.js';        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+                          })();
+            </script>
+            <br>
+            <li><a href="https://twitter.com/share" class="twitter-share-button" data-dnt="true">Tweet</a></li>
+            <script>
+              !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+            </script>
+          </div>
         {% endblock %}
       </div>
+    {% endblock %}
 
-      <div id="content">
-        {% block content %}
+    {% block __block_2 %}
+      <div class="span7" id="main" style="margin-top:10px;">
+        {% block middle_content %}
+          <!-- Error content -->
+          <div id="info">
+            <div id="message"></div>
+          </div>
+
+          <div id="content-title" class="heading1">
+            {% block title %}
+              {% if pagetitle %}
+                <div class="page-header">
+                  <h1> {{ pagetitle }}
+                    {% if subtitle %} <small>{{ subtitle }} </small>{% endif %}
+                  </h1>
+                </div>
+              {% endif %}
+            {% endblock %}
+          </div>
+
+          <div id="content">
+            {% block content %}{% endblock %}
+          </div>
         {% endblock %}
       </div>
-    </div>
+    {% endblock %}
 
-    <!-- The right side bar -->
-    <div id="rsb" class="span2">
-      This is the right side bar
-      <div id="add_block_1">
-        <script type="text/javascript">
-          <!--
-          google_ad_client = "ca-pub-0086577717613608";
-          /* side_bar_fossix_small */
-          google_ad_slot = "5485177940";
-          google_ad_width = 200;
-          google_ad_height = 200;
-          //-->
-        </script>
-        <script type="text/javascript"
-                src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-        </script>
-      </div>
-    </div> <!-- rsb -->
-  </div>
-  {% endblock %}
+    {% block __block_3 %}
+      <div id="rsb" class="span2" style="margin-top:30px;">
+        {% block rsb_content %}
+          This is the right side bar
+          <div id="add_block_1">
+            <script type="text/javascript">
+              <!--
+              google_ad_client = "ca-pub-0086577717613608";
+              /* side_bar_fossix_small */
+              google_ad_slot = "5485177940";
+              google_ad_width = 200;
+              google_ad_height = 200;
+              //-->
+            </script>
+            <script type="text/javascript"
+                    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+            </script>
+          </div>
+        {% endblock %}
+      </div> <!-- rsb -->
+    {% endblock %}
+  </div></div>
+{% endblock %}
 
   {% block body_footer %}
   <div class="row-fluid">

@@ -10,3 +10,7 @@ main = Module(__name__)
 def index():
     c = Content.query.all()
     return render_template('index.html', c=c)
+
+@main.route('/syntax')
+def show_md_syntax():
+    return "Here will come the syntax page"

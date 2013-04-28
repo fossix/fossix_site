@@ -95,7 +95,7 @@ class Content(db.Model):
         return self.state == PUBLISHED
 
     def get_tags_csv(self):
-	return ",".join(x.name for x in self.tags)
+	return ",".join(x.keyword for x in self.tags)
 
     def set_tags_csv(self,value):
 	current = self.tags

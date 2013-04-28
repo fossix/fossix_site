@@ -1,0 +1,19 @@
+** Requirements/Installations
+*** Needed Flask ExtensionsA
+**** Login
+**** SQLAlchemy
+**** OpenID
+**** Markdown
+*** Needed Python modules
+**** Psycopg2
+**** Pygments
+**** Smartypants
+** Supported Markdown in Fossix
+   The current markdown is based on python markdown with many extensions. For a
+   detailed look at the python markdown documentation
+   (http://pythonhosted.org/Markdown)   
+**** Extensions enabled
+     - extra
+     - sane_lists
+     - codehilite
+     - smartypants

@@ -2,17 +2,12 @@
 
 {% from "utils.html" import render_field, field_errors %}
 
-{% block head_extension %}
+{% set pagetitle="Submit New Content" %}
+
+{% block head %}
 <link href="{{ config['SITE_CDN'] }}/css/bootstrap-tagmanager.css" rel="stylesheet"
       media="screen">
 <script src="{{ config['SITE_CDN'] }}/js/bootstrap-tagmanager.js"></script>
-{% endblock %}
-
-{% set pagetitle="Submit New Content" %}
-{% block style %}
-.ui-autocomplete-loading {
-  background: white url('{{ config['SITE_CDN'] }}/img/spin-16x16.gif') right center no-repeat;
-}
 {% endblock %}
 
 {% block script %}
@@ -27,25 +22,78 @@
               blinkBGColor_2: '#CDE69C',
               hiddenTagListName: 'tags_csv'
           });
+
+          $(document).on('click', '#preview-btn', function() {
+              $.ajax({
+                  type: "POST",
+                  url: "{{ url_for('content.article_preview') }}",
+                  data: $('#create_form').serialize(),
+                  success: function(data) {
+                      $('#preview-modal .modal-body').html(data.content);
+                      $('#preview-modal #modal-title').html(data.title);
+                      $('#preview-modal').modal();
+                  }
+              });
+          });
       });
 {% endblock %}
 
 {% block content %}
+
+<div class="modal hide fade" id="preview-modal">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal"
+    aria-hidden="true">×</button>
+      <h1> <div id="modal-title"></div></h1>
+  </div>
+  <div class="modal-body"></div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+  </div>
+</div>
+
 <p>
-  Create a new content here
+  Fossix uses Markdown for formatting. You do not have to type any HTML code. You
+  can refer the excellent Markdown syntax
+  <a href="http://daringfireball.net/projects/markdown/syntax">here</a>. But
+  there are some differences from the standard, which is detailed in the
+  <a href="{{ url_for('main.show_md_syntax') }}">syntax page</a>
 </p>
-  <form action="." method="post">
-    {{ form.hidden_tag() }}
-    <dl>
-      {{ render_field(form.title, max=128, class="span7",
-      placeholder="A captivating title!!", required=True) }}
-      <dt>Tags
-        <dd><input type="text" name="tagsdummy" class="tags" autocomplete="off"
-        placeholder="dfdf"/></dd>
-      {{ render_field(form.content, rows=20, required=True, class="span12") }}
-      {{ render_field(form.recaptcha) }}
-      <br />
-      {{ form.submit }}
-    </dl>
-  </form>
+
+<div class="accordion" id="accordion2">
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse"
+         data-parent="#accordion2" href="#markdownsyntax">
+        Click here for a quick look of the Markdown syntax
+      </a>
+    </div>
+    <div id="markdownsyntax" class="accordion-body collapse">
+      <div class="accordion-inner">
+        <p>
+          The markdown syntax here
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<form method="post" id="create_form">
+  {{ form.hidden_tag() }}
+  <dl>
+    {{ render_field(form.title, max=128, class="span7",
+    placeholder="A captivating title!!", required=True) }}
+    <dt><label for="tagsdummy">Tags</label></dt>
+    <dd>
+      <input type="text" name="tagsdummy" class="tags" autocomplete="off"
+             placeholder="Comma,separated,keywords"/>
+    </dd>
+    <a href="javascript:void(0);" id="preview-btn"
+       class="btn btn-info pull-right">Preview</a>
+    {{ render_field(form.content, rows=20, required=True, class="span12") }}
+    <br />
+    {{ form.recaptcha }}
+    {{ form.submit(formaction=request.path) }}
+  </dl>
+</form>
 {% endblock %}

@@ -43,3 +43,7 @@ def redirect_back(endpoint, **values):
 	target = url_for(endpoint, **values)
 
     return redirect(target)
+
+# A tiny filter
+#fapp.template_filter('strip_tags')
+#def strip_tags():

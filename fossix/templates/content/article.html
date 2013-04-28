@@ -12,27 +12,27 @@
   {% endif %}
   on
   {{ content.get_create_date() }} {% if content.is_owner(g.user, author) %}
-  <a href="/articles?do=edit&item={{content.id}}" id="edit">
+  <a href="{{ url_for('content.edit_article', id=content.id) }}" id="edit">
     <button class="btn btn-mini"><i class="icon-edit"> </i></button></a>
   {% endif %}
   <span class="badge badge-inverse pull-right" id="likecount">{{content.like_count}}</span>
-  <a href="/actions/like?item={{content.id}}" class="pull-right" id="like">
+  <a href="{{ url_for('content.like', id=content.id) }}" class="pull-right" id="like">
     <button class="btn btn-mini"><i class="icon-thumbs-up"> </i>Like</button>
   </a>
 </div>
 
 <div class="content-body">
-  {{ content.content | safe }}
+  {{ content.content | markdown }}
 </div>
 
-<div class="taglist" style="float:left;">
+<div class="taglist pull-left">
   {% for t in content.tags %}
-  <a href="/tag/{{ t.keyword }}"><span class="label">{{ t.keyword }}</span></a>
+  <a href="{{ url_for('content.tag', label=t.keyword) }}"><span class="label">{{ t.keyword }}</span></a>
   {% endfor %}
 </div>
 
 {% if g.user.is_authenticated() %}
-<div class="read-count" style="float:right;">
+<div class="read-count pull-right">
   Number of reads: {{ content.read_count }}
 </div>
 {% endif %}

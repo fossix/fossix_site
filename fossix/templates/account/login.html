@@ -4,17 +4,19 @@
 {% set pagetitle="Login" %}
 
 {% block content %}
-<p>
-  Sign in with <a target="_blank" href="http://openid.net/get-an-openid/">OpenID</a>
-</p>
-<form method="POST" action=".">
-  {{ form.hidden_tag() }}
-  <div class="input-append">
-    {{ form.openid(size=30, class_="openid", placeholder="OpenID URL", required=True) }}
-    {{ form.submit(class="btn") }}
-  </div>
-  <div class="pull-right">
-    {{ field_errors(form.openid) }}
-  </div>
-</form>
+<div class="container offset1">
+  <p>
+    Sign in with <a target="_blank" href="http://openid.net/get-an-openid/">OpenID</a>
+  </p>
+  <form method="POST" action="{{ url_for('account.login') }}">
+    {{ form.hidden_tag() }}
+    <div class="input-append">
+      {{ form.openid(size=30, class_="openid", placeholder="OpenID URL", required=True) }}
+      {{ form.submit(class="btn") }}
+    </div>
+    <div class="pull-right">
+      {{ field_errors(form.openid) }}
+    </div>
+  </form>
+</div>
 {% endblock %}

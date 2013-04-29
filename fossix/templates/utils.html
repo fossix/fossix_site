@@ -51,7 +51,33 @@
 
 {% macro render_field(field) -%}
 <dt>{{ field.label }}</dt>
-  <dd>{{ field(**kwargs)|safe }}
-    {{ field_errors(field) }}
-  </dd>
+<dd>{{ field(**kwargs)|safe }}
+  {{ field_errors(field) }}
+</dd>
+{%- endmacro %}
+
+{% macro content_node(content, tag, g) -%}
+<div>
+<div class="taglist pull-right">
+  {% for t in content.tags %}
+    {% if t.keyword == tag %}
+      <span class="label label-inverse">{{ t.keyword }}</span>
+    {% else %}
+      <a href="{{ url_for('content.tag', label=t.keyword) }}">
+        <span class="label">{{ t.keyword }}</span>
+      </a>
+    {% endif %}
+  {% endfor %}
+</div>
+
+<div class="alist">
+  <a href="{{ url_for('content.view_article', title=content.title) }}">
+    {{ content.title }}
+  </a>
+</div>
+<blockquote>
+  Posted on {{content.get_create_date()}}
+  by <a href="/profiles/{{content.author_id}}">{{ content.author.username }}</a>
+</blockquote>
+</div>
 {%- endmacro %}

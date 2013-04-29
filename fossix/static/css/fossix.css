@@ -27,6 +27,29 @@
     align:justify;
 }
 
+.alist {
+    width: 100%;
+    font-size:large;
+}
+
+.alist a {
+    background: #f8f8f8;
+    display: block;
+    height: 100%;
+}
+
+.alist a:hover {
+    text-decoration:none;
+    background: #eeeeee;
+}
+
+.alistgroup {
+    padding-bottom:10px;
+    pading-top:10px;
+    list-style-type:none;
+}
+
+
 /* CSS for pygmentize, copied from HtmlFormatter().get_style_defs('.codehilite') output */
 .codehilite .hll { background-color: #ffffcc }
 .codehilite  { background: #f8f8f8; }

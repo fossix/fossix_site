@@ -55,7 +55,7 @@ def configure_extensions(app):
     lm.login_view = "account.login"
 
     Markdown(app, extensions = ["extra", "sane_lists", "codehilite",
-			      "smartypants"],
+				"smartypants"],
 	     safe_mode='remove',
 	     output_format="html5")
 

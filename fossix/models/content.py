@@ -46,9 +46,12 @@ class Content(db.Model):
     content = db.Column(db.Text, nullable = False)
     like_count = db.Column(db.Integer, default = 0)
     read_count = db.Column(db.Integer, default = 0)
+    comment_count = db.Column(db.Integer, default = 0)
     state = db.Column(db.SmallInteger, index = True, nullable = False)
     tags = db.relationship('Keywords', secondary=ContentTags,
 			   backref=db.backref('contents', lazy='dynamic'))
+
+    author = db.relation(User, innerjoin=True, lazy="joined")
 
     def __repr_(self):
         return 'id: %r\ntitle: %r\ndate:%r' % (self.id, self.title, self.create_date)
@@ -92,7 +95,7 @@ class Content(db.Model):
 	return False
 
     def is_published(self):
-        return self.state == PUBLISHED
+        return self.state == self.PUBLISHED
 
     def get_tags_csv(self):
 	return ",".join(x.keyword for x in self.tags)

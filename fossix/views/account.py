@@ -35,7 +35,7 @@ def create_or_login(resp):
                             name=resp.fullname or resp.nickname,
                             email=resp.email))
 
-@account.route('/', methods=("GET", "POST"))
+@account.route('/login', methods=("GET", "POST"))
 @oid.loginhandler
 def login():
     if g.user.is_authenticated():
@@ -48,7 +48,6 @@ def login():
 				 ask_for=['email', 'fullname', 'nickname'])
 
     else:
-	login_form.next.data = oid.get_next_url()
 	return render_template("account/login.html", form=login_form,
 			       error = oid.fetch_error())
 

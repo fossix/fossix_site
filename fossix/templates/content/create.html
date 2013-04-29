@@ -13,7 +13,8 @@
 {% block script %}
       $(function() {
           $('.tags').tagsManager({
-              prefilled: "{{ form.tags_csv.data }}",
+              prefilled: {% if form.tags_csv.data %} {{ form.tags_csv.data}} {%
+      else %} "" {% endif %},
               preventSubmitOnEnter: true,
               typeahead: true,
               typeaheadAjaxSource: "/content/__tags_get",

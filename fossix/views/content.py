@@ -15,15 +15,13 @@ content = Module(__name__)
 def create_content():
     form = ContentCreate_Form()
     if form.validate_on_submit():
-	c = Content()
+	c = Content(author=g.user, state=Content.REVIEW,
+		    author_id=current_user.id, category=Content.ARTICLE)
 	form.populate_obj(c)
-	c.author_id = current_user.id
-	c.category = Content.ARTICLE
-	c.state = Content.REVIEW
 	db.session.add(c)
 	db.session.commit()
 	flash('Thank you. Content submitted for review.')
-	redirect(url_for('content.view_article', title=c.title))
+	return redirect(url_for('content.view_article', title=c.title))
 
     form.next.data = request.args.get('next')
 
@@ -48,7 +46,6 @@ def view_article(title):
 	if not c:
 	    c = abort(404)
 
-    print url_for('content.view_article', title=c.title)
     author = User.query.get(c.author_id)
     return render_template('content/article.html', content=c, author=author)
 
@@ -80,20 +77,19 @@ def edit_article(id):
 	db.session.add(c)
 	db.session.commit()
 	flash('Edits Saved.')
-	print url_for('content.view_article', title=c.title)
-	redirect(url_for('content.view_article', title=c.title))
+	return redirect(url_for('content.view_article', title=c.title))
 
     return render_template('content/create.html', form=form)
 
 @content.route('/tag/<label>')
 def tag(label):
-        tag = Keywords.query.filter(models.Keywords.keyword == label).first()
+    tag = Keywords.query.filter(Keywords.keyword == label).first()
 
-        if not tag:
-                flash("No content is currently tagged with " + label)
-                return redirect_back('/')
+    if not tag:
+	flash("No content is currently tagged with " + label)
+	return redirect_back('main.index')
 
-        return render_template('tag.html', tag)
+    return render_template('content/tag.html', tag=tag)
 
 @content.route('/like/<int:id>')
 def like(id):
@@ -112,3 +108,7 @@ def like(id):
     resp = Response(jd, status=200, mimetype='application/json')
 
     return resp
+
+@content.route('/archive')
+def archive():
+    return render_template('content/archive.html', content=Content.query.all())

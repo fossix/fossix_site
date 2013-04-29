@@ -1,0 +1,52 @@
+* Reference for Developers/Maintainer
+** Requirements/Installations
+*** Needed Flask ExtensionsA
+**** Login
+**** SQLAlchemy
+**** OpenID
+**** Markdown
+**** Principal
+*** Needed Python modules
+**** Psycopg2
+**** Pygments
+**** Smartypants
+** Supported Markdown in Fossix
+   The current markdown is based on python markdown with many extensions. For a
+   detailed look at the python markdown documentation
+   (http://pythonhosted.org/Markdown)   
+**** Extensions enabled
+     - extra
+     - sane_lists
+     - codehilite
+     - smartypants
+** Fossix Design
+*** User authentication
+**** Roles
+***** Administrator
+***** Moderator
+***** Author
+***** Member
+**** Workflow
+     - Author writes a Content [Draft] and submits for review [Review]
+     - Mails sent to all reviewers (based on the tags)
+     - Reviewer approves and article gets published [Published]
+**** User Information
+***** User will need to provide subject matter expertise in his/her profile
+      If there are no information provided then based on their comments, the
+      reading style etc score will be generated for each topic/tag.
+***** Reviewer Vs Moderator Vs Administrator
+      Every author will be a reviewer based on the subject matter expertise they
+      have provided or that has been calculated. Moderators are appointed or
+      auto upgraded based on the karma they have earned. There are no special
+      badges like Stackoverflow, and no role identification in their
+      miniprofile, but a star in their profile page will indicate that they are
+      either moderators or administrators, and their email addresses will be
+      visible to all members of the site, and cannot restrict messages from any user.
+*** Content Types
+**** Types
+***** Article
+      More than 500 words of content will automatically get categorized as Article
+***** News/Commentary
+      Short content targeted to supplement/comment an article. Any member can
+      create a new/commentary.
+***** Comments

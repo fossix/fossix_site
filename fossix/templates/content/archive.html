@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% import 'utils.html' as utils %}
+{% set pagetitle="Archive of Articles in Fossix" %}
+
+{% block content %}
+{% if not content %}
+<p class="alert alert-block alert-info">
+  There is no content in the archive!!
+  mm... That sounds weird, please report this to <em>admin@fossix.org</em>
+</p>
+{% endif %}
+
+<ul class="alistgroup">
+  {% for c in content %}
+    <li> {{ utils.content_node(c, None, g) }}
+  {% endfor %}
+</ul>
+{% endblock %}

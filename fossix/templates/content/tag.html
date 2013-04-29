@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% import 'utils.html' as utils %}
+{% set pagetitle="Contents tagged with " + tag.keyword %}
+
+{% block content %}
+<ul class="alistgroup">
+  {% for c in tag.contents %}
+  <li class="unstyled"> {{ utils.content_node(c, tag.keyword, g) }}
+    {% endfor %}
+</ul>
+{% endblock %}

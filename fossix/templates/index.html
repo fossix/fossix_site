@@ -7,7 +7,7 @@
     }
 {% endblock %}
 
-{% block body_container %}
+{% block body %}
 <div class="clearfix row-fluid">
   <div class="hero-unit">
       <h1>Fossix <small>The Opensource way</small></h1>
@@ -29,34 +29,35 @@
       <!--   from the open source community. If you have anything to contribute please -->
       <!--   feel free to do so. -->
       <!-- </p> -->
-
       {% if c %}
-      {% for i in c %}
-      <div class="box">
-        <a href="{{ url_for('content.view_article', title=i.title) }}" style="display:block;"><h3>{{ i.title }}</h3></a>
-        <div class="teaser">
-          {{ i.content[:200] }}
-        </div>
-      </div>
-      <hr>
-      {% endfor %}
+        {% for i in c %}
+          <div class="box">
+            <a href="{{ url_for('content.view_article', title=i.title) }}"
+               style="display:block;"><h3>{{ i.title }}</h3>
+            </a>
+            <div class="teaser">
+              {{ i.content[:200] }}
+            </div>
+          </div>
+          <hr>
+        {% endfor %}
       {% endif %}
     </div>
 
     <div class="span3">
       {% if c %}
-      <ul class="nav nav-list">
-        <li class="nav-header">Most Popular</li>
-        {% for i in c %}
-        <li>
-          <a href="#">{{ i.title[:25] }}</a>
-        </li>
-        {% endfor %}
-      </ul>
+        <ul class="nav nav-list">
+          <li class="nav-header">Most Popular</li>
+          {% for i in c %}
+            <li>
+              <a href="#">{{ i.title[:25] }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
     </div>
 
     <div id="add_block_1" class="span2">
-      Google ads here
       <script type="text/javascript">
         <!--
         google_ad_client = "ca-pub-0086577717613608";
@@ -73,39 +74,4 @@
   </div>
 </div>
 
-{% endif %}
-{% endblock %}
-
-{% block body_footer %}
-  <div class="row-fluid">
-
-    <hr>
-
-    <div class="span3">
-      <a href="#" class="muted">About us</a><br/>
-      <a href="#" class="muted">Contact</a><br/>
-    </div>
-
-    <div class="span4">
-      <p align="center">
-        <a rel="license"
-           href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US">
-          <img alt="Creative Commons License" style="border-width:0"
-               src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png"/></a><br/>
-        Unless and otherwise specified by the author of a content, all work
-        in <a xmlns:cc="http://creativecommons.org/ns#"
-              href="http://fossix.org" property="cc:attributionName"
-              rel="cc:attributionURL">http://fossix.org</a> is licensed under
-        a <a rel="license"
-             href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US">Creative
-          Commons Attribution-ShareAlike 3.0 Unported
-          License</a>. <br/>Permissions beyond the scope of this license may
-        be available at <a xmlns:cc="http://creativecommons.org/ns#"
-                           href="http://fossix.org/contact"
-                           rel="cc:morePermissions">http://fossix.org/contact</a>.
-    </div>
-
-    <div class="span3 offset1">
-    </div>
-  </div>
 {% endblock %}

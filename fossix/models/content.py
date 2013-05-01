@@ -23,7 +23,7 @@ class Keywords(db.Model):
     def __repr__(self):
         return '%s' % self.keyword
 
-ContentTags = db.Table('contentags',
+ContentTags = db.Table('tags_assoc',
 		       db.Column('content_id', db.Integer, db.ForeignKey('content.id')),
 		       db.Column('keyword_id', db.Integer, db.ForeignKey('keywords.id')))
 

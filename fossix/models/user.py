@@ -42,5 +42,11 @@ class User(db.Model):
 	return 'http://www.gravatar.com/avatar/' + md5(self.email).hexdigest() \
 	    + '?d=mm&s=' + str(size)
 
-    def is_editor(self):
+    def is_editor(self, content=None):
+	if content:
+	    # check if the user is the owner
+	    if content.author_id == self.id:
+		return True
+
+	# or I should be a moderator to edit
 	return self.role >= self.MODERATOR

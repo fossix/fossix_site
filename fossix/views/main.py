@@ -8,8 +8,9 @@ main = Module(__name__)
 @main.route('/')
 @main.route('/index')
 def index():
-    c = Content.query.all()
-    return render_template('index.html', c=c)
+    c = Content.get_recent(5)
+    p = Content.get_popular(5, False)
+    return render_template('index.html', recent=c, popular=p)
 
 @main.route('/syntax')
 def show_md_syntax():

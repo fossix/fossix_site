@@ -35,7 +35,7 @@
     {% endblock %}
 
     {% block __block_2 %}
-      <div class="span7" id="main" style="margin-top:10px;">
+      <div class="span6" id="main" style="margin-top:10px;">
         {% block middle_content %}
           <!-- Error content -->
           <div id="info">
@@ -54,7 +54,7 @@
             {% endblock %}
           </div>
 
-          <div id="content">
+          <div id="content" class="article">
             {% block content %}{% endblock %}
           </div>
         {% endblock %}
@@ -62,9 +62,10 @@
     {% endblock %}
 
     {% block __block_3 %}
-      <div id="rsb" class="span2" style="margin-top:30px;">
+      <div id="rsb" class="span3" style="margin-top:30px;">
         {% block rsb_content %}
-          This is the right side bar
+          This is the right side bar which will have lots of contents like the
+          ads, the popular contents, the related etc.
           <div id="add_block_1">
             <script type="text/javascript">
               <!--
@@ -84,6 +85,3 @@
     {% endblock %}
   </div></div>
 {% endblock %}
-
-  {% block body_footer %}
-  {% endblock %}

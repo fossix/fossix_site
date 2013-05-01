@@ -5,13 +5,13 @@
 {% block content %}
 <div class="contenthead">
   By
-  {% if author %}
-  <a href="/profile/{{ content.author_id }}">{{ author.username }}</a>
+  {% if content.author %}
+  <a href="/profile/{{ content.author_id }}">{{ content.author.username }}</a>
   {% else %}
   Anonymous
   {% endif %}
   on
-  {{ content.get_create_date() }} {% if content.is_owner(g.user, author) %}
+  {{ content.get_create_date() }} {% if content.author.is_editor(content) %}
   <a href="{{ url_for('content.edit_article', id=content.id) }}" id="edit">
     <button class="btn btn-mini"><i class="icon-edit"> </i></button></a>
   {% endif %}

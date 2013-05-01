@@ -56,28 +56,10 @@ class Content(db.Model):
     def __repr_(self):
         return 'id: %r\ntitle: %r\ndate:%r' % (self.id, self.title, self.create_date)
 
-    def add(self):
-	# new content always require a date
-	# except when admin gives a date explicitly
-	if not self.create_date:
-	    self.create_date = datetime.now()
-	if not self.author:
-	    self.author = User.query.get(g.user.id)
+    def inc_read_count(self):
+	self.read_count = self.read_count + 1
 	db.session.add(self)
 	db.session.commit()
-
-    @staticmethod
-    def inc_read_count(title = None, item = 0):
-	c = Content.query.filter(func.lower(Content.title) == func.lower(title) or Content.id == item)
-	if c.count() == 1:
-	    c = c.one()
-	else:
-	    return 0
-
-	c.read_count = c.read_count + 1
-	db.session.add(c)
-	db.session.commit()
-        return c.read_count
 
     def inc_like_count(self):
 	self.like_count = self.like_count + 1
@@ -87,12 +69,6 @@ class Content(db.Model):
 
     def get_create_date(self):
 	return self.create_date.strftime("%A %d. %B %Y")
-
-    def is_owner(self, user, author):
-	if not user.is_anonymous() and (author == user or user.is_editor()):
-	    return True
-
-	return False
 
     def is_published(self):
         return self.state == self.PUBLISHED
@@ -109,3 +85,25 @@ class Content(db.Model):
 		self.tags.append(Keywords.get(tag.strip()))
 
     tags_csv = property(get_tags_csv, set_tags_csv)
+
+    @staticmethod
+    def get_recent(count = 5):
+        c = Content.query.filter(Content.state
+				 == Content.REVIEW).order_by(Content.create_date.desc()).limit(count)
+	if c.count() > 0:
+	    return c.all()
+
+	return None
+
+    @staticmethod
+    def get_popular(count = 5, exclude_recent = True, recent_limit = 5):
+	recent = None
+	if exclude_recent:
+	    recent = Content.get_recent(recent_limit)
+
+	q = Content.query.filter(Content.state == Content.REVIEW)
+	if recent is not None:
+	    q.filter(~ Content.id.in_(c.id for c in recent))
+
+	return q.order_by(Content.read_count.desc(),
+			  Content.like_count.desc()).limit(count)

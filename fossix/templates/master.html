@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link href="{{ config['SITE_CDN'] }}/css/bootstrap.min.css" rel="stylesheet"
+    <link href="{{ config['SITE_CDN'] }}/css/bootstrap.css" rel="stylesheet"
           media="screen">
     <link href="{{ config['SITE_CDN'] }}/css/bootstrap-responsive.min.css" rel="stylesheet"
           media="screen">
-    <link href="/static/css/fossix.css" rel="stylesheet"
+    <link href="{{ config['SITE_CDN'] }}/css/fossix.css" rel="stylesheet"
           media="screen">
     <!-- <link href="{{ config['SITE_CDN'] }}/css/zocial/zocial.css" rel="stylesheet" -->
     <!--       media="screen"> -->
@@ -24,6 +24,7 @@
 
     <script language="javascript">
       var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+      fossix_event_setup();
       {% block script %}{% endblock %}
     </script>
 
@@ -94,7 +95,7 @@
     {% endblock %}
 
     <footer>
-      {% block body_footer %}
+      {% block footer %}
       <div class="row-fluid">
 
         <hr>

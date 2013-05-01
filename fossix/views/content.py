@@ -1,6 +1,6 @@
 from flask.ext.login import login_required, current_user
 from flask import Module, jsonify, request, g, flash, url_for, redirect, json,\
-    Response
+    Response, abort
 from fossix.utils import render_template, redirect_back
 from fossix.forms import ContentCreate_Form
 from fossix.models import Content, Keywords, User
@@ -15,8 +15,8 @@ content = Module(__name__)
 def create_content():
     form = ContentCreate_Form()
     if form.validate_on_submit():
-	c = Content(author=g.user, state=Content.REVIEW,
-		    author_id=current_user.id, category=Content.ARTICLE)
+	c = Content(state=Content.REVIEW, author_id=current_user.id,
+		    category=Content.ARTICLE)
 	form.populate_obj(c)
 	db.session.add(c)
 	db.session.commit()
@@ -35,19 +35,27 @@ def get_tags():
 	result.append({'tag': str(tag)})
     return jsonify(tags=result)
 
+@content.route('/')
 @content.route('/<title>')
-def view_article(title):
-    c = Content.query.filter(func.lower(Content.title) == func.lower(title))
-
-    if c and c.count() == 1:
-	c = c.one()
+def view_article(title=None):
+    if title is None:
+	c = Content.get_recent(2)
+	if c:
+	    c = c[0]
     else:
-	c = get_recent(1)[0]
-	if not c:
-	    c = abort(404)
+	c = Content.query.filter(func.lower(Content.title)
+				     == func.lower(title))
+        if c.count() > 0:
+	    c = c.one()
+	else:
+	    c = None
 
-    author = User.query.get(c.author_id)
-    return render_template('content/article.html', content=c, author=author)
+    if c is not None:
+	c.inc_read_count()
+	return render_template('content/article.html', content=c)
+
+    flash(u'Nothing exists with that URL, Here is the archive of all content.')
+    return redirect(url_for('content.archive', content=None))
 
 @content.route('/__preview/', methods=['POST'])
 def article_preview():

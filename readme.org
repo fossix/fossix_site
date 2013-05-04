@@ -1,25 +1,31 @@
-* Reference for Developers/Maintainer
+* Reference for Developers/Maintainers
 ** Requirements/Installations
 *** Needed Flask ExtensionsA
 **** Login
 **** SQLAlchemy
 **** OpenID
 **** Markdown
-**** Principal
 *** Needed Python modules
 **** Psycopg2
 **** Pygments
 **** Smartypants
-** Supported Markdown in Fossix
-   The current markdown is based on python markdown with many extensions. For a
-   detailed look at the python markdown documentation
-   (http://pythonhosted.org/Markdown)   
+** Content Editing/Creating
+*** Supported Markdown in Fossix
+    The current markdown is based on python markdown with many extensions. For a
+    detailed look at the python markdown documentation
+    (http://pythonhosted.org/Markdown)
 **** Extensions enabled
      - extra
      - sane_lists
      - codehilite
      - smartypants
 ** Fossix Design
+*** Site design
+    The site design is mainly targeted to the readers. Some research has been
+    made for the legibility of the content. Based on some readings the following
+    are done:
+    - The font size is set at 16px to make the content more legible.
+    - discontinued usage of justification, seems it is a bad idea to use it.
 *** User authentication
 **** Roles
 ***** Administrator
@@ -41,7 +47,8 @@
       badges like Stackoverflow, and no role identification in their
       miniprofile, but a star in their profile page will indicate that they are
       either moderators or administrators, and their email addresses will be
-      visible to all members of the site, and cannot restrict messages from any user.
+      visible to all members of the site, and cannot restrict messages from any
+      user.
 *** Content Types
 **** Types
 ***** Article
@@ -50,3 +57,131 @@
       Short content targeted to supplement/comment an article. Any member can
       create a new/commentary.
 ***** Comments
+      Comments can be added for any content. Meaning comments can be added for
+      a comment itself. That will effectively show up as threads.
+*** Database Design
+    The database is designed to have versions of every content in the
+    site. Articles, comments, news, review comments, all have history of
+    edits. The only exception to this is user specific data, like the user's
+    profile itself and the messages that a user has recieved. This means, when a
+    message has been deleted there is not way to recover it. But, again,
+    technically speaking, the message will not be deleted until both the
+    parties involved "removes" the message from their "view".
+*** Database
+**** Postgresql
+     The database used in fossix is postgresql.
+**** Basic Commands
+***** Listing all tables in the database
+      #+BEGIN_SRC sql
+      select table_name from information_schema.tables where table_schema='public';
+      #+END_SRC
+***** Date defaults
+      Date default setting could not be made through sql alchemy. The utcnow
+      breaks migration, and sqlalchemy itself doesn't seem to understand the
+      NOW()/now() string as default in the database side. So we have to manually
+      update if are going to create the tables anytime again.
+      #+BEGIN_SRC sql
+      alter table content_base alter column create_date set default now();
+      alter table content_versions alter column last_changed set default now();
+      #+END_SRC
+**** The database models
+     Content History -> a table which stores history
+     Content -> represents Articles, Comment and News
+     User -> represents users and user profiles on the system
+     Message -> stores messages sent and recieved between users
+     OpenID -> Each user can attach multiple openID's to his account
+     Keywords -> Tags representing the content, can refer any Content
+**** Tables
+***** Content History Table
+      | Column       | Type    | Modifiers                                         |
+      |--------------+---------+---------------------------------------------------|
+      | id           | integer | not null, auto increment, pk                      |
+      | version_num  | integer | not null, index                                   |
+      | content_id   | integer | not null, refers Content table                    |
+      | content      | text    | not null                                          |
+      | tags         | integer | not null, refers Keywords table                   |
+      | title        | varchar | not null, unique, index                           |
+      | last_changed | date    | not null                                          |
+      | changed by   | integer | not null, refers User table                       |
+      | state        | integer | not null, [saved, approved, rejected, pending...] |
+      The table will have a unique constraint on both version_num and
+      content_id, because it makes sense that there cannot be versions with two
+      different version numbes for the same content.
+***** Content Table (Things that don't require versioning)
+      | Column          | Type    | Modifiers                          |
+      |-----------------+---------+------------------------------------|
+      | id              | integer | not null, auto increment, pk       |
+      | current_version | integer | refers history version_num         |
+      | create_date     | date    | not null, default: Today           |
+      | created_by      | integer | references User table              |
+      | like_count      | integer | default: 0                         |
+      | read_count      | integer | default: 0                         |
+      | comment_count   | integer | default: 0                         |
+      | type            | integer | not null, [article, news, comment] |
+      | refers_to       | integer | refers to Content Table            |
+***** Message
+      | Column  | Type         | Modifiers                    |
+      |---------+--------------+------------------------------|
+      | id      | integer      | not null, auto increment, pk |
+      | from    | integer      | refers to User table         |
+      | to      | integet      | refers to User table         |
+      | message | varchar(300) | Not null                     |
+***** User
+      | Column      | Type         | Modifiers                                       |
+      |-------------+--------------+-------------------------------------------------|
+      | id          | integer      | not null, auto increment, pk                    |
+      | username    | varchar(32)  | not null, unique                                |
+      | fullname    | varchar(64)  |                                                 |
+      | email       | varchar(150) | not null, unique                                |
+      | date_joined | date         | not null                                        |
+      | role        | integer      | default: user, [user, author, moderator, admin] |
+      | karma       | integer      | default: 0                                      |
+      | email_misc  | boolean      | default: false                                  |
+      | email_alert | boolean      | default: false                                  |
+      | status      | integer      | default: active, [active, blocked]              |
+***** OpenID
+      | Column  | Type         | Modifiers                    |
+      |---------+--------------+------------------------------|
+      | id      | integer      | not null, auto increment, pk |
+      | url     | varchar(256) | not null                     |
+      | user_id | integer      | not null, refers User table  |
+***** Keywords
+      | Column  | Type        | Modifiers                    |
+      | id      | interger    | not null, auto increment, pk |
+      | keyword | varchar(25) | not null, unique             |
+***** ContentTags
+      | Column     | Type    | Modifiers            |
+      | content_id | integer | refers Content Table |
+      | keyword_id | integer | refers Keyword Table |
+**** Views
+***** Content
+      A content view from both content history table and content table.
+      | Column        |
+      |---------------|
+      | content_id    |
+      | version_num   |
+      | content       |
+      | tags          |
+      | last_changed  |
+      | changed_by    |
+      | state         |
+      | create_date   |
+      | created_by    |
+      | like_count    |
+      | read_count    |
+      | comment_count |
+      | type          |
+      | refers_to     |
+      This view is created manually in the postgresql database. SQL alchemy
+      doesn't have native support to create views, but can be done as answered
+      in stackoverflow.
+      #+BEGIN_SRC sql
+      CREATE OR REPLACE VIEW content AS 
+          SELECT a.content_id AS id, a.title, a.last_changed, a.changed_by, 
+          a.state, a.version_num, b.read_count, b.like_count, b.comment_count, 
+          b.refers_to from content_versions a, content_base b 
+          where content_id=id and (a.content_id,a.version_num) in 
+          (select content_id, max(version_num) from content_versions group by
+          content_id);
+      #+END_SRC
+**** Misc info

@@ -11,7 +11,6 @@ from flask.ext.script import Manager, prompt, prompt_pass, \
 from fossix import create_app
 from fossix.extensions import fdb as db
 from fossix.models import User
-from migrate.versioning import api
 
 fapp = create_app()
 manager = Manager(fapp)
@@ -73,18 +72,17 @@ def createuser(username=None, password=None, email=None, role=None):
     print "User created with ID", user.id
 
 
+from alembic.config import Config
+from alembic import command
+
 @manager.command
 def createall():
     "Creates database tables"
 
     db.create_all()
 
-    if not os.path.exists(fapp.config['SQLALCHEMY_MIGRATE_REPO']):
-	api.create(fapp.config['SQLALCHEMY_MIGRATE_REPO'], 'database repository')
-	api.version_control(fapp.config['SQLALCHEMY_DATABASE_URI'], fapp.config['SQLALCHEMY_MIGRATE_REPO'])
-    else:
-	api.version_control(fapp.config['SQLALCHEMY_DATABASE_URI'], fapp.config['SQLALCHEMY_MIGRATE_REPO'],
-			    api.version(fapp.config['SQLALCHEMY_MIGRATE_REPO']))
+    alembic_cfg = Config("alembic.ini")
+    command.stamp(alembic_cfg, "head")
 
 @manager.command
 def dropall():
@@ -109,8 +107,9 @@ def mailall():
                                   recipients=[user.email])
 
                 conn.send(message)
+
+
 import imp
-from migrate.versioning import api
 
 @manager.command
 def migratedb():

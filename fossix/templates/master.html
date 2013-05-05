@@ -59,7 +59,7 @@
                   <li><a href="#">Submit News</a></li>
                   <li><a href="{{ url_for('content.create_content') }}">Create
                   Content</a></li>
-                  {% if g.user.is_moderator() %}
+                  {% if g.user.is_authenticated() and g.user.is_moderator() %}
                   <li><a href="#">Moderation</a></li>
                   {% endif %}
 	        </ul>

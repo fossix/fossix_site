@@ -1,30 +1,3 @@
-{% macro content_node(content, tag='') -%}
-{% from "utils.html" import field_errors %}
-<div class="taglist pull-right">
-  {% for t in content.tags %}
-  <a href="/tag/{{ t.keyword }}">
-    <span class="label
-                 {% if t.keyword == tag %} label-inverse
-                 {% endif %}">{{ t.keyword }}</span>
-  </a>
-  {% endfor %}
-</div>
-<div class="alist">
-  {% if content.is_published() %}
-  <a href="/articles/{{content.title}}" class="alist">{{
-    content.title }}</a>
-  {% else %}
-  <a href="/articles/{{content.title}}" class="alist">{{
-    content.title }}</a><a href="/articles?do=edit&item={{ content.id
-    }}"><i class="icon-edit"> </i></a>
-  {% endif %}
-</div>
-<blockquote>
-  Posted on {{content.get_create_date()}}
-  by <a href="/profiles/{{content.author.username}}">{{content.author.username}}</a>
-</blockquote>
-{%- endmacro %}
-
 {% macro error_alert(errors) -%}
 {% if errors %}
 <div id="form-error" class="alert alert-error">
@@ -71,13 +44,13 @@
 </div>
 
 <div class="alist">
-  <a href="{{ url_for('content.view_article', title=content.title) }}">
+  <a href="{{ url_for('content.view_article', id = content.id, title=content.title) }}">
     {{ content.title }}
   </a>
 </div>
 <blockquote>
   Posted on {{content.get_create_date()}}
-  by <a href="/profiles/{{content.author_id}}">{{ content.author.username }}</a>
+  by <a href="#">{{ content.author.username }}</a>
 </blockquote>
 </div>
 {%- endmacro %}

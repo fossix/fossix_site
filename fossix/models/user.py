@@ -4,7 +4,6 @@ from hashlib import md5
 
 class User(db.Model):
     # user roles
-    USER = 10
     MEMBER = 20
     MODERATOR = 30
     ADMIN = 100
@@ -17,7 +16,7 @@ class User(db.Model):
     email = db.Column(db.String(150), unique = True, nullable = False)
     openid = db.Column(db.String(256), index  = True, unique = True)
     date_joined = db.Column(db.DateTime)
-    role = db.Column(db.SmallInteger, default = USER)
+    role = db.Column(db.SmallInteger, default = MEMBER)
     karma = db.Column(db.Integer, default = 0)
     receive_email = db.Column(db.Boolean, default=False)
     email_alerts = db.Column(db.Boolean, default=False)
@@ -42,11 +41,25 @@ class User(db.Model):
 	return 'http://www.gravatar.com/avatar/' + md5(self.email).hexdigest() \
 	    + '?d=mm&s=' + str(size)
 
-    def is_editor(self, content=None):
+    def is_admin(self):
+	if self.id == 1 or self.role == self.ADMIN:
+	    return True
+
+	return False
+
+    def is_moderator(self):
+	# or I should be a moderator to edit
+	return self.is_admin() or self.role >= self.MODERATOR
+
+    def is_author(self, content):
 	if content:
 	    # check if the user is the owner
 	    if content.author_id == self.id:
+		print self.id
+		print "I am the author"
 		return True
 
-	# or I should be a moderator to edit
-	return self.role >= self.MODERATOR
+	return False
+
+    def is_editor(self, content = None):
+	return self.is_author(content) or self.is_moderator()

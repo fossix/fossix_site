@@ -39,8 +39,10 @@ data-dismiss="alert">&times;</button>' + string + '</div>';
 
 function fossix_event_setup()
 {
-    $(document).on('submit', '#loginform', {target1:$('#userarea')}, dologin);
     $(document).on('click', '#like', like_content);
+    $(function ($) {
+        $("a").tooltip()
+    });
 }
 
 function dologin(event) {

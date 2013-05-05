@@ -11,7 +11,7 @@
   Anonymous
   {% endif %}
   on
-  {{ content.get_create_date() }} {% if content.author.is_editor(content) %}
+  {{ content.get_create_date() }} {% if g.user.is_authenticated() and g.user.is_editor(content) %}
   <a href="{{ url_for('content.edit_article', id=content.id) }}" id="edit">
     <button class="btn btn-mini"><i class="icon-edit"> </i></button></a>
   {% endif %}

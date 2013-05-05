@@ -15,13 +15,13 @@ content = Module(__name__)
 def create_content():
     form = ContentCreate_Form()
     if form.validate_on_submit():
-	c = Content(state=Content.REVIEW, author_id=current_user.id,
+	c = Content(state=Content.PUBLISHED, author_id=current_user.id,
 		    category=Content.ARTICLE)
 	form.populate_obj(c)
 	db.session.add(c)
 	db.session.commit()
 	flash('Thank you. Content submitted for review.')
-	return redirect(url_for('content.view_article', title=c.title))
+	return redirect(url_for('content.view_article', id=c.id, title=c.title))
 
     form.next.data = request.args.get('next')
 
@@ -36,21 +36,30 @@ def get_tags():
     return jsonify(tags=result)
 
 @content.route('/')
+@content.route('/<int:id>')
 @content.route('/<title>')
-def view_article(title=None):
-    if title is None:
-	c = Content.get_recent(2)
-	if c:
-	    c = c[0]
-    else:
-	c = Content.query.filter(func.lower(Content.title)
+@content.route('/<int:id>/<title>')
+def view_article(id=None, title=None):
+    c = None
+    if id is not None:
+	c = Content.query.get(id)
+
+    if c is None and title is not None:
+	    c = Content.query.filter(func.lower(Content.title)
 				     == func.lower(title))
-        if c.count() > 0:
-	    c = c.one()
-	else:
-	    c = None
+	    if c.count() > 0:
+		c = c.one()
+	    else:
+		c = None
 
     if c is not None:
+	if c.title != title or c.id != id:
+	    return redirect(url_for('content.view_article', id=c.id, title=c.title))
+
+	if not c.is_published():
+	    flash(u'Content is not Published yet, please contact the moderator if you feel the content should be online')
+	    return redirect_back('main.index')
+
 	c.inc_read_count()
 	return render_template('content/article.html', content=c)
 
@@ -85,7 +94,7 @@ def edit_article(id):
 	db.session.add(c)
 	db.session.commit()
 	flash('Edits Saved.')
-	return redirect(url_for('content.view_article', title=c.title))
+	return redirect(url_for('content.view_article', id=c.id, title=c.title))
 
     return render_template('content/create.html', form=form)
 

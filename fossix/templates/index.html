@@ -32,7 +32,7 @@
       {% if recent %}
         {% for i in recent %}
           <div class="box">
-            <a href="{{ url_for('content.view_article', title=i.title) }}">
+            <a href="{{ url_for('content.view_article', id=i.id, title=i.title) }}">
               <h3>{{ i.title }}</h3>
               <p>
                 {{ i.content[:200] }}
@@ -50,7 +50,7 @@
           <li class="nav-header">Most Popular</li>
           {% for i in popular %}
             <li>
-              <a href="{{ url_for('content.view_article', title=i.title) }}">
+              <a href="{{ url_for('content.view_article', id=i.id, title=i.title) }}">
                 {{ i.title }}
               </a>
             </li>

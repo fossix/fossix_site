@@ -30,9 +30,8 @@ ContentTags = db.Table('tags_assoc',
 class Content(db.Model):
 
     DRAFT = 10
-    REVIEW = 20
-    UNPUBLISHED = 30
-    PUBLISHED = 40
+    UNPUBLISHED = 20
+    PUBLISHED = 50
 
     ARTICLE = 10
     NEWS = 20
@@ -89,7 +88,7 @@ class Content(db.Model):
     @staticmethod
     def get_recent(count = 5):
         c = Content.query.filter(Content.state
-				 == Content.REVIEW).order_by(Content.create_date.desc()).limit(count)
+				 == Content.PUBLISHED).order_by(Content.create_date.desc()).limit(count)
 	if c.count() > 0:
 	    return c.all()
 
@@ -101,7 +100,7 @@ class Content(db.Model):
 	if exclude_recent:
 	    recent = Content.get_recent(recent_limit)
 
-	q = Content.query.filter(Content.state == Content.REVIEW)
+	q = Content.query.filter(Content.state == Content.PUBLISHED)
 	if recent is not None:
 	    q.filter(~ Content.id.in_(c.id for c in recent))
 

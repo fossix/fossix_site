@@ -186,28 +186,57 @@
       #+END_SRC
 **** Misc info
 ** URL Tree
+*** Public
+**** /article
+     The last published article will be displayed
+**** /article/<id>/[<title>]
+**** /article/edit/<id> (Login required - author/moderator)
+**** /article/create (login required)
 **** /account/login
-**** /account/profile
-**** /account/edit[profile]
 **** /account/create
-**** /content/<title> - Anonymous
-**** /content/create - login_required
-**** /content/edit - login_required - moderator/author priv
+**** /account/profile (login required)
+**** /account/edit[profile] (login required)
 **** /user/<username>
 **** /user/following
 **** /user/followers
-**** /admin
+**** /moderate/comments (login required - moderator)
+**** /moderate/posts (login required - moderator)
+**** /moderate/users
+**** /about
+**** /about/<id>/<title>
+**** /sitemap [,.xml]
+**** /feed.[rss, json, xml]
+**** /api(?)
+*** Ajax
+* Misc Info
+** References/Documents
+*** Implementation references
+**** [[https://github.com/danjac/newsmeme/tree/master/newsmeme/views][newmeme]]
+**** [[https://github.com/mitsuhiko/flask/tree/website/flask_website][Flask Website]]
+**** [[http://docs.mongodb.org/manual/tutorial/write-a-tumblelog-application-with-flask-mongoengine/][A blog app using MongoDB]]
+**** [[https://github.com/imwilsonxu/fbone][Flask Bone (Flask Boilerplate application)]]
+*** Features that might be used in fossix
+**** [[http://flask.pocoo.org/docs/patterns/appdispatch][App dispatcher]] - Combining multiple applications
+**** [[http://flask.pocoo.org/docs/blueprints][Flask Blueprints]] - Modular applications (new method)
+**** [[http://flask.pocoo.org/docs/patterns/lazyloading/][Lazy Loading]] - Don’t load all views at startup
+**** [[http://pythonhosted.org/Flask-Classy/][Flask Classy]] - Class based view, alternative to blueprints(?)
+*** Documentations/Snippets/QA
+**** [[http://flask.pocoo.org/snippets/80/][Flask Push Notifications]]
+**** [[http://www.ibm.com/developerworks/webservices/library/ws-restful/][REST - quick intro]]
+**** [[http://blog.luisrei.com/articles/flaskrest.html][REST using Flask]]
 * Todo List for Fossix
-** Home Page
-** Article Page
-*** Comments
-** Content revision
-** OpenID selection in login page
-** Multiple OpenID per user
-** Public User profile
-** Personal profile page
-** Profile edit page
-** Admin Interface
-** Moderation Interface
-** User karma
-** Per user "like" and "Read" tracking
+**** Home Page
+**** Article Page
+     – Comments
+**** Content revision
+**** OpenID selection in login page
+**** Fresh Login (Reauth in some cases)
+**** Multiple OpenID per user
+**** Public User profile
+**** Personal profile page
+**** Profile edit page
+**** Admin Interface
+**** Moderation Interface
+**** User karma
+**** Per user “like” and “Read” tracking
+**** Site static pages

@@ -16,7 +16,8 @@ class DefaultConfig(object):
     SITE_TITLE = 'Fossix'
     SITE_NAME = 'Fossix.org'
     SITE_URL = 'http://fossix.org'
-    SITE_MOTTO = ''
+    SITE_MOTTO = 'Let\'s give back to the community'
+    SITE_SUBTITLE = 'The Opensource way'
 
     RECAPTCHA_PUBLIC_KEY = "YOUR_RECAPTCHA_PUBLIC_KEY"
     RECAPTCHA_PRIVATE_KEY = "YOUR_RECAPTCHA_PRIVATE_KEY"

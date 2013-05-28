@@ -55,8 +55,6 @@ class User(db.Model):
 	if content:
 	    # check if the user is the owner
 	    if content.author_id == self.id:
-		print self.id
-		print "I am the author"
 		return True
 
 	return False

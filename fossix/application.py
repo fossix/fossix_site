@@ -1,7 +1,7 @@
 from flask import Flask, g
 from fossix.extensions import fdb, oid, cache, lm
 from fossix import views
-from fossix.models import User
+from fossix.models import User, Content
 from fossix.config import DebugConfig
 from flask.ext.login import current_user
 from flask.ext.markdown import Markdown
@@ -21,7 +21,7 @@ def create_app(config=None):
     modules = DEFAULT_MODULES
 
     for module, url_prefix in modules:
-        app.register_module(module, url_prefix=url_prefix)
+        app.register_blueprint(module, url_prefix=url_prefix)
 
     if config is None:
 	app.config.from_object(DebugConfig())
@@ -46,13 +46,21 @@ def configure_before_handlers(app):
     def load_user(id):
 	return User.query.get(int(id))
 
+    @app.context_processor
+    def setup_globals():
+	recent = Content.get_recent(5)
+	popular = Content.get_popular(5, False)
+
+	return dict(popular=popular, recent=recent)
+
+
 def configure_extensions(app):
     fdb.init_app(app)
     oid.init_app(app)
     cache.init_app(app, config={'CACHE_TYPE' : 'memcached',
 				'CACHE_DEFAULT_TIMEOUT' : 86400}) # one day
     lm.init_app(app)
-    lm.login_view = "account.login"
+    lm.login_view = "account.LoginView:index"
 
     Markdown(app, extensions = ["extra", "sane_lists", "codehilite",
 				"smartypants"],

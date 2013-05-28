@@ -1,14 +1,15 @@
 {% extends "base.html" %}
-{% from "utils.html" import field_errors %}
+{% from "utils.html" import field_errors, perror %}
 
 {% set pagetitle="Login" %}
 
 {% block content %}
+{{ perror(error) }}
 <div class="container offset1">
   <p>
     Sign in with <a target="_blank" href="http://openid.net/get-an-openid/">OpenID</a>
   </p>
-  <form method="POST" action="{{ url_for('account.login') }}">
+  <form method="POST" action="{{ url_for('account.LoginView:post') }}">
     {{ form.hidden_tag() }}
     <div class="input-append">
       {{ form.openid(size=30, class_="openid", placeholder="OpenID URL", required=True) }}

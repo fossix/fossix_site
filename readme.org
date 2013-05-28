@@ -68,8 +68,17 @@
     technically speaking, the message will not be deleted until both the
     parties involved "removes" the message from their "view".
 *** Database
-**** Postgresql
+**** Design
      The database used in fossix is postgresql.
+
+     The database is designed to review comments, all have history of edits. The
+     only exception to this is have versions of every content in the
+     site. Articles, comments, news, user specific data, like the user's profile
+     itself and the messages that a user has recieved. This means, when a
+     message has been deleted there is not way to recover it. But, again,
+     technically speaking, the message will not be deleted until both the
+     parties involved "removes" the message from their "view".
+
 **** Basic Commands
 ***** Listing all tables in the database
       #+BEGIN_SRC sql
@@ -185,6 +194,16 @@
           content_id);
       #+END_SRC
 **** Misc info
+**** Working with database
+***** Postgres shell
+      To open the database in shell, login as the postgres user and type
+      psql fossixdb
+      List all the tables - \dt
+      View the structure of the table - \d TABLENAME
+***** Database migration using Alembic
+      alembic revision -m "Some message regarding the upgrade"
+      Edit the version scripts if needed and then
+      alembic upgrade|downgrade version|head
 ** URL Tree
 *** Public
 **** /article

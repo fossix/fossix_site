@@ -13,15 +13,14 @@
 {% block script %}
       $(function() {
           $('.tags').tagsManager({
-              prefilled: {% if form.tags_csv.data %} "{{ form.tags_csv.data}}" {%
-      else %} "" {% endif %},
               preventSubmitOnEnter: true,
               typeahead: true,
               typeaheadAjaxSource: "/content/__tags_get",
               //typeaheadAjaxPolling: true,
               blinkBGColor_1: '#FFFF9C',
               blinkBGColor_2: '#CDE69C',
-              hiddenTagListName: 'tags_csv'
+              hiddenTagListId: 'tags_csv',
+              method: 'GET',
           });
 
           $(document).on('click', '#preview-btn', function() {
@@ -58,7 +57,7 @@
   can refer the excellent Markdown syntax
   <a href="http://daringfireball.net/projects/markdown/syntax">here</a>. But
   there are some differences from the standard, which is detailed in the
-  <a href="{{ url_for('main.show_md_syntax') }}">syntax page</a>
+  <a href="{{ url_for('main.MainView:syntax') }}">syntax page</a>
 </p>
 
 <div class="accordion" id="accordion2">

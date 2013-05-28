@@ -1,17 +1,15 @@
-from flask import Module, render_template, flash
+from flask import Module, render_template, flash, Blueprint
 from fossix.utils import cached, render_page
 from fossix.models import Content
+from flask.ext.classy import FlaskView, route
 
-main = Module(__name__)
+main = Blueprint('main', __name__)
 
-#@cached()
-@main.route('/')
-@main.route('/index')
-def index():
-    c = Content.get_recent(5)
-    p = Content.get_popular(5, False)
-    return render_template('index.html', recent=c, popular=p)
+class MainView(FlaskView):
+    def index(self):
+	return render_template('index.html')
 
-@main.route('/syntax')
-def show_md_syntax():
-    return "Here will come the syntax page"
+    def syntax(self):
+	return render_template('site/syntax.html')
+
+MainView.register(main, route_base="/")

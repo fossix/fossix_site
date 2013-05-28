@@ -6,9 +6,12 @@
 
 {% block content %}
   <p>
-    This is your profile editing page.
+    This is your profile editing page..  If this is the first time you signed
+    in on this website, your need to select a unique username. But no worries,
+    if you don't want to do it now, we will give you a temporary name until you
+    come up with a nice one.
   </p>
-  <form action="{{ url_for('account.ProfileView:post') }}" method="POST">
+  <form action="{{ url_for('account.ProfileView:post') }}" method="post">
     {{ form.hidden_tag() }}
     <dl>
       {{ render_field(form.fullname, size=30) }}

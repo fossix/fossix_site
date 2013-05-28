@@ -62,11 +62,27 @@
     {% endblock %}
 
     {% block __block_3 %}
-      <div id="rsb" class="span3" style="margin-top:30px;">
+      <div id="rsb" class="span5" style="margin-top:30px;">
         {% block rsb_content %}
-          This is the right side bar which will have lots of contents like the
-          ads, the popular contents, the related etc.
-          <div id="add_block_1">
+        <div id="rsb1" class="span8">
+          {% block rsb1 %}
+          {% if popular %}
+          <ul class="nav nav-list">
+            <li class="nav-header">Most Popular</li>
+            {% for i in popular %}
+            <li>
+              <a href="{{ url_for('content.view_article', id=i.id, title=i.title) }}">
+                {{ i.title }}
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+          {% endblock %}
+        </div>
+        <div class="span4">
+          {% block rsb2 %}
+          Here comes the ads
             <script type="text/javascript">
               <!--
               google_ad_client = "ca-pub-0086577717613608";
@@ -79,9 +95,10 @@
             <script type="text/javascript"
                     src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
             </script>
-          </div>
+          {% endblock %}
+        </div>
         {% endblock %}
-      </div> <!-- rsb -->
+      </div>
     {% endblock %}
-  </div></div>
+  </div>
 {% endblock %}

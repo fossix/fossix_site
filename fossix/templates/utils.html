@@ -10,6 +10,16 @@
 {% endif %}
 {%- endmacro %}
 
+{% macro perror(error) -%}
+{% if error %}
+  <div id="form-error" class="alert alert-error">
+    <ul class="unstyled">
+      <li> {{ error }}
+    </ul>
+  </div>
+{% endif %}
+{%- endmacro %}
+
 {% macro field_errors(field) -%}
 {% if field.errors %}
 <div id="form-error" class="alert alert-error">

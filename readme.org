@@ -181,7 +181,7 @@
       | comment_count |
       | type          |
       | refers_to     |
-      This view is created manually in the postgresql database. SQL alchemy
+      This view is created manually in the postgresql database. SQLalchemy
       doesn't have native support to create views, but can be done as answered
       in stackoverflow.
       #+BEGIN_SRC sql

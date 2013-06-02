@@ -3,8 +3,8 @@ from flask import Module, jsonify, request, g, flash, url_for, redirect, json,\
     Response, abort
 from fossix.utils import render_template, redirect_back
 from fossix.forms import ContentCreate_Form
-from fossix.models import Content, Keywords, User, ContentVersions, ContentMeta
-from fossix.extensions import fdb as db
+from fossix.models import Content, Keywords, User, ContentVersions,\
+    ContentMeta, fdb as db
 from sqlalchemy import func
 from markdown import markdown
 
@@ -15,8 +15,8 @@ content = Module(__name__)
 def create_content():
     form = ContentCreate_Form()
     if form.validate_on_submit():
-	c = Content(state=ContentVersions.PUBLISHED, author_id=current_user.id,
-		    category=ContentMeta.ARTICLE)
+	c = Content(state='published', modifier=current_user.id,
+		    category='article')
 	form.populate_obj(c)
 	c.save()
 	flash('Thank you. Content submitted for review.')

@@ -3,8 +3,8 @@ from flask import Module, render_template, request, session, g, redirect, \
 from fossix.utils import cached, render_page, get_uniqueid, redirect_url, \
     redirect_back, is_safe_url
 from fossix.forms import OpenID_LoginForm, ProfileEdit_Form
-from fossix.extensions import oid, fdb as db
-from fossix.models import User
+from fossix.extensions import oid
+from fossix.models import User, fdb as db
 from flask.ext.login import login_user, logout_user, \
     login_required, fresh_login_required
 from flask.ext.classy import FlaskView
@@ -14,11 +14,11 @@ account = Blueprint('account', __name__)
 @oid.after_login
 def create_or_login(resp):
     session['openid'] = resp.identity_url
-    user = User.query.filter_by(openid=resp.identity_url).first()
+    user = db.session.query(User).filter_by(openid=resp.identity_url).first()
     if user is None:
 	# There will be multiple hashes given for the same user, so use email to
 	# search for user, rather than the identity_url
-	user = User.query.filter_by(email=resp.email).first()
+	user = dbUser.query.filter_by(email=resp.email).first()
 	if user is not None:
 	    user.openid = resp.identity_url
 	    flash(u'You already have an account in fossix. I updated your openid')

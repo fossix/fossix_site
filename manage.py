@@ -9,8 +9,7 @@ from flask.ext.script import Manager, prompt, prompt_pass, \
     prompt_bool, prompt_choices
 
 from fossix import create_app
-from fossix.extensions import fdb as db
-from fossix.models import User
+from fossix.models import User, fdb as db
 
 fapp = create_app()
 manager = Manager(fapp)

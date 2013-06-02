@@ -39,5 +39,5 @@ class ContentCreate_Form(Form):
     tags_csv = HiddenField()
     title = TextField("Title", validators=[validators.required(), validators.Length(max=128)])
     content = TextAreaField("Body", validators=[validators.Required()])
-    recaptcha = RecaptchaField()
+    #recaptcha = RecaptchaField()
     submit = SubmitField("Submit")

@@ -1,4 +1,4 @@
-from fossix.extensions import cache, fdb as db
+from fossix.extensions import cache
 from fossix.models import User
 from flask import g, render_template, request, url_for, redirect
 from urlparse import urlparse, urljoin

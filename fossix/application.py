@@ -1,5 +1,6 @@
 from flask import Flask, g
-from fossix.extensions import fdb, oid, cache, lm
+from fossix.extensions import oid, cache, lm
+from fossix.models import fdb
 from fossix import views
 from fossix.models import User, Content
 from fossix.config import DebugConfig
@@ -44,7 +45,7 @@ def configure_before_handlers(app):
     # for login manager
     @lm.user_loader
     def load_user(id):
-	return User.query.get(int(id))
+	return fdb.session.query(User).get(int(id))
 
     @app.context_processor
     def setup_globals():
@@ -55,7 +56,6 @@ def configure_before_handlers(app):
 
 
 def configure_extensions(app):
-    fdb.init_app(app)
     oid.init_app(app)
     cache.init_app(app, config={'CACHE_TYPE' : 'memcached',
 				'CACHE_DEFAULT_TIMEOUT' : 86400}) # one day

@@ -1,3 +1,3 @@
-from fossix.application import create_app, fdb, oid, cache
+from fossix.application import create_app
 
 fapp = create_app()

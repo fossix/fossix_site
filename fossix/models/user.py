@@ -3,6 +3,9 @@ from datetime import datetime
 from hashlib import md5
 from sqlalchemy import Table
 
+class Identity(db.Model):
+    __table__ = Table('identity', db.metadata, autoload=True)
+
 class User(db.Model):
     __table__ = Table('users', db.metadata, autoload=True)
 

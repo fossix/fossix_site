@@ -37,7 +37,10 @@ class TagListField(Field):
 class ContentCreate_Form(Form):
     next = HiddenField()
     tags_csv = HiddenField()
-    title = TextField("Title", validators=[validators.required(), validators.Length(max=128)])
+    title = TextField("Title", validators=[validators.required(),
+					   validators.Length(max=128)])
+    teaser = TextAreaField("Teaser", validators=[validators.required(),
+					   validators.Length(max=200)])
     content = TextAreaField("Body", validators=[validators.Required()])
     #recaptcha = RecaptchaField()
     submit = SubmitField("Submit")

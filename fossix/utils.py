@@ -1,5 +1,5 @@
 from fossix.extensions import cache
-from fossix.models import User
+from fossix.models import User, fdb as db
 from flask import g, render_template, request, url_for, redirect
 from urlparse import urlparse, urljoin
 import functools
@@ -11,7 +11,7 @@ def render_page(page, title = None, content = None, **kwargs):
     return render_template(page, title = title, content = content, **kwargs)
 
 def get_uniqueid():
-    last = User.query.order_by(User.id.desc()).first()
+    last = db.session.query(User).order_by(User.id.desc()).first()
     if last is not None:
 	return 'penguin'+ str(last.id + 1)
     else:

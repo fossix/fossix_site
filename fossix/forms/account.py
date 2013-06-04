@@ -1,7 +1,7 @@
 from flask.ext.wtf import Form, HiddenField, TextField, RecaptchaField, \
     SubmitField, ValidationError, required, email, url, validators
 from flask.ext.wtf.html5 import URLField, EmailField
-from fossix.models import User
+from fossix.models import User, fdb as db
 
 class OpenID_LoginForm(Form):
     next = HiddenField()
@@ -15,7 +15,7 @@ class OpenID_LoginForm(Form):
 class ProfileEdit_Form(Form):
 
     def check_uniqueid(self, field):
-	users = User.query.filter_by(username=field.data)
+	users = db.session.query(User).filter_by(username=field.data)
 	if users.count() > 0 and users.first().email != self.email.data:
 	    raise validators.ValidationError('Username already exists, please try another')
 

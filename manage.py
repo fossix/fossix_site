@@ -124,15 +124,6 @@ def migratedb():
     print 'New migration saved as ' + migration
     print 'Current database version: ' + str(api.db_version(fapp.config['SQLALCHEMY_DATABASE_URI'], fapp.config['SQLALCHEMY_MIGRATE_REPO']))
 
-@manager.shell
-def make_shell_context():
-    return dict(app=current_app,
-                db=db,
-                Post=Post,
-                User=User,
-                Tag=Tag,
-                Comment=Comment)
-
 
 manager.add_option('-c', '--config',
                    dest="config",

@@ -41,7 +41,7 @@ def get_tags():
 def view_article(id=None, title=None):
     c = None
     if id is not None:
-	c = Content.query.get(id)
+	c = db.session.query(Content).get(id)
 
     if c is None and title is not None:
 	    c = Content.query.filter(func.lower(Content.title)
@@ -83,7 +83,7 @@ def article_preview():
 @content.route('/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_article(id):
-    c = Content.query.get(id)
+    c = db.session.query(Content).get(id)
     if not c:
 	abort(404)
 
@@ -126,4 +126,5 @@ def like(id):
 
 @content.route('/archive')
 def archive():
-    return render_template('content/archive.html', content=Content.query.all())
+    return render_template('content/archive.html',
+			   content=db.session.query(Content).all())

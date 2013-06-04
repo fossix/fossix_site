@@ -1,6 +1,7 @@
 from fossix.models import fdb as db
 from datetime import datetime
-from sqlalchemy import func, text, and_, Table, Column, Integer, ForeignKey
+from sqlalchemy import func, text, and_, Table, Column, Integer, ForeignKey, \
+    and_, ForeignKeyConstraint
 from sqlalchemy.orm import relationship, backref
 from fossix.models import User
 from flask import g
@@ -30,23 +31,33 @@ class ContentMeta(db.Model):
 
     author = relationship(User, innerjoin=True, lazy="joined")
 
+
 class ContentVersions(db.Model):
     __table__ = db.metadata.tables['content_versions']
 
     modifier = relationship(User, innerjoin=True, lazy="joined")
+    meta = relationship(ContentMeta, innerjoin=True, lazy="joined")
+    tags = relationship(Keywords, secondary=tags_assoc,
+			lazy=True, backref='content_versions')
 
 
 class Content(db.Model):
     __table__ = Table(
-	"content", db.metadata,
-	Column("id", Integer, ForeignKey('content_meta.id'), primary_key=True),
+	'content', db.metadata,
+	Column('id', Integer, primary_key=True),
+	Column('version', Integer),
 	Column('author_id', Integer, ForeignKey('users.id')),
+	Column('modifier_id', Integer, ForeignKey('users.id')),
 	autoload=True, extend_existing=True
     )
 
-    # author = relationship(User, primaryjoin='users.id == author_id')
-    # modifier = relationship(User, foreign_keys='modifier_id')
-    # content_meta = relationship(ContentMeta, foreign_keys='id')
+    __table_args__ = (
+	ForeignKeyConstraint(
+	    ['id', 'version'],
+	    ['content_versions.id', 'content_versions.version']),
+    )
+    author = relationship(User, primaryjoin='Content.author_id == User.id')
+    modifier = relationship(User, primaryjoin='Content.modifier_id == User.id')
 
     def __init__(self, state, modifier, category):
 	self.state = state
@@ -57,9 +68,11 @@ class Content(db.Model):
         return 'id: %r\ntitle: %r\ndate:%r' % (self.id, self.title, self.create_date)
 
     def inc_read_count(self):
-	self.content_meta.read_count = self.content_meta.read_count + 1
-	db.session.add(self)
-	db.session.commit()
+	cm = db.session.query(ContentMeta).get(self.id)
+	if cm is not None:
+	    cm.read_count = cm.read_count + 1
+	    db.session.add(self)
+	    db.session.commit()
 
     def inc_like_count(self):
 	self.like_count = self.like_count + 1
@@ -76,13 +89,13 @@ class Content(db.Model):
     def get_tags_csv(self):
 	return ",".join(x.keyword for x in self.tags)
 
-    def set_tags_csv(self,value):
-	# current = self.tags
-	# new = (x for x in value.strip().split(','))
-	# self.tags = []
-	# for tag in new:
-	#     if len(tag):
-	# 	self.tags.append(Keywords.get(tag.strip()))
+    def set_tags_csv(self, value):
+	current = self.history.tags
+	new = (x for x in value.strip().split(','))
+	self.history.tags = []
+	for tag in new:
+	    if len(tag):
+		self.tags.append(db.session.query(Keywords).get(tag.strip()))
 	pass
 
     tags_csv = property(get_tags_csv, set_tags_csv)

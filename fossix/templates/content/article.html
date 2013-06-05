@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
 
+{% from 'utils.html' import print_author %}
+
 {% set pagetitle=content.title %}
 
 {% block content %}
 <div class="contenthead">
   By
   {% if content.author %}
-  <a href="#">{{ content.author.username }}</a>
+  <a href="#">{{ print_author(content.author) }}</a>
   {% else %}
   Anonymous
   {% endif %}
@@ -32,6 +34,14 @@
 </div>
 
 {% if g.user.is_authenticated() %}
+{% if content.version > 0 %}
+<br>
+<div class="version pull-left">
+  Last modified on {{content.modified_date}} <br>
+  by {{ print_author(content.author) }}
+  (Version <a href="#"><span class="badge">{{content.version}}</span></a>)
+</div>
+{% endif %}
 <div class="read-count pull-right">
   Number of reads: {{ content.read_count }}
 </div>

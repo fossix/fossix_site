@@ -34,7 +34,7 @@
             <a href="{{ url_for('content.view_article', id=i.id, title=i.title) }}">
               <h3>{{ i.title }}</h3>
               <p>
-                {{ i.content[:200] }}
+                {{ i.teaser }}
               </p>
             </a>
           </div>

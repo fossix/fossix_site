@@ -17,8 +17,14 @@ def create_content():
     if form.validate_on_submit():
 	c = Content(state='published', modifier=current_user.id,
 		    category='article')
-	form.populate_obj(c)
+	# Cannot user form's populate method, when it is trying to append tags,
+	# the version field is not yet set, since it happens in the db side. So
+	# we have to commit content and then save the tags
+	c.title = form.title.data
+	c.content = form.content.data
+	c.teaser = form.teaser.data
 	c.save()
+	c.tags_csv = form.tags_csv.data
 	flash('Thank you. Content submitted for review.')
 	return redirect(url_for('content.view_article', id=c.id, title=c.title))
 
@@ -28,7 +34,7 @@ def create_content():
 
 @content.route('/__tags_get', methods=['GET', 'POST'])
 def get_tags():
-    tags = Keywords.query.all()
+    tags = db.session.query(Keywords).all()
     result = []
     for tag in tags:
 	result.append({'tag': str(tag)})
@@ -44,8 +50,8 @@ def view_article(id=None, title=None):
 	c = db.session.query(Content).get(id)
 
     if c is None and title is not None:
-	    c = Content.query.filter(func.lower(Content.title)
-				     == func.lower(title))
+	    c = db.session.query(Content).filter(func.lower(Content.title)
+						 == func.lower(title))
 	    if c.count() > 0:
 		c = c.one()
 	    else:
@@ -98,7 +104,7 @@ def edit_article(id):
 
 @content.route('/tag/<label>')
 def tag(label):
-    tag = Keywords.query.filter(Keywords.keyword == label).first()
+    tag = db.session.query(Keywords).filter(Keywords.keyword == label).first()
 
     if not tag:
 	flash("No content is currently tagged with " + label)

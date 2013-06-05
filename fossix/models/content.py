@@ -1,8 +1,8 @@
 from fossix.models import fdb as db
 from datetime import datetime
 from sqlalchemy import func, text, and_, Table, Column, Integer, ForeignKey, \
-    and_, ForeignKeyConstraint
-from sqlalchemy.orm import relationship, backref
+    and_, ForeignKeyConstraint, select
+from sqlalchemy.orm import relationship, backref, column_property, foreign
 from fossix.models import User
 from flask import g
 
@@ -12,7 +12,7 @@ class Keywords(db.Model):
 
     @staticmethod
     def get(k):
-	obj = Keywords.query.filter(Keywords.keyword == k).first()
+	obj = db.session.query(Keywords).filter(Keywords.keyword == k).first()
 	if not obj:
 	    obj = Keywords(k)
 
@@ -37,8 +37,6 @@ class ContentVersions(db.Model):
 
     modifier = relationship(User, innerjoin=True, lazy="joined")
     meta = relationship(ContentMeta, innerjoin=True, lazy="joined")
-    tags = relationship(Keywords, secondary=tags_assoc,
-			lazy=True, backref='content_versions')
 
 
 class Content(db.Model):
@@ -54,10 +52,21 @@ class Content(db.Model):
     __table_args__ = (
 	ForeignKeyConstraint(
 	    ['id', 'version'],
-	    ['content_versions.id', 'content_versions.version']),
+	    ['ContentVersions.id', 'ContentVersions.version']),
     )
     author = relationship(User, primaryjoin='Content.author_id == User.id')
     modifier = relationship(User, primaryjoin='Content.modifier_id == User.id')
+    history = relationship(ContentVersions,
+			   primaryjoin=
+			   foreign(__table__.c.id) == ContentVersions.id)
+    tags = relationship(Keywords, secondary=tags_assoc,
+			primaryjoin=
+			and_(
+	    __table__.c.id == foreign(tags_assoc.c.content_id),
+	    __table__.c.version == foreign(tags_assoc.c.content_version)),
+			secondaryjoin=
+			Keywords.id==foreign(tags_assoc.c.keyword_id),
+			lazy=True, backref='contents')
 
     def __init__(self, state, modifier, category):
 	self.state = state
@@ -90,13 +99,12 @@ class Content(db.Model):
 	return ",".join(x.keyword for x in self.tags)
 
     def set_tags_csv(self, value):
-	current = self.history.tags
+	current = self.tags
 	new = (x for x in value.strip().split(','))
-	self.history.tags = []
+	self.tags = []
 	for tag in new:
 	    if len(tag):
-		self.tags.append(db.session.query(Keywords).get(tag.strip()))
-	pass
+		self.tags.append(Keywords.get(tag.strip()))
 
     tags_csv = property(get_tags_csv, set_tags_csv)
 

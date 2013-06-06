@@ -83,13 +83,17 @@
   <dl>
     {{ render_field(form.title, max=128, class="span7",
     placeholder="A captivating title!!", required=True) }}
+    {{ render_field(form.teaser, max=200, class="span7", rows=3,
+       placeholder="200 character teaser.", required=True) }}
+    {% if form.edit_summary %}
+    {{ render_field(form.edit_summary, rows=1, required=True, class="span7") }}
+    {% endif %}
+
     <dt><label for="tagsdummy">Tags</label></dt>
     <dd>
       <input type="text" name="tagsdummy" class="tags" autocomplete="off"
              placeholder="Comma,separated,keywords"/>
     </dd>
-    {{ render_field(form.teaser, max=200, class="span7", rows=3,
-       placeholder="200 character teaser.", required=True) }}
 
     <a href="javascript:void(0);" id="preview-btn"
        class="btn btn-info pull-right">Preview</a>

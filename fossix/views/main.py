@@ -7,7 +7,10 @@ main = Blueprint('main', __name__)
 
 class MainView(FlaskView):
     def index(self):
-	return render_template('index.html')
+	recent = Content.get_recent(10)
+	popular = Content.get_popular(5)
+	return render_template('index.html', index_recent=recent,
+			       index_popular=popular)
 
     def syntax(self):
 	return render_template('site/syntax.html')

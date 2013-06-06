@@ -49,6 +49,7 @@ CREATE TABLE content_meta (
 CREATE TABLE content_versions (
 	id INTEGER,
 	version INTEGER,
+	edit_summary VARCHAR(128) NOT NULL,
 	modifier_id INTEGER NOT NULL,
 	modified_date TIMESTAMP WITHOUT TIME ZONE NOT NULL default NOW(),
 	title VARCHAR(128),
@@ -73,6 +74,7 @@ CREATE OR REPLACE VIEW content AS
 SELECT
     a.id,
     a.version,
+    a.edit_summary,
     a.modifier_id,
     a.modified_date,
     a.title,
@@ -125,8 +127,8 @@ CREATE OR REPLACE FUNCTION fn_on_content_update() RETURNS TRIGGER as $content_vi
 	    RETURN NULL;
 	END IF;
 
-	INSERT INTO content_versions (id, version, modifier_id, modified_date, title, content, state)
-	    VALUES (NEW.id, new_version, NEW.modifier_id, NOW(), NEW.title, NEW.content, NEW.state);
+	INSERT INTO content_versions (id, version, modifier_id, modified_date, title, content, state, edit_summary)
+	    VALUES (NEW.id, new_version, NEW.modifier_id, NOW(), NEW.title, NEW.content, NEW.state, NEW.edit_summary);
 
 	EXECUTE 'select * from content where id = $1.id' into updated_row USING NEW;
 	RETURN updated_row;

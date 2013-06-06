@@ -109,9 +109,12 @@ class Content(db.Model):
     tags_csv = property(get_tags_csv, set_tags_csv)
 
     def save(self):
+	tags = self.get_tags_csv()
+	print tags
 	db.session.add(self)
 	db.session.commit()
 	print self.id, self.version
+	self.set_tags_csv(tags)
 
     @staticmethod
     def get_recent(count = 5):

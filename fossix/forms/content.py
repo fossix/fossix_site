@@ -44,3 +44,8 @@ class ContentCreate_Form(Form):
     content = TextAreaField("Body", validators=[validators.Required()])
     #recaptcha = RecaptchaField()
     submit = SubmitField("Submit")
+
+class ContentEdit_Form(ContentCreate_Form):
+    edit_summary = TextField("Edit Summary",
+			     validators=[validators.required(),
+					 validators.Length(max=128)])

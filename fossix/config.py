@@ -39,7 +39,7 @@ class DebugConfig(DefaultConfig):
     _basedir = os.path.abspath(os.path.dirname(__file__))
 
     DEBUG = True
-    SQLALCHEMY_ECHO = True
+    SQLALCHEMY_ECHO = False
     DB_SERVER = 'localhost'
     DB_PORT = 5432
     DB_NAME = 'fossix'

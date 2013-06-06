@@ -28,8 +28,8 @@
       <!--   from the open source community. If you have anything to contribute please -->
       <!--   feel free to do so. -->
       <!-- </p> -->
-      {% if recent %}
-        {% for i in recent %}
+      {% if index_recent %}
+        {% for i in irecent %}
           <div class="box">
             <a href="{{ url_for('content.view_article', id=i.id, title=i.title) }}">
               <h3>{{ i.title }}</h3>
@@ -44,10 +44,10 @@
     </div>
 
     <div class="span3">
-      {% if popular %}
+      {% if index_popular %}
         <ul class="nav nav-list">
           <li class="nav-header">Most Popular</li>
-          {% for i in popular %}
+          {% for i in ipopular %}
             <li>
               <a href="{{ url_for('content.view_article', id=i.id, title=i.title) }}">
                 {{ i.title }}

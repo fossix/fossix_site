@@ -6,6 +6,7 @@ from fossix.models import User, Content
 from fossix.config import DebugConfig
 from flask.ext.login import current_user
 from flask.ext.markdown import Markdown
+from fossix.utils import relative_now
 
 __all__ = ['create_app']
 
@@ -50,10 +51,11 @@ def configure_before_handlers(app):
     @app.context_processor
     def setup_globals():
 	recent = Content.get_recent(5)
-	popular = Content.get_popular(5, False)
+	popular = Content.get_popular(5)
 
 	return dict(popular=popular, recent=recent)
 
+    app.jinja_env.filters['relative_now'] = relative_now
 
 def configure_extensions(app):
     oid.init_app(app)

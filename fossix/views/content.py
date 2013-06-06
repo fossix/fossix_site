@@ -2,7 +2,7 @@ from flask.ext.login import login_required, current_user
 from flask import Module, jsonify, request, g, flash, url_for, redirect, json,\
     Response, abort
 from fossix.utils import render_template, redirect_back
-from fossix.forms import ContentCreate_Form
+from fossix.forms import ContentCreate_Form, ContentEdit_Form
 from fossix.models import Content, Keywords, User, ContentVersions,\
     ContentMeta, fdb as db
 from sqlalchemy import func
@@ -93,13 +93,14 @@ def edit_article(id):
     if not c:
 	abort(404)
 
-    form = ContentCreate_Form(obj=c)
+    form = ContentEdit_Form(obj=c)
     if form.validate_on_submit():
 	form.populate_obj(c)
 	c.save()
 	flash('Edits Saved.')
 	return redirect(url_for('content.view_article', id=c.id, title=c.title))
 
+    form.edit_summary.data = ""
     return render_template('content/create.html', form=form)
 
 @content.route('/tag/<label>')

@@ -14,16 +14,10 @@ account = Blueprint('account', __name__)
 @oid.after_login
 def create_or_login(resp):
     session['openid'] = resp.identity_url
-    user = db.session.query(Identity).filter_by(url=resp.identity_url).first()
-    if user is None:
-	# There will be multiple hashes given for the same user, so use email to
-	# search for user, rather than the identity_url
-	user = db.session.query(User).filter_by(email=resp.email).first()
-	if user is not None:
-	    user.openid = resp.identity_url
-	    flash(u'You already have an account in fossix. I updated your openid')
-	    db.session.add(user)
-	    db.session.commit()
+    user = None
+    identity = db.session.query(Identity).filter_by(url=resp.identity_url).first()
+    if identity:
+	user = db.session.query(User).get(identity.user_id)
 
     if user is not None:
         g.user = user
@@ -94,7 +88,7 @@ class ProfileView(FlaskView):
 	    form.populate_obj(user)
 	    db.session.add(user)
 	    db.session.commit()
-	    flash(u'Profile successfully created')
+	    flash(u'Profile created')
 	    login_user(user, False)
 	    return redirect(oid.get_next_url())
 

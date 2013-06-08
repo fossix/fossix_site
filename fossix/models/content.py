@@ -68,6 +68,9 @@ class Content(db.Model):
 			Keywords.id==foreign(tags_assoc.c.keyword_id),
 			lazy=True, backref='contents')
 
+    meta = relationship(ContentMeta,
+			primaryjoin=foreign(__table__.c.id) == ContentMeta.id)
+
     def __init__(self, state, modifier, category):
 	self.state = state
 	self.modifier_id = modifier
@@ -77,17 +80,12 @@ class Content(db.Model):
         return 'id: %r\ntitle: %r\ndate:%r' % (self.id, self.title, self.create_date)
 
     def inc_read_count(self):
-	cm = db.session.query(ContentMeta).get(self.id)
-	if cm is not None:
-	    cm.read_count = cm.read_count + 1
-	    db.session.add(self)
-	    db.session.commit()
+	self.meta.read_count = self.meta.read_count + 1
+	return self.meta.read_count
 
     def inc_like_count(self):
-	self.like_count = self.like_count + 1
-	db.session.add(self)
-	db.session.commit()
-        return self.like_count
+	self.meta.like_count = self.meta.like_count + 1
+	return self.meta.like_count
 
     def get_create_date(self):
 	return self.create_date.strftime("%A %d. %B %Y")
@@ -130,12 +128,10 @@ class Content(db.Model):
 	if exclude_recent:
 	    recent = Content.get_recent(recent_limit)
 
-	q = db.session.query(Content).filter()
-	if recent is not None:
-	    q.filter(~ Content.id.in_(c.id for c in recent))
-
-	c = q.order_by(Content.read_count.desc(),
-		       Content.like_count.desc()).limit(count)
+	q = db.session.query(Content)
+	c = q.filter(~Content.id.in_(c.id for c in recent)).order_by(
+	    Content.read_count.desc(),
+	    Content.like_count.desc()).limit(count)
 
 	if c.count() > 0:
 	    return c.all()

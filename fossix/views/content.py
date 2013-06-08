@@ -7,131 +7,157 @@ from fossix.models import Content, Keywords, User, ContentVersions,\
     ContentMeta, fdb as db
 from sqlalchemy import func
 from markdown import markdown
+from flask.ext.classy import FlaskView
 
 content = Module(__name__)
 
-@content.route('/create/', methods=['GET', 'POST'])
-@login_required
-def create_content():
-    form = ContentCreate_Form()
-    if form.validate_on_submit():
-	c = Content(state='published', modifier=current_user.id,
-		    category='article')
-	# Cannot user form's populate method, when it is trying to append tags,
-	# the version field is not yet set, since it happens in the db side. So
-	# we have to commit content and then save the tags
-	c.title = form.title.data
-	c.content = form.content.data
-	c.teaser = form.teaser.data
-	c.save()
-	c.tags_csv = form.tags_csv.data
-	flash('Thank you. Content submitted for review.')
-	return redirect(url_for('content.view_article', id=c.id, title=c.title))
+class CreateView(FlaskView):
+    @login_required
+    def index(self):
+	self.form = ContentCreate_Form()
+	return render_template('content/create.html', form=self.form)
 
-    form.next.data = request.args.get('next')
+    @login_required
+    def post(self):
+	if self.form.validate_on_submit():
+	    c = Content(state='published', modifier=current_user.id,
+			category='article')
+	    # Cannot use form's populate method, when it is trying to append
+	    # tags, the version field is not yet set, since it happens in the db
+	    # side. So we have to commit content and then save the tags
+	    c.title = self.form.title.data
+	    c.content = self.form.content.data
+	    c.teaser = self.form.teaser.data
+	    c.save()
+	    c.tags_csv = self.form.tags_csv.data
+	    flash('Thank you. Content submitted for review.')
+	    return redirect(url_for('content.view_article', id=c.id,
+				    title=c.title))
 
-    return render_template('content/create.html', form=form)
+	return redirect(url_for('get', form=self.form))
 
-@content.route('/__tags_get', methods=['GET', 'POST'])
-def get_tags():
-    tags = db.session.query(Keywords).all()
-    result = []
-    for tag in tags:
-	result.append({'tag': str(tag)})
-    return jsonify(tags=result)
 
-@content.route('/')
-@content.route('/<int:id>')
-@content.route('/<title>')
-@content.route('/<int:id>/<title>')
-def view_article(id=None, title=None):
-    c = None
-    if id is not None:
+class EditView(FlaskView):
+    @login_required
+    def get(self, id):
+	self.id = id
 	c = db.session.query(Content).get(id)
+	if not c:
+	    abort(404)
 
-    if c is None and title is not None:
-	    c = db.session.query(Content).filter(func.lower(Content.title)
-						 == func.lower(title))
-	    if c.count() > 0:
-		c = c.one()
-	    else:
-		c = None
+	form = ContentEdit_Form(obj=c)
+	form.edit_summary.data = ""
+	return render_template('content/create.html', form=form)
 
-    if c is not None:
-	if c.title != title or c.id != id:
-	    return redirect(url_for('content.view_article', id=c.id, title=c.title))
+    @login_required
+    def post(self, id):
+	c = db.session.query(Content).get(id)
+	if not c:
+	    abort(404)
 
-	if not c.is_published():
-	    flash(u'Content is not Published yet, please contact the moderator if you feel the content should be online')
-	    return redirect_back('main.index')
+	form = ContentEdit_Form(obj=c)
+	if form.validate_on_submit():
+	    form.populate_obj(c)
+	    c.save()
+	    flash('Edit "{0}" Saved.'.format(c.edit_summary))
+	    return redirect(url_for('content.ContentView:get', id=c.id,
+				    title=c.title))
 
-	c.inc_read_count()
-	return render_template('content/article.html', content=c)
+	return self.get(id)
 
-    flash(u'Nothing exists with that URL, Here is the archive of all content.')
-    return redirect(url_for('content.archive', content=None))
+    @login_required
+    def preview(self):
+	content = request.form.get('content')
+	title = request.form.get('title')
+	if title is None or title == "":
+	    title = "No Title"
 
-@content.route('/__preview/', methods=['POST'])
-def article_preview():
-    content = request.form.get('content')
-    title = request.form.get('title')
-    if title is None or title == "":
-	title = "No Title"
-
-    result = {'content':markdown(content,
+	    result = {'content':markdown(content,
 				 extensions = ["extra", "sane_lists",
 					       "codehilite", "smartypants"],
 				 safe_mode='remove',
 				 output_format="html5"), 'title':title}
 
-    return jsonify(result);
+	    return jsonify(result);
 
-@content.route('/edit/<int:id>', methods=['GET', 'POST'])
-@login_required
-def edit_article(id):
-    c = db.session.query(Content).get(id)
-    if not c:
-	abort(404)
 
-    form = ContentEdit_Form(obj=c)
-    if form.validate_on_submit():
-	form.populate_obj(c)
-	c.save()
-	flash('Edits Saved.')
-	return redirect(url_for('content.view_article', id=c.id, title=c.title))
+class TagsView(FlaskView):
+    def get(self, label):
+	tag = db.session.query(Keywords).filter(Keywords.keyword == label).first()
 
-    form.edit_summary.data = ""
-    return render_template('content/create.html', form=form)
+	if not tag:
+	    flash("No content is currently tagged with " + label)
+	    return redirect_back('main.index')
 
-@content.route('/tag/<label>')
-def tag(label):
-    tag = db.session.query(Keywords).filter(Keywords.keyword == label).first()
+	return render_template('content/tag.html', tag=tag)
 
-    if not tag:
-	flash("No content is currently tagged with " + label)
-	return redirect_back('main.index')
+    def get_all(self):
+	tags = db.session.query(Keywords).all()
+	result = []
+	for tag in tags:
+	    result.append({'tag': str(tag)})
+	return jsonify(tags=result)
 
-    return render_template('content/tag.html', tag=tag)
 
-@content.route('/like/<int:id>')
-def like(id):
-    c = Content.query.get(id)
+class ContentView(FlaskView):
+    route_base = '/'
+    def index(self):
+	c = Content.get_recent(1)[0]
+	if c is None:
+	    flash(u'Nothing exists :-(.')
+	    return redirect(url_for('main.index'))
 
-    if not c:
-	# This should never happen
-	return abort(500)
+	c.inc_read_count()
+	return render_template('content/article.html', content=c)
 
-    count = c.inc_like_count()
-    data = {
-	'content' : count,
+    def get(self, id, title=None):
+	redir = False
+	c = db.session.query(Content).get(id)
+	if c is None and title is not None:
+	    c = db.session.query(Content).filter(func.lower(Content.title)
+						 == func.lower(title))
+	    if c.count() > 0:
+		c = c.one()
+		redir = True
+	    else:
+		c = None
+	else:
+	    if title != c.title:
+		redir = True
+
+	if c is None:
+	    flash("Invalid URL or Content not available")
+	    return redirect(url_for('content.ContentView:index'))
+
+	if redir:
+	    return redirect(url_for('content.ContentView:get', id=c.id,
+				    title=c.title))
+
+	c.inc_read_count()
+	return render_template('content/article.html', content=c)
+
+    def archive(self):
+	return render_template('content/archive.html',
+			       content=db.session.query(Content).all())
+
+    def like(self, id):
+	c = db.session.query(Content).get(id)
+
+	if not c:
+	    return abort(500)
+
+	count = c.inc_like_count()
+	data = {
+	    'content' : count,
 	}
 
-    jd = json.dumps(data)
-    resp = Response(jd, status=200, mimetype='application/json')
+	jd = json.dumps(data)
+	resp = Response(jd, status=200, mimetype='application/json')
 
-    return resp
+	return resp
 
-@content.route('/archive')
-def archive():
-    return render_template('content/archive.html',
-			   content=db.session.query(Content).all())
+
+CreateView.register(content)
+EditView.register(content)
+TagsView.register(content)
+ContentView.register(content)

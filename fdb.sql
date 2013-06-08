@@ -5,6 +5,7 @@ CREATE TYPE USER_ROLE as ENUM ('member', 'author', 'moderator', 'administrator',
 CREATE TABLE keywords (
 	id SERIAL NOT NULL,
 	keyword VARCHAR(25) NOT NULL,
+	description VARCHAR(128),
 	PRIMARY KEY (id)
 );
 

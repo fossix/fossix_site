@@ -49,7 +49,7 @@
           </a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li><a href="{{ url_for('content.archive') }}">Archive</a></li>
+              <li><a href="{{ url_for('content.ContentView:archive') }}">Archive</a></li>
               {% if g.user.is_authenticated() %}
               <li class="dropdown">
 	        <a href="#">
@@ -57,7 +57,7 @@
                 </a>
 	        <ul class="dropdown-menu">
                   <li><a href="#">Submit News</a></li>
-                  <li><a href="{{ url_for('content.create_content') }}">Create
+                  <li><a href="{{ url_for('content.CreateView:index') }}">Create
                   Content</a></li>
                   {% if g.user.is_authenticated() and g.user.is_moderator() %}
                   <li><a href="#">Moderation</a></li>

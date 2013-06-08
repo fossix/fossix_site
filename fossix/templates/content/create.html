@@ -15,7 +15,7 @@
           $('.tags').tagsManager({
               preventSubmitOnEnter: true,
               typeahead: true,
-              typeaheadAjaxSource: "/content/__tags_get",
+              typeaheadAjaxSource: "{{url_for('content.TagsView:get_all')}}",
               //typeaheadAjaxPolling: true,
               blinkBGColor_1: '#FFFF9C',
               blinkBGColor_2: '#CDE69C',
@@ -26,7 +26,7 @@
           $(document).on('click', '#preview-btn', function() {
               $.ajax({
                   type: "POST",
-                  url: "{{ url_for('content.article_preview') }}",
+                  url: "{{ url_for('content.EditView:preview') }}",
                   data: $('#create_form').serialize(),
                   success: function(data) {
                       $('#preview-modal .modal-body').html(data.content);

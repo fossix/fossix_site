@@ -46,7 +46,7 @@
     {% if t.keyword == tag %}
       <span class="label label-inverse">{{ t.keyword }}</span>
     {% else %}
-      <a href="{{ url_for('content.tag', label=t.keyword) }}">
+      <a href="{{ url_for('content.TagsView:get', label=t.keyword) }}">
         <span class="label">{{ t.keyword }}</span>
       </a>
     {% endif %}
@@ -54,7 +54,7 @@
 </div>
 
 <div class="alist">
-  <a href="{{ url_for('content.view_article', id = content.id, title=content.title) }}">
+  <a href="{{ url_for('content.ContentView:get', id = content.id, title=content.title) }}">
     {{ content.title }}
   </a>
 </div>
@@ -67,4 +67,12 @@
 
 {% macro print_author(author) -%}
 <a href="/profiles/{{ author.username }}">{{ author.username }}</a>
+{%- endmacro %}
+
+{% macro tag_detail(tag) -%}
+<a href="{{url_for('content.TagsView:get', label=tag.keyword) }}"
+   title="Content tagged with {{tag.keyword}}: {{tag.contents|count}}"
+   data-toggle="tooltip" class="tooltips" data-trigger="hover" role="button">
+  <span class="label">{{tag.keyword}}</span>
+</a>
 {%- endmacro %}

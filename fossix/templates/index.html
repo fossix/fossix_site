@@ -29,9 +29,9 @@
       <!--   feel free to do so. -->
       <!-- </p> -->
       {% if index_recent %}
-        {% for i in irecent %}
+        {% for i in index_recent %}
           <div class="box">
-            <a href="{{ url_for('content.view_article', id=i.id, title=i.title) }}">
+            <a href="{{ url_for('content.ContentView:get', id=i.id, title=i.title) }}">
               <h3>{{ i.title }}</h3>
               <p>
                 {{ i.teaser }}
@@ -47,9 +47,9 @@
       {% if index_popular %}
         <ul class="nav nav-list">
           <li class="nav-header">Most Popular</li>
-          {% for i in ipopular %}
+          {% for i in index_popular %}
             <li>
-              <a href="{{ url_for('content.view_article', id=i.id, title=i.title) }}">
+              <a href="{{ url_for('content.ContentView:get', id=i.id, title=i.title) }}">
                 {{ i.title }}
               </a>
             </li>

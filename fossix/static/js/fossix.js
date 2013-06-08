@@ -41,7 +41,8 @@ function fossix_event_setup()
 {
     $(document).on('click', '#like', like_content);
     $(function ($) {
-        $("a").tooltip()
+        $(".tooltips").tooltip();
+        $(".popovers").popover();
     });
 }
 

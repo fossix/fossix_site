@@ -68,17 +68,17 @@ def relative_now(time, fmt=None):
     if fmt is None:
 	fmt = ""
 	if d["y"]:
-	    fmt = fmt + "%y year" + "s, " if d["y"] > 1 else ", "
+	    fmt = fmt + "%y year" + ("s, " if d["y"] > 1 else "")
 	if d["M"]:
-	    fmt = fmt + "%M month" + "s, " if d["M"] > 1 else ", "
+	    fmt = fmt + "%M month" + ("s, " if d["M"] > 1 else "")
 	if d["d"]:
-	    fmt = fmt + "%d day" + "s, " if d["d"] > 1 else ", "
-	if d["h"] and not d["d"]:
-	    fmt = fmt + "%h hour" + "s" if d["h"] > 1 else ""
+	    fmt = fmt + "%d day" + ("s, " if d["d"] > 1 else "")
+	if d["h"] and d["d"] < 7:
+	    fmt = fmt + "%h hour" + ("s" if d["h"] > 1 else "")
 	if d["m"] and d["h"] == 0:
-	    fmt = fmt + "%m minute" + "s" if d["m"] > 1 else ""
+	    fmt = fmt + "%m minute" + ("s" if d["m"] > 1 else "")
 	if d["s"] and d["m"] == 0:
-	    fmt = fmt + "%s second" + "s" if d["s"] > 1 else ""
+	    fmt = fmt + "%s second" + ("s" if d["s"] > 1 else "")
 
     t = DeltaTemplate(fmt)
     return t.substitute(**d)

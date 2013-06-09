@@ -50,7 +50,7 @@ CREATE TABLE content_meta (
 CREATE TABLE content_versions (
 	id INTEGER,
 	version INTEGER,
-	edit_summary VARCHAR(128) NOT NULL,
+	edit_summary VARCHAR(128),
 	modifier_id INTEGER NOT NULL,
 	modified_date TIMESTAMP WITHOUT TIME ZONE NOT NULL default NOW(),
 	title VARCHAR(128),

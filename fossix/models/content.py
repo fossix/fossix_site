@@ -128,6 +128,8 @@ class Content(db.Model):
 	if exclude_recent:
 	    recent = Content.get_recent(recent_limit)
 
+	if recent is None:
+	    recent = []
 	q = db.session.query(Content)
 	c = q.filter(~Content.id.in_(c.id for c in recent)).order_by(
 	    Content.read_count.desc(),

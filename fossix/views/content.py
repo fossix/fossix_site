@@ -5,36 +5,60 @@ from fossix.utils import render_template, redirect_back
 from fossix.forms import ContentCreate_Form, ContentEdit_Form
 from fossix.models import Content, Keywords, User, ContentVersions,\
     ContentMeta, fdb as db
-from sqlalchemy import func
+from sqlalchemy import func, and_
 from markdown import markdown
-from flask.ext.classy import FlaskView
+from flask.ext.classy import FlaskView, route
 
 content = Module(__name__)
 
 class CreateView(FlaskView):
     @login_required
     def index(self):
-	self.form = ContentCreate_Form()
-	return render_template('content/create.html', form=self.form)
+	form = ContentCreate_Form()
+	return render_template('content/create.html', form=form)
 
     @login_required
     def post(self):
-	if self.form.validate_on_submit():
-	    c = Content(state='published', modifier=current_user.id,
-			category='article')
+	state = None
+	form = ContentCreate_Form()
+	if request.form['submit'].lower() == 'discard':
+	    return redirect(url_for('main.MainView:index'))
+
+	if request.form['submit'].lower() == 'publish':
+	    state = 'published'
+	elif request.form['submit'].lower() == 'save':
+	    state = 'saved'
+
+	if state is None:
+	    return abort(412)
+
+	if form.validate_on_submit():
+	    c = Content()
 	    # Cannot use form's populate method, when it is trying to append
 	    # tags, the version field is not yet set, since it happens in the db
 	    # side. So we have to commit content and then save the tags
-	    c.title = self.form.title.data
-	    c.content = self.form.content.data
-	    c.teaser = self.form.teaser.data
-	    c.save()
-	    c.tags_csv = self.form.tags_csv.data
-	    flash('Thank you. Content submitted for review.')
-	    return redirect(url_for('content.view_article', id=c.id,
-				    title=c.title))
+	    c.modifier_id=current_user.id
+	    c.category='article'
+	    c.title = form.title.data
+	    c.content = form.content.data
+	    c.teaser = form.teaser.data
+	    c.state = state
+	    db.session.add(c)
+	    db.session.commit()
+	    cv = db.session.query(ContentVersions).filter(
+		ContentVersions.id == c.id).one()
+	    if  cv is None:
+		abort(500)
+	    cv.tags_csv = form.tags_csv.data
+	    db.session.commit()
 
-	return redirect(url_for('get', form=self.form))
+	    if state == 'published':
+		return redirect(url_for('content.ContentView:get', id=c.id,
+					title=c.title))
+	    else:
+		return redirect(url_for('main.MainView:index'))
+
+	return render_template('content/create.html', form=form)
 
 
 class EditView(FlaskView):
@@ -47,6 +71,7 @@ class EditView(FlaskView):
 
 	form = ContentEdit_Form(obj=c)
 	form.edit_summary.data = ""
+
 	return render_template('content/create.html', form=form)
 
     @login_required
@@ -56,29 +81,61 @@ class EditView(FlaskView):
 	    abort(404)
 
 	form = ContentEdit_Form(obj=c)
+
+	if request.form['submit'].lower() == 'discard':
+	    flash('Edits discarded')
+	    return redirect(url_for('content.ContentView:get', id=c.id,
+				    title=c.title))
+	state = None
+	if request.form['submit'].lower() == 'publish':
+	    state = 'published'
+	elif request.form['submit'].lower() == 'save':
+	    state = 'saved'
+
+	if state is None:
+	    abort(412)
+
 	if form.validate_on_submit():
-	    form.populate_obj(c)
-	    c.save()
-	    flash('Edit "{0}" Saved.'.format(c.edit_summary))
+	    c.state = state
+	    c.title = form.title.data
+	    c.content = form.content.data
+	    c.edit_summary = form.edit_summary.data
+
+	    old_version = c.version
+	    db.session.add(c)
+	    db.session.commit()
+	    cv = db.session.query(ContentVersions).filter(
+		and_(ContentVersions.id == c.id,
+		     ContentVersions.version == c.version)).one()
+	    if  cv is None:
+		abort(500)
+	    cv.tags_csv = form.tags_csv.data
+	    db.session.commit()
+
+	    if state == 'publish' and c.version == old_version:
+		flash('No Modifications done to save.')
+	    else:
+		flash('Edit "{0}" Saved.'.format(c.edit_summary))
 	    return redirect(url_for('content.ContentView:get', id=c.id,
 				    title=c.title))
 
-	return self.get(id)
+	return render_template('content/create.html', form=form)
 
     @login_required
+    @route('preview', methods=['GET', 'POST'])
     def preview(self):
 	content = request.form.get('content')
 	title = request.form.get('title')
 	if title is None or title == "":
 	    title = "No Title"
 
-	    result = {'content':markdown(content,
-				 extensions = ["extra", "sane_lists",
-					       "codehilite", "smartypants"],
-				 safe_mode='remove',
-				 output_format="html5"), 'title':title}
+	result = {'content':markdown(content,
+				     extensions = ["extra", "sane_lists",
+						   "codehilite", "smartypants"],
+				     safe_mode='remove',
+				     output_format="html5"), 'title':title}
 
-	    return jsonify(result);
+	return jsonify(result);
 
 
 class TagsView(FlaskView):
@@ -155,7 +212,6 @@ class ContentView(FlaskView):
 	resp = Response(jd, status=200, mimetype='application/json')
 
 	return resp
-
 
 CreateView.register(content)
 EditView.register(content)

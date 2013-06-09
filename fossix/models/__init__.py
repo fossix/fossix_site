@@ -19,7 +19,7 @@ class SQLBase:
        self.Model = declarative_base()
        self.metadata = MetaData()
        self.metadata.bind = self.engine
-       self.session = sessionmaker(bind=self.engine)()
+       self.session = sessionmaker(bind=self.engine, expire_on_commit=False)()
 
 DB_SERVER = 'localhost'
 DB_PORT = 5432

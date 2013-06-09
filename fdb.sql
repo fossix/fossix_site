@@ -100,6 +100,7 @@ WHERE
 	content_versions.id,
 	max(content_versions.version)
     FROM content_versions
+    WHERE content_versions.state = 'published'
     GROUP by content_versions.id);
 
 CREATE OR REPLACE FUNCTION fn_on_content_update() RETURNS TRIGGER as $content_view$

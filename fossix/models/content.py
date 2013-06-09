@@ -38,6 +38,21 @@ class ContentVersions(db.Model):
     modifier = relationship(User, innerjoin=True, lazy="joined")
     meta = relationship(ContentMeta, innerjoin=True, lazy="joined")
 
+    tags = relationship(Keywords, secondary=tags_assoc,
+			lazy=True, backref='content_history')
+
+    def get_tags_csv(self):
+	return ",".join(x.keyword for x in self.tags)
+
+    def set_tags_csv(self, value):
+	new = (x for x in value.strip().split(','))
+	self.tags = []
+	for tag in new:
+	    if len(tag):
+		self.tags.append(Keywords.get(tag.strip()))
+
+    tags_csv = property(get_tags_csv, set_tags_csv)
+
 
 class Content(db.Model):
     __table__ = Table(
@@ -71,10 +86,6 @@ class Content(db.Model):
     meta = relationship(ContentMeta,
 			primaryjoin=foreign(__table__.c.id) == ContentMeta.id)
 
-    def __init__(self, state, modifier, category):
-	self.state = state
-	self.modifier_id = modifier
-	self.category = category
 
     def __repr_(self):
         return 'id: %r\ntitle: %r\ndate:%r' % (self.id, self.title, self.create_date)
@@ -105,14 +116,6 @@ class Content(db.Model):
 		self.tags.append(Keywords.get(tag.strip()))
 
     tags_csv = property(get_tags_csv, set_tags_csv)
-
-    def save(self):
-	tags = self.get_tags_csv()
-	print tags
-	db.session.add(self)
-	db.session.commit()
-	print self.id, self.version
-	self.set_tags_csv(tags)
 
     @staticmethod
     def get_recent(count = 5):

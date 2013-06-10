@@ -104,12 +104,8 @@ class EditView(FlaskView):
 	    old_version = c.version
 	    db.session.add(c)
 	    db.session.commit()
-	    cv = db.session.query(ContentVersions).filter(
-		and_(ContentVersions.id == c.id,
-		     ContentVersions.version == c.version)).one()
-	    if  cv is None:
-		abort(500)
-	    cv.tags_csv = form.tags_csv.data
+	    c = db.session.query(Content).get(c.id)
+	    c.history.tags_csv = form.tags_csv.data
 	    db.session.commit()
 
 	    if state == 'publish' and c.version == old_version:

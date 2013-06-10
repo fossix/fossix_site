@@ -1,6 +1,6 @@
 from flask.ext.login import login_required, current_user
 from flask import Module, jsonify, request, g, flash, url_for, redirect, json,\
-    Response, abort
+    Response, abort, Blueprint
 from fossix.utils import render_template, redirect_back
 from fossix.forms import ContentCreate_Form, ContentEdit_Form
 from fossix.models import Content, Keywords, User, ContentVersions,\
@@ -9,7 +9,7 @@ from sqlalchemy import func, and_
 from markdown import markdown
 from flask.ext.classy import FlaskView, route
 
-content = Module(__name__)
+content = Blueprint('content', __name__)
 
 class CreateView(FlaskView):
     @login_required

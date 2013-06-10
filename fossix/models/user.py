@@ -22,21 +22,21 @@ class User(db.Model):
 	return unicode(self.id)
 
     def __repr__(self):
-	return '<User %r>' % (self.username)
+	return self.username
 
     def avatar(self, size):
 	return 'http://www.gravatar.com/avatar/' + md5(self.email).hexdigest() \
 	    + '?d=mm&s=' + str(size)
 
-    def is_admin(self):
-	if self.id == 1 or self.role == self.ADMIN:
-	    return True
+    def is_super(self):
+	return self.role == 'superuser'
 
-	return False
+    def is_admin(self):
+	return self.is_super or self.role == 'administrator'
 
     def is_moderator(self):
 	# or I should be a moderator to edit
-	return self.is_admin() or self.role >= self.MODERATOR
+	return self.is_admin() or self.role in ('moderator', 'superuser')
 
     def is_author(self, content):
 	if content:

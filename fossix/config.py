@@ -55,4 +55,4 @@ class DebugConfig(DefaultConfig):
 class OnlineConfig(DefaultConfig):
     DEBUG = False
 
-DefaultConfig=DebugConfig()
+CurrentConfig=DebugConfig()

@@ -1,7 +1,7 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
-from fossix.config import DefaultConfig
+from fossix.config import CurrentConfig
 
 def get_dburi(dbcon, server, port, dbname, user, password):
     uri = dbcon + "://"
@@ -17,17 +17,17 @@ def get_dburi(dbcon, server, port, dbname, user, password):
 class SQLBase:
    def __init__(self, url):
        self.engine = create_engine(url,
-				   echo=DefaultConfig.SQLALCHEMY_ECHO)
+				   echo=CurrentConfig.SQLALCHEMY_ECHO)
        self.Model = declarative_base()
        self.metadata = MetaData()
        self.metadata.bind = self.engine
-       self.session = sessionmaker(bind=self.engine, expire_on_commit=False)()
+       self.session = sessionmaker(bind=self.engine)()
 
-DB_SERVER = DefaultConfig.DB_SERVER
-DB_PORT = DefaultConfig.DB_PORT
-DB_NAME = DefaultConfig.DB_NAME
-DB_USER = DefaultConfig.DB_USER
-DB_PASSWD = DefaultConfig.DB_PASSWD
+DB_SERVER = CurrentConfig.DB_SERVER
+DB_PORT = CurrentConfig.DB_PORT
+DB_NAME = CurrentConfig.DB_NAME
+DB_USER = CurrentConfig.DB_USER
+DB_PASSWD = CurrentConfig.DB_PASSWD
 
 fdb = SQLBase(get_dburi('postgresql', DB_SERVER, DB_PORT,
 			DB_NAME,DB_USER, DB_PASSWD))

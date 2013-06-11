@@ -3,7 +3,7 @@ from fossix.extensions import oid, cache, lm
 from fossix.models import fdb
 from fossix import views
 from fossix.models import User, Content
-from fossix.config import DefaultConfig
+from fossix.config import CurrentConfig
 from flask.ext.login import current_user
 from flask.ext.markdown import Markdown
 from fossix.utils import relative_now
@@ -26,7 +26,7 @@ def create_app(config=None):
         app.register_blueprint(module, url_prefix=url_prefix)
 
     if config is None:
-	app.config.from_object(DefaultConfig)
+	app.config.from_object(CurrentConfig)
 
     configure_logging(app)
     configure_errorhandlers(app)

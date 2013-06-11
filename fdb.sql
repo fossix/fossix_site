@@ -41,7 +41,7 @@ CREATE TABLE content_meta (
 	comment_count INTEGER default 0,
 	category CONTENT_CATEGORY NOT NULL,
 	refers_to INTEGER,
-	teaser VARCHAR(200) NOT NULL,
+	teaser VARCHAR(200),
 	PRIMARY KEY (id),
 	FOREIGN KEY(author_id) REFERENCES "users" (id),
 	FOREIGN KEY(refers_to) REFERENCES content_meta (id)

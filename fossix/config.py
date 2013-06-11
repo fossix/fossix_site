@@ -51,3 +51,8 @@ class DebugConfig(DefaultConfig):
 
     SQLALCHEMY_MIGRATE_REPO = os.path.join(_basedir, 'fdb_repo')
     SITE_CDN = '/static'
+
+class OnlineConfig(DefaultConfig):
+    DEBUG = False
+
+DefaultConfig=DebugConfig()

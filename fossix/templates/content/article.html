@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% from 'utils.html' import print_author, tag_detail %}
+{% from "utils.html" import render_field, field_errors %}
 
 {% set pagetitle=content.title %}
 
@@ -53,4 +54,31 @@ by
 {% endif %}
 </div>
 </div>
+<hr>
+<form method="POST" id="comment_form">
+  {{ comment.hidden_tag() }}
+  {{ render_field(comment.content, rows=4, required=True, class="span12") }}
+  <input type="submit" value="Comment" name="submit" formaction="{{request.path}}">
+</form>
+<hr>
+{% if content.comments %}
+{%- for comment in content.comments recursive %}
+  <div class="media">
+    <div class="pull-left tooltips"
+       title="{{g.user.username}}" data-toggle="tooltip"
+       data-placement="top">
+      <img class="media-object" src="{{g.user.avatar(64)}}" />
+    </div>
+    <div class="media-body">
+      {% if comment.title %}
+        <h4 class="media-heading">{{comment.title}}</h4>
+      {% endif %}
+      {{ comment.content }}
+      {%- if comment.comments -%}
+        {{ loop(comment.comments) }}
+      {%- endif %}
+    </div>
+  </div>
+{%- endfor %}
+{% endif %}
 {% endblock %}

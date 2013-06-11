@@ -2,7 +2,7 @@ from flask.ext.login import login_required, current_user
 from flask import Module, jsonify, request, g, flash, url_for, redirect, json,\
     Response, abort, Blueprint
 from fossix.utils import render_template, redirect_back
-from fossix.forms import ContentCreate_Form, ContentEdit_Form
+from fossix.forms import ContentCreate_Form, ContentEdit_Form, Comment_Form
 from fossix.models import Content, Keywords, User, ContentVersions,\
     ContentMeta, fdb as db
 from sqlalchemy import func, and_
@@ -161,7 +161,12 @@ class ContentView(FlaskView):
 	    return redirect(url_for('main.index'))
 
 	c.inc_read_count()
-	return render_template('content/article.html', content=c)
+	if g.user.is_authenticated():
+	    form = Comment_Form()
+	else:
+	    form = AnonComment_Form()
+
+	return render_template('content/article.html', content=c, comment=form)
 
     def get(self, id, title=None):
 	redir = False
@@ -187,11 +192,16 @@ class ContentView(FlaskView):
 				    title=c.title))
 
 	c.inc_read_count()
-	return render_template('content/article.html', content=c)
+	if g.user.is_authenticated():
+	    form = Comment_Form()
+	else:
+	    form = AnonComment_Form()
+
+	return render_template('content/article.html', content=c, comment=form)
 
     def archive(self):
 	return render_template('content/archive.html',
-			       content=db.session.query(Content).all())
+			       content=db.session.query(Content).filter(Content.category=='article').all())
 
     def like(self, id):
 	c = db.session.query(Content).get(id)
@@ -208,6 +218,27 @@ class ContentView(FlaskView):
 	resp = Response(jd, status=200, mimetype='application/json')
 
 	return resp
+
+    def post(self, id=None, title=None):
+	c = db.session.query(Content).get(id)
+	if g.user.is_authenticated():
+	    form = Comment_Form()
+	else:
+	    form = AnonComment_Form()
+
+	if form.validate_on_submit():
+	    comment = Content()
+	    comment.category = 'comment'
+	    comment.state = 'published'
+	    comment.modifier_id = g.user.id
+	    comment.refers_to = c.id
+	    form.populate_obj(comment)
+	    db.session.add(comment)
+	    db.session.commit()
+	    return self.get(id, title)
+
+	return render_template('content/article.html', content=c, comment=form)
+
 
 CreateView.register(content)
 EditView.register(content)

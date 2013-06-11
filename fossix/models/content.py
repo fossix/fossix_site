@@ -36,7 +36,7 @@ class ContentVersions(db.Model):
     __table__ = db.metadata.tables['content_versions']
 
     modifier = relationship(User, innerjoin=True, lazy="joined")
-    meta = relationship(ContentMeta, innerjoin=True, lazy="joined")
+    meta = relationship(ContentMeta, innerjoin=True, lazy="joined", backref='history')
 
     tags = relationship(Keywords, secondary=tags_assoc,
 			lazy=True, backref='content_history')
@@ -61,6 +61,7 @@ class Content(db.Model):
 	Column('version', Integer),
 	Column('author_id', Integer, ForeignKey('users.id')),
 	Column('modifier_id', Integer, ForeignKey('users.id')),
+	Column('refers_to', Integer, ForeignKey('content.id')),
 	autoload=True, extend_existing=True
     )
 
@@ -85,6 +86,8 @@ class Content(db.Model):
 
     meta = relationship(ContentMeta,
 			primaryjoin=foreign(__table__.c.id) == ContentMeta.id)
+
+    comments = relationship('Content')
 
 
     def __repr_(self):
@@ -119,7 +122,7 @@ class Content(db.Model):
 
     @staticmethod
     def get_recent(count = 5):
-	c = db.session.query(Content).order_by(Content.create_date.desc()).limit(count)
+	c = db.session.query(Content).filter(Content.category=='article').order_by(Content.create_date.desc()).limit(count)
 	if c.count() > 0:
 	    return c.all()
 
@@ -133,7 +136,7 @@ class Content(db.Model):
 
 	if recent is None:
 	    recent = []
-	q = db.session.query(Content)
+	q = db.session.query(Content).filter(Content.category=='article')
 	c = q.filter(~Content.id.in_(c.id for c in recent)).order_by(
 	    Content.read_count.desc(),
 	    Content.like_count.desc()).limit(count)

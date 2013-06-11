@@ -17,3 +17,11 @@ class ContentEdit_Form(ContentCreate_Form):
     edit_summary = TextField("Edit Summary",
 			     validators=[validators.required(),
 					 validators.Length(max=128)])
+
+class Comment_Form(Form):
+    content = TextAreaField("Comment", validators=[validators.required(),
+						   validators.Length(max=1024)])
+
+
+class AnonComment_Form(Comment_Form):
+    recaptcha = RecaptchaField()

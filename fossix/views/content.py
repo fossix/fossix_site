@@ -203,21 +203,29 @@ class ContentView(FlaskView):
 	return render_template('content/archive.html',
 			       content=db.session.query(Content).filter(Content.category=='article').all())
 
-    def like(self, id):
+    def vote(self, id, vote):
 	c = db.session.query(Content).get(id)
 
 	if not c:
 	    return abort(500)
 
-	count = c.inc_like_count()
+	if vote=='down':
+	    count = c.dec_like_count()
+	else:
+	    count = c.inc_like_count()
+
 	data = {
-	    'content' : count,
+	    'count' : count,
+	    'id' : id,
 	}
+
+	db.session.commit()
 
 	jd = json.dumps(data)
 	resp = Response(jd, status=200, mimetype='application/json')
 
 	return resp
+
 
     def post(self, id=None, title=None):
 	c = db.session.query(Content).get(id)

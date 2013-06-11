@@ -18,8 +18,11 @@
   <a href="{{ url_for('content.EditView:get', id=content.id) }}" id="edit">
     <button class="btn btn-mini"><i class="icon-edit"> </i></button></a>
   {% endif %}
-  <span class="badge badge-inverse pull-right" id="likecount">{{content.like_count}}</span>
-  <a href="{{ url_for('content.ContentView:like', id=content.id) }}" class="pull-right" id="like">
+  <span class="badge badge-inverse pull-right" id="likecount">
+    {{content.like_count}}
+  </span>
+  <a href="{{ url_for('content.ContentView:vote', id=content.id, vote='up') }}"
+     class="pull-right" id="like">
     <button class="btn btn-mini"><i class="icon-thumbs-up"> </i>Like</button>
   </a>
 </div>
@@ -63,6 +66,7 @@ by
 <hr>
 {% if content.comments %}
 {%- for comment in content.comments recursive %}
+<div>
   <div class="media">
     <div class="pull-left tooltips"
        title="{{g.user.username}}" data-toggle="tooltip"
@@ -74,11 +78,32 @@ by
         <h4 class="media-heading">{{comment.title}}</h4>
       {% endif %}
       {{ comment.content }}
-      {%- if comment.comments -%}
+        <div class="clear-fix">
+          <span class="badge badge-inverse pull-left"
+                       id="vote_count{{comment.id}}">
+            {{comment.like_count}}
+          </span>
+          <div class="pull-left">
+            <a href="#" data-url="{{ url_for('content.ContentView:vote',
+                                  id=comment.id, vote='up') }}"
+               class="vote" id="{{comment.id}}">
+              <i class="icon-thumbs-up"> </i>
+            </a>
+            <br>
+            <a href="#" data-url="{{ url_for('content.ContentView:vote',
+                                  id=comment.id, vote='down') }}"
+               class="vote" id="{{comment.id}}">
+              <i class="icon-thumbs-down"> </i>
+            </a>
+          </div>
+          <a href="#" class="pull-right">Reply</a>
+        </div>
+        {%- if comment.comments -%}
         {{ loop(comment.comments) }}
-      {%- endif %}
+        {%- endif %}
     </div>
   </div>
+</div>
 {%- endfor %}
 {% endif %}
 {% endblock %}

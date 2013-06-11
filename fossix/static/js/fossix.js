@@ -40,6 +40,8 @@ data-dismiss="alert">&times;</button>' + string + '</div>';
 function fossix_event_setup()
 {
     $(document).on('click', '#like', like_content);
+    $(document).on('click', '.vote', vote_comment);
+
     $(function ($) {
         $(".tooltips").tooltip();
         $(".popovers").popover();
@@ -74,6 +76,29 @@ function dologin(event) {
     return (false);
 }
 
+function vote_comment(event) {
+    var link = $(this).attr('data-url');
+
+    $.ajax({
+        type        : "GET",
+        contentType : "application/json; charset=utf-8;",
+        url         : link,
+        datatype    : "json",
+        success     : function(data) {
+            count = data.count;
+            id = data.id;
+            count_id = "#vote_count" + id;
+            $(count_id).text(count);
+            $(count_id).delay(500).fadeIn();
+        },
+        error       : function(jqXHR, textStatus, errorThrown) {
+            flash_error(errorThrown);
+         }
+    });
+
+    return (false);
+}
+
 function like_content(event) {
     var link = $(this);
 
@@ -86,7 +111,7 @@ function like_content(event) {
         url         : link.attr("href"),
         datatype    : "json",
         success     : function(data) {
-            count = data.content;
+            count = data.count;
             $('#like').hide();
             $('#likecount').text(count);
             $('#likecount').delay(500).fadeIn();

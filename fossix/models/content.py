@@ -101,6 +101,10 @@ class Content(db.Model):
 	self.meta.like_count = self.meta.like_count + 1
 	return self.meta.like_count
 
+    def dec_like_count(self):
+	self.meta.like_count = self.meta.like_count - 1
+	return self.meta.like_count
+
     def get_create_date(self):
 	return self.create_date.strftime("%A %d. %B %Y")
 

@@ -105,6 +105,14 @@ class Content(db.Model):
 	self.meta.like_count = self.meta.like_count - 1
 	return self.meta.like_count
 
+    def inc_comment_count(self):
+	self.meta.comment_count = self.meta.comment_count + 1
+	return self.meta.comment_count
+
+    def dec_comment_count(self):
+	self.meta.comment_count = self.meta.comment_count - 1
+	return self.meta.comment_count
+
     def get_create_date(self):
 	return self.create_date.strftime("%A %d. %B %Y")
 

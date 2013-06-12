@@ -22,11 +22,3 @@ class ContentEdit_Form(ContentCreate_Form):
 class Comment_Form(Form):
     content = TextAreaField("Comment", validators=[validators.required(),
 						   validators.Length(max=1024)])
-
-
-class AnonComment_Form(Comment_Form):
-    fullname = TextField("Name")
-    email = EmailField("Email", validators=
-		       [required("You have to provide an email address, (its hidden!)")])
-    website = URLField("Website")
-    recaptcha = RecaptchaField()

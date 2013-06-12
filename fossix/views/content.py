@@ -2,8 +2,7 @@ from flask.ext.login import login_required, current_user
 from flask import Module, jsonify, request, g, flash, url_for, redirect, json,\
     Response, abort, Blueprint
 from fossix.utils import render_template, redirect_back, get_uniqueid
-from fossix.forms import ContentCreate_Form, ContentEdit_Form, Comment_Form, \
-    AnonComment_Form
+from fossix.forms import ContentCreate_Form, ContentEdit_Form, Comment_Form
 from fossix.models import Content, Keywords, User, ContentVersions,\
     ContentMeta, fdb as db
 from sqlalchemy import func, and_
@@ -158,6 +157,7 @@ class ContentView(FlaskView):
     route_base = '/'
     def index(self):
 	c = Content.get_recent(1)[0]
+	form = None
 	if c is None:
 	    flash(u'Nothing exists :-(.')
 	    return redirect(url_for('main.index'))
@@ -165,12 +165,11 @@ class ContentView(FlaskView):
 	c.inc_read_count()
 	if g.user.is_authenticated():
 	    form = Comment_Form()
-	else:
-	    form = AnonComment_Form()
 
 	return render_template('content/article.html', content=c, comment=form)
 
     def get(self, id, title=None):
+	form = None
 	redir = False
 	c = db.session.query(Content).get(id)
 	if c is None and title is not None:
@@ -196,8 +195,7 @@ class ContentView(FlaskView):
 	c.inc_read_count()
 	if g.user.is_authenticated():
 	    form = Comment_Form()
-	else:
-	    form = AnonComment_Form()
+	    form.content.data = ""
 
 	return render_template('content/article.html', content=c, comment=form)
 
@@ -205,6 +203,7 @@ class ContentView(FlaskView):
 	return render_template('content/archive.html',
 			       content=db.session.query(Content).filter(Content.category=='article').all())
 
+    @login_required
     def vote(self, id, vote):
 	c = db.session.query(Content).get(id)
 
@@ -228,40 +227,18 @@ class ContentView(FlaskView):
 
 	return resp
 
-
+    @login_required
     def post(self, id=None, title=None):
 	c = db.session.query(Content).get(id)
-	if g.user.is_authenticated():
-	    form = Comment_Form()
-	else:
-	    form = AnonComment_Form()
+	form = Comment_Form()
 
 	if form.validate_on_submit():
 	    comment = Content()
 	    comment.category = 'comment'
 	    comment.state = 'published'
-	    if not g.user.is_authenticated():
-		try:
-		    user = db.session.query(User).filter(
-			User.email == form.email.data).one()
-		    if user.role == 'author':
-			flash('Your email shows that you are already a \
-			       registered member of fossix. Did you forget to \
-			       login?')
-			return render_template('content/article.html', content=c,
-					       comment=form)
-		except NoResultFound, e:
-		    user = User()
-		    form.populate_obj(user)
-		    user.username = get_uniqueid()
-		    user.role = 'member'
-		    db.session.add(user)
-		    db.session.commit()
-	    else:
-		user = g.user
-
-	    comment.modifier_id = user.id
+	    comment.modifier_id = g.user.id
 	    comment.refers_to = c.id
+	    c.inc_comment_count()
 	    form.populate_obj(comment)
 	    db.session.add(comment)
 	    db.session.commit()

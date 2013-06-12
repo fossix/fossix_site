@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% from 'utils.html' import print_author, tag_detail %}
-{% from "utils.html" import render_field, field_errors %}
+{% from "utils.html" import render_field, perror %}
 
 {% set pagetitle=content.title %}
 
@@ -59,20 +59,26 @@
   </div>
 </div>
 
-<form method="POST" id="comment_form">
-  {{ comment.hidden_tag() }}
-  {% if not g.user.is_authenticated() %}
-    {{ render_field(comment.fullname, rows=1, class="span9") }}
-    {{ render_field(comment.email, rows=1, required=True, class="span9") }}
-    {{ render_field(comment.website, rows=1, class="span9") }}
-  {% endif %}
-  {{ render_field(comment.content, rows=4, required=True, class="span12") }}
-  {{ comment.recaptcha }}
-  <input type="submit" value="Comment" name="submit" formaction="{{request.path}}">
-</form>
+{% if g.user.is_authenticated() %}
+  <form method="POST" id="comment_form">
+    {{ comment.hidden_tag() }}
+    {{ render_field(comment.content, rows=4, required=True, class="span12") }}
+    <input type="submit" value="Comment" name="submit"
+           formaction="{{request.path}}">
+    {{ perror(comment.errors) }}
+  </form>
+{% else %}
+  Login to Comment
+{% endif %}
 <hr>
 {% if content.comments %}
-<h3> {{content.comments|count}} Comments </h3>
+{% if content.comment_count > 1 %}
+  <h3> {{content.comment_count}} Comments </h3>
+{% elif content.comment_count == 0 %}
+  <h3> No comments yet </h3>
+{% else %}
+  <h3> {{content.comment_count}} Comment </h3>
+{% endif %}
 {%- for comment in content.comments recursive %}
 <div class="media">
   <div class="pull-left tooltips rounded"
@@ -100,22 +106,26 @@
       </div>
 
       <div class="span1">
+        {% if g.user.is_authenticated() %}
         <a href="#" data-url="{{ url_for('content.ContentView:vote',
                               id=comment.id, vote='up') }}"
            class="vote" id="{{comment.id}}">
           <i class="icon-thumbs-up"> </i>
         </a>
+        {% endif %}
         <br>
         <span class="badge badge-inverse"
               id="vote_count{{comment.id}}">
           {{comment.like_count}}
         </span>
         <br>
+        {% if g.user.is_authenticated() %}
         <a href="#" data-url="{{ url_for('content.ContentView:vote',
                               id=comment.id, vote='down') }}"
            class="vote" id="{{comment.id}}">
           <i class="icon-thumbs-down"> </i>
         </a>
+        {% endif %}
       </div>
     </div>
     <a href="#" class="span12">Reply</a>

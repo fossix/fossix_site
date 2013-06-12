@@ -1,11 +1,13 @@
 from flask.ext.login import login_required, current_user
 from flask import Module, jsonify, request, g, flash, url_for, redirect, json,\
     Response, abort, Blueprint
-from fossix.utils import render_template, redirect_back
-from fossix.forms import ContentCreate_Form, ContentEdit_Form, Comment_Form
+from fossix.utils import render_template, redirect_back, get_uniqueid
+from fossix.forms import ContentCreate_Form, ContentEdit_Form, Comment_Form, \
+    AnonComment_Form
 from fossix.models import Content, Keywords, User, ContentVersions,\
     ContentMeta, fdb as db
 from sqlalchemy import func, and_
+from sqlalchemy.orm.exc import NoResultFound
 from markdown import markdown
 from flask.ext.classy import FlaskView, route
 
@@ -238,7 +240,27 @@ class ContentView(FlaskView):
 	    comment = Content()
 	    comment.category = 'comment'
 	    comment.state = 'published'
-	    comment.modifier_id = g.user.id
+	    if not g.user.is_authenticated():
+		try:
+		    user = db.session.query(User).filter(
+			User.email == form.email.data).one()
+		    if user.role == 'author':
+			flash('Your email shows that you are already a \
+			       registered member of fossix. Did you forget to \
+			       login?')
+			return render_template('content/article.html', content=c,
+					       comment=form)
+		except NoResultFound, e:
+		    user = User()
+		    form.populate_obj(user)
+		    user.username = get_uniqueid()
+		    user.role = 'member'
+		    db.session.add(user)
+		    db.session.commit()
+	    else:
+		user = g.user
+
+	    comment.modifier_id = user.id
 	    comment.refers_to = c.id
 	    form.populate_obj(comment)
 	    db.session.add(comment)

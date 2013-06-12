@@ -9,14 +9,15 @@
 <div class="contenthead">
   By
   {% if content.author %}
-  <a href="#">{{ print_author(content.author) }}</a>
+    {{ print_author(content.author) }}
   {% else %}
-  Anonymous
+    Anonymous
   {% endif %}
   on
-  {{ content.get_create_date() }} {% if g.user.is_authenticated() and g.user.is_editor(content) %}
-  <a href="{{ url_for('content.EditView:get', id=content.id) }}" id="edit">
-    <button class="btn btn-mini"><i class="icon-edit"> </i></button></a>
+  {{ content.get_create_date() }}
+  {% if g.user.is_authenticated() and g.user.is_editor(content) %}
+    <a href="{{ url_for('content.EditView:get', id=content.id) }}" id="edit">
+      <button class="btn btn-mini"><i class="icon-edit"> </i></button></a>
   {% endif %}
   <span class="badge badge-inverse pull-right" id="likecount">
     {{content.like_count}}
@@ -32,76 +33,95 @@
 </div>
 
 <div class="span12">
-<div class="taglist pull-left">
-  {% for t in content.tags %}
-    {{ tag_detail(t) }}
-  {% endfor %}
-</div>
+  <div class="taglist pull-left">
+    {% for t in content.tags %}
+      {{ tag_detail(t) }}
+    {% endfor %}
+  </div>
 
-{% if g.user.is_authenticated() %}
-<div class="read-count pull-right">
-  Number of reads: {{ content.read_count }}
-</div>
-{% endif %}
+  {% if g.user.is_authenticated() %}
+    <div class="read-count pull-right">
+      Number of reads: {{ content.read_count }}
+    </div>
+  {% endif %}
 </div>
 
 <div class="span12">
-<div class="pull-right">
-{% if content.version > 1 %}
-<a href="#" data-toggle="tooltip" class="tip"
-   title="Version {{content.version}}: {{content.edit_summary}}">
-  Modified {{content.modified_date | relative_now}} ago
-</a>
-by
-  {{ print_author(content.author) }}
-{% endif %}
+  <div class="pull-right">
+    {% if content.version > 1 %}
+      <a href="#" data-toggle="tooltip" class="tip"
+         title="Version {{content.version}}: {{content.edit_summary}}">
+        Modified {{content.modified_date | relative_now}} ago
+      </a>
+      by
+      {{ print_author(content.author) }}
+    {% endif %}
+  </div>
 </div>
-</div>
-<hr>
+
 <form method="POST" id="comment_form">
   {{ comment.hidden_tag() }}
+  {% if not g.user.is_authenticated() %}
+    {{ render_field(comment.fullname, rows=1, class="span9") }}
+    {{ render_field(comment.email, rows=1, required=True, class="span9") }}
+    {{ render_field(comment.website, rows=1, class="span9") }}
+  {% endif %}
   {{ render_field(comment.content, rows=4, required=True, class="span12") }}
+  {{ comment.recaptcha }}
   <input type="submit" value="Comment" name="submit" formaction="{{request.path}}">
 </form>
 <hr>
 {% if content.comments %}
+<h3> {{content.comments|count}} Comments </h3>
 {%- for comment in content.comments recursive %}
-<div>
-  <div class="media">
-    <div class="pull-left tooltips"
-       title="{{g.user.username}}" data-toggle="tooltip"
+<div class="media">
+  <div class="pull-left tooltips rounded"
+       title="{{comment.author.username}}" data-toggle="tooltip"
        data-placement="top">
-      <img class="media-object" src="{{g.user.avatar(64)}}" />
-    </div>
-    <div class="media-body">
-      {% if comment.title %}
-        <h4 class="media-heading">{{comment.title}}</h4>
-      {% endif %}
-      {{ comment.content }}
-        <div class="clear-fix">
-          <span class="badge badge-inverse pull-left"
-                       id="vote_count{{comment.id}}">
-            {{comment.like_count}}
-          </span>
-          <div class="pull-left">
-            <a href="#" data-url="{{ url_for('content.ContentView:vote',
-                                  id=comment.id, vote='up') }}"
-               class="vote" id="{{comment.id}}">
-              <i class="icon-thumbs-up"> </i>
+    <img class="media-object" src="{{comment.author.avatar(64)}}" />
+  </div>
+
+  <div class="media-body">
+    <div class="row-fluid">
+      <div class="span11">
+        <h4 class="media-heading">
+          {% if comment.author.website %}
+            <a href="{{comment.author.website}}">
+              {{comment.author.username|capitalize}}
             </a>
-            <br>
-            <a href="#" data-url="{{ url_for('content.ContentView:vote',
-                                  id=comment.id, vote='down') }}"
-               class="vote" id="{{comment.id}}">
-              <i class="icon-thumbs-down"> </i>
-            </a>
-          </div>
-          <a href="#" class="pull-right">Reply</a>
-        </div>
-        {%- if comment.comments -%}
-        {{ loop(comment.comments) }}
-        {%- endif %}
+          {% else %}
+            {{comment.author.username|capitalize}}
+          {% endif %}
+        </h4>
+
+        <blockquote>
+          {{ comment.content }}
+        </blockquote>
+      </div>
+
+      <div class="span1">
+        <a href="#" data-url="{{ url_for('content.ContentView:vote',
+                              id=comment.id, vote='up') }}"
+           class="vote" id="{{comment.id}}">
+          <i class="icon-thumbs-up"> </i>
+        </a>
+        <br>
+        <span class="badge badge-inverse"
+              id="vote_count{{comment.id}}">
+          {{comment.like_count}}
+        </span>
+        <br>
+        <a href="#" data-url="{{ url_for('content.ContentView:vote',
+                              id=comment.id, vote='down') }}"
+           class="vote" id="{{comment.id}}">
+          <i class="icon-thumbs-down"> </i>
+        </a>
+      </div>
     </div>
+    <a href="#" class="span12">Reply</a>
+    {%- if comment.comments -%}
+    {{ loop(comment.comments) }}
+    {%- endif %}
   </div>
 </div>
 {%- endfor %}

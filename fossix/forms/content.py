@@ -1,6 +1,7 @@
 from flask.ext.wtf import Form, HiddenField, TextField, RecaptchaField, \
     SubmitField, ValidationError, email, url, validators, TextAreaField, \
-    Field, TextInput
+    Field, TextInput, required
+from flask.ext.wtf.html5 import URLField, EmailField
 
 class ContentCreate_Form(Form):
     next = HiddenField()
@@ -24,4 +25,8 @@ class Comment_Form(Form):
 
 
 class AnonComment_Form(Comment_Form):
+    fullname = TextField("Name")
+    email = EmailField("Email", validators=
+		       [required("You have to provide an email address, (its hidden!)")])
+    website = URLField("Website")
     recaptcha = RecaptchaField()

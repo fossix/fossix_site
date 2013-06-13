@@ -140,8 +140,8 @@ function load_comments()
     // unbind the event, prevent multiple requests
     $(document).off('scroll');
 
-    $('#loading').html("<div class='loading'><p>Loading Comments &hellip;</p></div>");
-    $('#loading').delay(100).fadeIn();
+    $('#loading').html("<p>Loading Comments &hellip;</p>");
+    $('#loading').delay(300).fadeIn();
 
     var link = $('#comments').attr('data-url');
     var total = $('#comments').attr('data-total');
@@ -157,18 +157,16 @@ function load_comments()
             parent = data.parent;
             $('#comments').append(html);
             $('#comments').attr('data-url', '/content/comment/'+parent+'/'+last);
-            if (last >= total) {
-                $('#loading').hide();
-                return;
+            if (last < total) {
+                scroll_hook(document, 40, load_comments);
             }
-
-            scroll_hook(document, 40, load_comments);
         },
         error       : function(jqXHR, textStatus, errorThrown) {
             flash_error(errorThrown);
         }
     });
-    $('#loading').hide();
+    $('#loading').html("Done.");
+    $('#loading').delay(1000).fadeOut();
 }
 
 function fossix_event_setup()

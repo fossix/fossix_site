@@ -71,7 +71,7 @@
   Login to Comment
 {% endif %}
 <hr>
-{% if content.comments %}
+
 {% if content.comment_count > 1 %}
   <h3> {{content.comment_count}} Comments </h3>
 {% elif content.comment_count == 0 %}
@@ -79,61 +79,14 @@
 {% else %}
   <h3> {{content.comment_count}} Comment </h3>
 {% endif %}
-{%- for comment in content.comments recursive %}
-<div class="media">
-  <div class="pull-left tooltips rounded"
-       title="{{comment.author.username}}" data-toggle="tooltip"
-       data-placement="top">
-    <img class="media-object" src="{{comment.author.avatar(64)}}" />
-  </div>
 
-  <div class="media-body">
-    <div class="row-fluid">
-      <div class="span11">
-        <h4 class="media-heading">
-          {% if comment.author.website %}
-            <a href="{{comment.author.website}}">
-              {{comment.author.username|capitalize}}
-            </a>
-          {% else %}
-            {{comment.author.username|capitalize}}
-          {% endif %}
-        </h4>
-
-        <blockquote>
-          {{ comment.content }}
-        </blockquote>
-      </div>
-
-      <div class="span1">
-        {% if g.user.is_authenticated() %}
-        <a href="#" data-url="{{ url_for('content.ContentView:vote',
-                              id=comment.id, vote='up') }}"
-           class="vote" id="{{comment.id}}">
-          <i class="icon-thumbs-up"> </i>
-        </a>
-        {% endif %}
-        <br>
-        <span class="badge badge-inverse"
-              id="vote_count{{comment.id}}">
-          {{comment.like_count}}
-        </span>
-        <br>
-        {% if g.user.is_authenticated() %}
-        <a href="#" data-url="{{ url_for('content.ContentView:vote',
-                              id=comment.id, vote='down') }}"
-           class="vote" id="{{comment.id}}">
-          <i class="icon-thumbs-down"> </i>
-        </a>
-        {% endif %}
-      </div>
-    </div>
-    <a href="#" class="span12">Reply</a>
-    {%- if comment.comments -%}
-    {{ loop(comment.comments) }}
-    {%- endif %}
-  </div>
+<div id="comments" data-url="{{url_for('content.CommentView:get',
+                             id=content.id, last=0)}}"
+     data-total="{{content.comment_count}}"
+     data-parent="{{content.id}}">
 </div>
-{%- endfor %}
-{% endif %}
+
+<div id="loading" class="display:none;">
+</div>
+
 {% endblock %}

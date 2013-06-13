@@ -37,17 +37,6 @@ data-dismiss="alert">&times;</button>' + string + '</div>';
     flash_warn_timer = window.setInterval(clear_info, 5000);
 }
 
-function fossix_event_setup()
-{
-    $(document).on('click', '#like', like_content);
-    $(document).on('click', '.vote', vote_comment);
-
-    $(function ($) {
-        $(".tooltips").tooltip();
-        $(".popovers").popover();
-    });
-}
-
 function dologin(event) {
     var target = event.data.target1;
     var form = $(this);
@@ -134,4 +123,62 @@ function openid_login(provider)
         url = 'https://me.yahoo.com';
 
     window.location.replace('/user/login?oid='+url);
+}
+
+function scroll_hook(target, percent, callback)
+{
+    $(target).bind('scroll', function () {
+        if ((($(target).scrollTop() / $(target).innerHeight()) * 100)
+            >= percent) {
+            callback();
+        }
+    });
+}
+
+function load_comments()
+{
+    // unbind the event, prevent multiple requests
+    $(document).off('scroll');
+
+    $('#loading').html("<div class='loading'><p>Loading Comments &hellip;</p></div>");
+    $('#loading').delay(100).fadeIn();
+
+    var link = $('#comments').attr('data-url');
+    var total = $('#comments').attr('data-total');
+
+    $.ajax({
+        type        : "GET",
+        contentType : "application/json; charset=utf-8;",
+        url         : link,
+        datatype    : "json",
+        success     : function(data) {
+            last = data.last;
+            html = data.html;
+            parent = data.parent;
+            $('#comments').append(html);
+            $('#comments').attr('data-url', '/content/comment/'+parent+'/'+last);
+            if (last >= total) {
+                $('#loading').hide();
+                return;
+            }
+
+            scroll_hook(document, 40, load_comments);
+        },
+        error       : function(jqXHR, textStatus, errorThrown) {
+            flash_error(errorThrown);
+        }
+    });
+    $('#loading').hide();
+}
+
+function fossix_event_setup()
+{
+    $(document).on('click', '#like', like_content);
+    $(document).on('click', '.vote', vote_comment);
+    scroll_hook(document, 40, load_comments);
+
+    $(function ($) {
+        $(".tooltips").tooltip();
+        $(".popovers").popover();
+    });
 }

@@ -242,12 +242,39 @@ class ContentView(FlaskView):
 	    form.populate_obj(comment)
 	    db.session.add(comment)
 	    db.session.commit()
-	    return self.get(id, title)
+	    return redirect(url_for('ContentView:get', id, title));
 
 	return render_template('content/article.html', content=c, comment=form)
 
+class CommentView(FlaskView):
+    def get(self, id, last=0):
+	c = db.session.query(Content).get(id)
+	if c is None or (c.category != 'book' and c.category != 'article'):
+	    data = {
+		'html': "",
+		'last': 0,
+		'parent': id,
+	    }
+	else:
+	    last = int(last)
+	    comments = c.comments[last:last+5]
+	    html = render_template('content/comment.html', comments=comments)
+	    last = last + 5
+	    print last
+
+	    data = {
+		'html': html,
+		'last': last,
+		'parent': id,
+	    }
+
+	jd = json.dumps(data)
+	resp = Response(jd, status=200, mimetype='application/json')
+
+	return resp
 
 CreateView.register(content)
 EditView.register(content)
 TagsView.register(content)
 ContentView.register(content)
+CommentView.register(content)

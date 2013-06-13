@@ -55,30 +55,20 @@ class DeltaTemplate(Template):
     delimiter = "%"
 
 # custom jinja2 filters
-def relative_now(time, fmt=None):
+def relative_now(time, fmt):
     d = {}
     delta = datetime.now() - time
     days = delta.days
-    d["y"], days = divmod(days, 365)
-    d["M"], days = divmod(days, 30) # mm.. should we take 28, 30 and 31?
-    d["d"] = days
-    d["h"], rem = divmod(delta.seconds, 3600)
-    d["m"], d["s"] = divmod(rem, 60)
+    if "%y" in fmt:
+	d["y"], days = divmod(days, 365)
+    if "%M" in fmt:
+	d["M"], days = divmod(days, 30) # mm.. should we take 28, 30 and 31?
+    if "%d" in fmt:
+	d["d"] = days
+    if "%h" in fmt:
+	d["h"], days = divmod(delta.seconds, 3600)
 
-    if fmt is None:
-	fmt = ""
-	if d["y"]:
-	    fmt = fmt + "%y year" + ("s " if d["y"] > 1 else "")
-	if d["M"]:
-	    fmt = fmt + "%M month" + ("s " if d["M"] > 1 else "")
-	if d["d"]:
-	    fmt = fmt + "%d day" + ("s " if d["d"] > 1 else "")
-	if d["h"] and d["d"] == 0:
-	    fmt = fmt + "%h hour" + ("s" if d["h"] > 1 else "")
-	if d["m"] and d["h"] == 0:
-	    fmt = fmt + "%m minute" + ("s" if d["m"] > 1 else "")
-	if d["s"] and d["m"] == 0:
-	    fmt = fmt + "%s second" + ("s" if d["s"] > 1 else "")
+    d["m"], d["s"] = divmod(delta.seconds, 60 * 3600)
 
     t = DeltaTemplate(fmt)
     return t.substitute(**d)

@@ -86,7 +86,7 @@
     <a href="/profiles/{{ c.author.username }}" class="author">
       {{ c.author.fullname }}
     </a>
-    - {{c.create_date | relative_now}} ago
+    - {{c.create_date | relative_now("%d days")}} ago
   </div>
 {%- endmacro %}
 

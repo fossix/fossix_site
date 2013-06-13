@@ -119,6 +119,20 @@ a.author:focus {
     align:center;
 }
 
+a {
+    color:#333333;
+}
+
+.recommended .box {
+    border-color: rgb(0, 0, 0);
+    -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.099);
+    -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.099);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.099);
+    border-radius: 0px;
+}
+
+.re
+
 /* CSS for pygmentize, copied from HtmlFormatter().get_style_defs('.codehilite') output */
 .codehilite .hll { background-color: #ffffcc }
 .codehilite  { background: #f8f8f8; }

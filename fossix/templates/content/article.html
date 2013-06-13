@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% from 'utils.html' import print_author, article_info, tag_detail %}
-{% from "utils.html" import render_field, perror %}
+{% from "utils.html" import render_field, perror, archive_content_info %}
 
 {% set pagetitle=content.title %}
 
@@ -44,11 +44,24 @@
     {% if content.version > 1 %}
       <a href="#" data-toggle="tooltip" class="tip"
          title="Version {{content.version}}: {{content.edit_summary}}">
-        Modified {{content.modified_date | relative_now}} ago
+        Modified {{content.modified_date|relative_now("%d days")}} ago
       </a>
       by
       {{ print_author(content.author) }}
     {% endif %}
+  </div>
+</div>
+
+<div class="span12 recommended well well-small">
+  <h4>Also read</h4>
+  <div class="box">
+    <a class="item" href="{{ url_for('content.ContentView:get', id=content.id, title=content.title) }}">
+      <h3>{{ content.title }}</h3>
+      <p>
+        {{ content.teaser }}
+      </p>
+    </a>
+    {{archive_content_info(content)}}
   </div>
 </div>
 

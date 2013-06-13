@@ -119,10 +119,6 @@ a.author:focus {
     align:center;
 }
 
-a {
-    color:#333333;
-}
-
 .recommended .box {
     border-color: rgb(0, 0, 0);
     -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.099);

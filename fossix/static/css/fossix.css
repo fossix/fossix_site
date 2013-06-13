@@ -64,13 +64,10 @@ footer p {
 }
 
 .box a {
-    dispay:block;
+    display:block;
     height: 100%;
     width: 100%;
     text-decoration:none;
-}
-
-.box a p {
     color:#333333;
 }
 

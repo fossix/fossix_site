@@ -1,23 +1,16 @@
 {% extends 'base.html' %}
 
-{% from 'utils.html' import print_author, tag_detail %}
+{% from 'utils.html' import print_author, article_info, tag_detail %}
 {% from "utils.html" import render_field, perror %}
 
 {% set pagetitle=content.title %}
 
 {% block content %}
-<div class="contenthead">
-  By
-  {% if content.author %}
-    {{ print_author(content.author) }}
-  {% else %}
-    Anonymous
-  {% endif %}
-  on
-  {{ content.get_create_date() }}
+<div class="contenthead muted">
+  {{ article_info(content.author, content.get_create_date()) }}
   {% if g.user.is_authenticated() and g.user.is_editor(content) %}
     <a href="{{ url_for('content.EditView:get', id=content.id) }}" id="edit">
-      <button class="btn btn-mini"><i class="icon-edit"> </i></button></a>
+      <i class="icon-edit"> </i></a>
   {% endif %}
   <span class="badge badge-inverse pull-right" id="likecount">
     {{content.like_count}}

@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 
-{% import 'utils.html' as utils %}
-{% set pagetitle="Archive of Articles in Fossix" %}
+{% from 'utils.html' import archive_content_info %}
+
+{% set pagetitle="Archive" %}
+{% set subtitle="Articles" %}
 
 {% block content %}
 {% if not content %}
@@ -11,9 +13,33 @@
 </p>
 {% endif %}
 
-<ul class="alistgroup">
-  {% for c in content %}
-    <li> {{ utils.content_node(c, None, g) }}
-  {% endfor %}
+{% for c in content %}
+<div class="box">
+  <a class="item" href="{{ url_for('content.ContentView:get', id=c.id, title=c.title) }}">
+    <h3>{{ c.title }}</h3>
+  <p>
+    {{ c.teaser }}
+  </p>
+  </a>
+  {{archive_content_info(c)}}
+</div>
+{% endfor %}
+
+<ul class="pager">
+  {% if less %}
+    <li class="previous">
+      <a href="{{url_for('content.ContentView:archive', page=less)}}">
+        &larr; Older
+      </a>
+    </li>
+  {% endif %}
+  {% if more %}
+    <li class="next">
+      <a href="{{url_for('content.ContentView:archive', page=more)}}">
+        Newer &rarr;
+      </a>
+    </li>
+  {% endif %}
 </ul>
+
 {% endblock %}

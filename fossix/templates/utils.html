@@ -66,7 +66,28 @@
 {%- endmacro %}
 
 {% macro print_author(author) -%}
-<a href="/profiles/{{ author.username }}">{{ author.username }}</a>
+<a href="/profiles/{{ author.username }}" class="author">
+  {{ author.fullname or author.username }}
+</a>
+{%- endmacro %}
+
+{% macro article_info(author, date) -%}
+  {% if author %}
+    <img src="{{author.avatar(32)}}" />
+    {{ print_author(author) }}
+  {% else %}
+    Anonymous
+  {% endif %}
+  {% if date %} on {{ date }} {% endif %}
+{%- endmacro %}
+
+{% macro archive_content_info(c) -%}
+  <div class="muted">
+    <a href="/profiles/{{ c.author.username }}" class="author">
+      {{ c.author.fullname }}
+    </a>
+    - {{c.create_date | relative_now}} ago
+  </div>
 {%- endmacro %}
 
 {% macro tag_detail(tag) -%}

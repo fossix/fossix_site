@@ -199,9 +199,29 @@ class ContentView(FlaskView):
 
 	return render_template('content/article.html', content=c, comment=form)
 
-    def archive(self):
-	return render_template('content/archive.html',
-			       content=db.session.query(Content).filter(Content.category=='article').all())
+    def archive(self, page=1):
+	page_limit = 10
+	end = (int(page) * page_limit)
+	start = end - page_limit
+
+	c = content=db.session.query(Content).filter(
+	    Content.category=='article').all()
+	contents = c[start:end]
+
+	if not contents:
+	    abort(404)
+
+	more = False
+	less = False
+
+	if len(contents) > end - 1:
+	    more = int(page) + 1
+
+	if start >= page_limit:
+	    less = int(page) - 1
+
+	return render_template('content/archive.html', content=contents,
+			       more=more, less=less)
 
     @login_required
     def vote(self, id, vote):
@@ -260,7 +280,6 @@ class CommentView(FlaskView):
 	    comments = c.comments[last:last+5]
 	    html = render_template('content/comment.html', comments=comments)
 	    last = last + len(comments)
-	    print last
 
 	    data = {
 		'html': html,

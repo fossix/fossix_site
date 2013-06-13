@@ -44,7 +44,7 @@ footer p {
 .box {
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
-    border-radius: 4px;
+    border-radius: 10px;
     -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
     -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
@@ -53,7 +53,7 @@ footer p {
     -o-transition: all 0.5s ease-in-out;
     transition: all 0.5s ease-in-out;
     padding-top:3px;
-    padding-bottom:3px;
+    padding-bottom:5px;
     padding-left:5px;
     padding-right:5px;
     margin-top:20px;
@@ -68,11 +68,24 @@ footer p {
 }
 
 .box a {
+    text-decoration:none;
+    color:#333333;
+}
+
+.box a.item {
     display:block;
     height: 100%;
     width: 100%;
-    text-decoration:none;
-    color:#333333;
+}
+
+.box .item h3 {
+    display:block;
+    margin-bottom: 0px;
+}
+
+.box a p {
+    font-size:16px;
+    margin-top:7px;
 }
 
 ul.nav li.dropdown:hover > ul.dropdown-menu {
@@ -90,6 +103,20 @@ a.menu:after, .dropdown-toggle:after {
     -moz-border-radius: 50px;
     -khtml-border-radius: 50px;
     overflow:hidden;
+}
+
+a.author {
+    color:#333333;
+    text-decoration:none;
+}
+
+a.author:hover,
+a.author:focus {
+    text-decoration:underline;
+}
+
+.loading {
+    align:center;
 }
 
 /* CSS for pygmentize, copied from HtmlFormatter().get_style_defs('.codehilite') output */

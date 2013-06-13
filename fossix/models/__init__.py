@@ -21,7 +21,10 @@ class SQLBase:
        self.Model = declarative_base()
        self.metadata = MetaData()
        self.metadata.bind = self.engine
-       self.session = sessionmaker(bind=self.engine)()
+       # expire_on_commit is set to false, because it is need for setting the
+       # proper tags after a save as saved contents will not be shown in content
+       # view
+       self.session = sessionmaker(bind=self.engine, expire_on_commit=False)()
 
 DB_SERVER = CurrentConfig.DB_SERVER
 DB_PORT = CurrentConfig.DB_PORT

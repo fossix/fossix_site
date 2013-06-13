@@ -242,7 +242,7 @@ class ContentView(FlaskView):
 	    form.populate_obj(comment)
 	    db.session.add(comment)
 	    db.session.commit()
-	    return redirect(url_for('ContentView:get', id, title));
+	    return redirect(url_for('.ContentView:get', id=id, title=title));
 
 	return render_template('content/article.html', content=c, comment=form)
 
@@ -259,7 +259,7 @@ class CommentView(FlaskView):
 	    last = int(last)
 	    comments = c.comments[last:last+5]
 	    html = render_template('content/comment.html', comments=comments)
-	    last = last + 5
+	    last = last + len(comments)
 	    print last
 
 	    data = {

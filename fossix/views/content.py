@@ -141,7 +141,7 @@ class TagsView(FlaskView):
 
 	if not tag:
 	    flash("No content is currently tagged with " + label)
-	    return redirect_back('main.index')
+	    return redirect_back('main.MainView:index')
 
 	return render_template('content/tag.html', tag=tag)
 

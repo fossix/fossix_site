@@ -49,7 +49,7 @@
           </a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li><a href="{{ url_for('content.ContentView:archive', page=1) }}">Archive</a></li>
+              <li><a href="{{ url_for('content.ArchiveView:index') }}">Archive</a></li>
               {% if g.user.is_authenticated() %}
               <li class="dropdown">
 	        <a href="#">

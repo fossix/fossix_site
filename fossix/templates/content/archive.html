@@ -28,14 +28,14 @@
 <ul class="pager">
   {% if less %}
     <li class="previous">
-      <a href="{{url_for('content.ContentView:archive', page=less)}}">
+      <a href="{{url_for('content.ArchiveView:get', page=less)}}">
         &larr; Older
       </a>
     </li>
   {% endif %}
   {% if more %}
     <li class="next">
-      <a href="{{url_for('content.ContentView:archive', page=more)}}">
+      <a href="{{url_for('content.ArchiveView:get', page=more)}}">
         Newer &rarr;
       </a>
     </li>

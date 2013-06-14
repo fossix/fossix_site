@@ -1,13 +1,16 @@
 {% extends 'base.html' %}
 
-{% import 'utils.html' as utils %}
+{% from 'utils.html' import archive_content_info %}
 {% set pagetitle="Tag" %}
 {% set subtitle=tag.keyword %}
 
 {% block content %}
-<ul class="alistgroup">
-  {% for c in tag.contents %}
-  <li class="unstyled"> {{ utils.content_node(c, tag.keyword, g) }}
-    {% endfor %}
-</ul>
+{% for c in tag.contents %}
+  <div class="box">
+    <a class="item" href="{{ url_for('content.ContentView:get', id=c.id, title=c.title) }}">
+      <h3>{{ c.title }}</h3>
+    </a>
+    {{ archive_content_info(c, tag.keyword) }}
+  </div>
+{% endfor %}
 {% endblock %}

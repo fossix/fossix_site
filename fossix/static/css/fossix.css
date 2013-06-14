@@ -19,28 +19,6 @@ footer p {
     align:justify;
 }
 
-.alist {
-    width: 100%;
-    font-size:large;
-}
-
-.alist a {
-    background: #f8f8f8;
-    display: block;
-    height: 100%;
-}
-
-.alist a:hover {
-    text-decoration:none;
-    background: #eeeeee;
-}
-
-.alistgroup {
-    padding-bottom:10px;
-    pading-top:10px;
-    list-style-type:none;
-}
-
 .box {
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
@@ -126,8 +104,6 @@ a.author:focus {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.099);
     border-radius: 0px;
 }
-
-.re
 
 /* CSS for pygmentize, copied from HtmlFormatter().get_style_defs('.codehilite') output */
 .codehilite .hll { background-color: #ffffcc }

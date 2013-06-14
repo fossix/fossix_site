@@ -1,6 +1,6 @@
 from flask.ext.login import login_required, current_user
 from flask import Module, jsonify, request, g, flash, url_for, redirect, json,\
-    Response, abort, Blueprint
+    Response, abort, Blueprint, current_app, session
 from fossix.utils import render_template, redirect_back, get_uniqueid
 from fossix.forms import ContentCreate_Form, ContentEdit_Form, Comment_Form
 from fossix.models import Content, Keywords, User, ContentVersions,\
@@ -199,30 +199,6 @@ class ContentView(FlaskView):
 
 	return render_template('content/article.html', content=c, comment=form)
 
-    def archive(self, page=1):
-	page_limit = 10
-	end = (int(page) * page_limit)
-	start = end - page_limit
-
-	c = content=db.session.query(Content).filter(
-	    Content.category=='article').all()
-	contents = c[start:end]
-
-	if not contents:
-	    abort(404)
-
-	more = False
-	less = False
-
-	if len(contents) > end - 1:
-	    more = int(page) + 1
-
-	if start >= page_limit:
-	    less = int(page) - 1
-
-	return render_template('content/archive.html', content=contents,
-			       more=more, less=less)
-
     @login_required
     def vote(self, id, vote):
 	c = db.session.query(Content).get(id)
@@ -277,7 +253,8 @@ class CommentView(FlaskView):
 	    }
 	else:
 	    last = int(last)
-	    comments = c.comments[last:last+5]
+	    limit = current_app.config['COMMENT_LOAD_LIMIT']
+	    comments = c.comments[last:last + limit]
 	    html = render_template('content/comment.html', comments=comments)
 	    last = last + len(comments)
 
@@ -292,8 +269,42 @@ class CommentView(FlaskView):
 
 	return resp
 
+class ArchiveView(FlaskView):
+    def index(self):
+	return self.get(1)
+
+    def get(self, page):
+	if not str(page).isdigit():
+	    page = 0
+
+	page_limit = session.get('archive_page_limit') or \
+	    current_app.config['ARCHIVE_PAGE_LIMIT']
+
+	end = (int(page) * page_limit)
+	start = end - page_limit
+
+	c = content=db.session.query(Content).filter(
+	    Content.category=='article').all()
+	contents = c[start:end]
+
+	if not contents:
+	    abort(404)
+
+	more = False
+	less = False
+
+	if len(c) > end:
+	    more = int(page) + 1
+
+	if start >= page_limit:
+	    less = int(page) - 1
+
+	return render_template('content/archive.html', content=contents,
+			       more=more, less=less)
+
 CreateView.register(content)
 EditView.register(content)
 TagsView.register(content)
 ContentView.register(content)
 CommentView.register(content)
+ArchiveView.register(content)

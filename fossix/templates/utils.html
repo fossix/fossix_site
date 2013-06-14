@@ -39,32 +39,6 @@
 </dd>
 {%- endmacro %}
 
-{% macro content_node(content, tag, g) -%}
-<div>
-<div class="taglist pull-right">
-  {% for t in content.tags %}
-    {% if t.keyword == tag %}
-      <span class="label label-inverse">{{ t.keyword }}</span>
-    {% else %}
-      <a href="{{ url_for('content.TagsView:get', label=t.keyword) }}">
-        <span class="label">{{ t.keyword }}</span>
-      </a>
-    {% endif %}
-  {% endfor %}
-</div>
-
-<div class="alist">
-  <a href="{{ url_for('content.ContentView:get', id = content.id, title=content.title) }}">
-    {{ content.title }}
-  </a>
-</div>
-<blockquote>
-  Posted on {{content.get_create_date()}}
-  by <a href="#">{{ content.author.username }}</a>
-</blockquote>
-</div>
-{%- endmacro %}
-
 {% macro print_author(author) -%}
 <a href="/profiles/{{ author.username }}" class="author">
   {{ author.fullname or author.username }}
@@ -81,12 +55,23 @@
   {% if date %} on {{ date }} {% endif %}
 {%- endmacro %}
 
-{% macro archive_content_info(c) -%}
+{% macro archive_content_info(c, tag=None) -%}
   <div class="muted">
     <a href="/profiles/{{ c.author.username }}" class="author">
       {{ c.author.fullname }}
     </a>
     - {{c.create_date | relative_now("%d days")}} ago
+    <div class="taglist pull-right">
+      {% for t in c.tags %}
+        {% if t.keyword == tag %}
+          <span class="label label-inverse">{{ t.keyword }}</span>
+        {% else %}
+          <a href="{{ url_for('content.TagsView:get', label=t.keyword) }}">
+            <span class="label">{{ t.keyword }}</span>
+          </a>
+        {% endif %}
+      {% endfor %}
+    </div>
   </div>
 {%- endmacro %}
 

@@ -23,6 +23,9 @@ class DefaultConfig(object):
     RECAPTCHA_PRIVATE_KEY = "YOUR_RECAPTCHA_PRIVATE_KEY"
     RECAPTCHA_OPTIONS = ""
 
+    ARCHIVE_PAGE_LIMIT = 10
+    COMMENT_LOAD_LIMIT = 5
+
 def get_dburi(dbcon, server, port, dbname, user, password):
     uri = dbcon + "://"
     if server:

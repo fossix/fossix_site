@@ -178,5 +178,9 @@ function fossix_event_setup()
     $(function ($) {
         $(".tooltips").tooltip();
         $(".popovers").popover();
+        $('.tag').hover(
+            function(){ $(this).toggleClass('label-inverse') },
+            function(){ $(this).toggleClass('label-inverse') }
+        );
     });
 }

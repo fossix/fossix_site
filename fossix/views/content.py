@@ -5,7 +5,7 @@ from fossix.utils import render_template, redirect_back, get_uniqueid
 from fossix.forms import ContentCreate_Form, ContentEdit_Form, Comment_Form
 from fossix.models import Content, Keywords, User, ContentVersions,\
     ContentMeta, fdb as db
-from sqlalchemy import func, and_
+from sqlalchemy import func, and_, asc
 from sqlalchemy.orm.exc import NoResultFound
 from markdown import markdown
 from flask.ext.classy import FlaskView, route
@@ -136,6 +136,10 @@ class EditView(FlaskView):
 
 
 class TagsView(FlaskView):
+    def index(self):
+	tags = db.session.query(Keywords).order_by(asc(Keywords.keyword)).all()
+	return render_template('content/tags.html', tags=tags)
+
     def get(self, label):
 	tag = db.session.query(Keywords).filter(Keywords.keyword == label).first()
 
@@ -238,6 +242,9 @@ class ContentView(FlaskView):
 	    form.populate_obj(comment)
 	    db.session.add(comment)
 	    db.session.commit()
+	    # Since we opted not to destroy objects after comment, we need to
+	    # query again to get the latest posted comment
+	    c = db.session.query(Content).get(id)
 	    return redirect(url_for('.ContentView:get', id=id, title=title));
 
 	return render_template('content/article.html', content=c, comment=form)
@@ -255,7 +262,8 @@ class CommentView(FlaskView):
 	    last = int(last)
 	    limit = current_app.config['COMMENT_LOAD_LIMIT']
 	    comments = c.comments[last:last + limit]
-	    html = render_template('content/comment.html', comments=comments)
+	    html = render_template('content/comment.html', comments=comments,
+				   parent=c)
 	    last = last + len(comments)
 
 	    data = {

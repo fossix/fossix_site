@@ -99,10 +99,36 @@ a.author:focus {
 
 .recommended .box {
     border-color: rgb(0, 0, 0);
-    -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.099);
-    -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.099);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.099);
+    -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0);
+    -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0);
     border-radius: 0px;
+}
+
+.comment-article-author {
+    background-color: rgba(193, 205, 205, 0.2);
+}
+
+.tag-box {
+    overflow:hidden;
+    width:22%;
+    display:table;
+    float:left;
+    padding:4px;
+    margin-right:5px;
+    margin-bottom:10px;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.tag-box p {
+    height:5.3em;
+    font-size:12px;
+    color:#555555;
+    overflow:hidden;
+}
+
+.tag-box .pull-left {
+    margin:5px;
 }
 
 /* CSS for pygmentize, copied from HtmlFormatter().get_style_defs('.codehilite') output */

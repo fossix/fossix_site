@@ -1,5 +1,11 @@
 {%- for comment in comments recursive %}
-<div class="media">
+<div class="media
+            {% if comment.author_id == parent.author_id %}
+              comment-article-author
+            {% endif %}
+            {% if comment.like_count < 0 %} muted {% endif %}
+            "
+     >
   <div class="pull-left tooltips rounded"
        title="{{comment.author.username}}" data-toggle="tooltip"
        data-placement="top">

@@ -5,6 +5,9 @@
 {% set subtitle=tag.keyword %}
 
 {% block content %}
+<p>
+  {{ tag.description }}
+</p>
 {% for c in tag.contents %}
   <div class="box">
     <a class="item" href="{{ url_for('content.ContentView:get', id=c.id, title=c.title) }}">

@@ -15,4 +15,7 @@ class MainView(FlaskView):
     def syntax(self):
 	return render_template('site/syntax.html')
 
+    def policy(self):
+	return render_template('site/policy.html')
+
 MainView.register(main, route_base="/")

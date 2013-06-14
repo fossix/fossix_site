@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% from 'utils.html' import print_author, article_info, tag_detail %}
+{% from 'utils.html' import print_author, article_info, tag_link %}
 {% from "utils.html" import render_field, perror, archive_content_info %}
 
 {% set pagetitle=content.title %}
@@ -28,7 +28,7 @@
 <div class="span12">
   <div class="taglist pull-left">
     {% for t in content.tags %}
-      {{ tag_detail(t) }}
+      {{ tag_link(t) }}
     {% endfor %}
   </div>
 

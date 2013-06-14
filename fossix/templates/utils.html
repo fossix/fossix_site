@@ -55,6 +55,19 @@
   {% if date %} on {{ date }} {% endif %}
 {%- endmacro %}
 
+{% macro tag_link(tag, highlight_tag) -%}
+  {% if tag.keyword == highlight_tag %}
+    <span class="label label-inverse">{{ tag.keyword }}</span>
+  {% else %}
+    <a href="{{url_for('content.TagsView:get', label=tag.keyword) }}"
+       title="Content tagged with {{tag.keyword}}: {{tag.contents|count}}"
+       data-toggle="tooltip" class="tooltips" data-trigger="hover"
+       data-delay="700" role="button">
+      <span class="label tag">{{tag.keyword}}</span>
+    </a>
+  {% endif %}
+{%- endmacro %}
+
 {% macro archive_content_info(c, tag=None) -%}
   <div class="muted">
     <a href="/profiles/{{ c.author.username }}" class="author">
@@ -63,22 +76,8 @@
     - {{c.create_date | relative_now("%d days")}} ago
     <div class="taglist pull-right">
       {% for t in c.tags %}
-        {% if t.keyword == tag %}
-          <span class="label label-inverse">{{ t.keyword }}</span>
-        {% else %}
-          <a href="{{ url_for('content.TagsView:get', label=t.keyword) }}">
-            <span class="label">{{ t.keyword }}</span>
-          </a>
-        {% endif %}
+        {{ tag_link(t, tag) }}
       {% endfor %}
     </div>
   </div>
-{%- endmacro %}
-
-{% macro tag_detail(tag) -%}
-<a href="{{url_for('content.TagsView:get', label=tag.keyword) }}"
-   title="Content tagged with {{tag.keyword}}: {{tag.contents|count}}"
-   data-toggle="tooltip" class="tooltips" data-trigger="hover" role="button">
-  <span class="label">{{tag.keyword}}</span>
-</a>
 {%- endmacro %}

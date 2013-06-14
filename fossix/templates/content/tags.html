@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% set pagetitle="Tag" %}
+
+{% block __block_1 %}
+<div class="span1"></div>
+{% endblock %}
+
+{% block __block_2 %}
+<div class="span10" style="margin-top:20px;">
+  <div id="info">
+    <div id="message"></div>
+  </div>
+
+<form>
+<label for="tags-search">Search tags</label>
+<input type="text" id="tags-search" name="tags-search" />
+</form>
+
+{% for tag in tags %}
+<div class="tag-box">
+  <a href="{{url_for('content.TagsView:get', label=tag.keyword) }}"
+     role="button">
+    <span class="label label-inverse tag">{{tag.keyword}}</span>
+  </a>
+  <div class="clear-fix">
+    <p class="muted">
+      {{tag.description if tag.description}}
+    </p>
+      <div title="Number of Articles with tag {{ tag.keyword }}" class="pull-left">
+        <i class="icon-pencil"> </i> x {{ tag.contents|count }}
+      </div>
+      <div title="Number of users watching {{ tag.keyword }}" class="pull-left">
+        <i class="icon-eye-open"> </i> x 0
+      </div>
+  </div>
+</div>
+{% endfor %}
+</div>
+{% endblock %}
+
+{% block __block_3 %}
+{% endblock %}

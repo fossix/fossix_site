@@ -26,7 +26,8 @@
       {% if index_recent %}
         {% for i in index_recent %}
           <div class="box">
-            <a href="{{ url_for('content.ContentView:get', id=i.id, title=i.title) }}">
+            <a href="{{ url_for('content.ContentView:get', id=i.id,
+                     title=i.title) }}" class="item">
               <h3>{{ i.title }}</h3>
               <p>
                 {{ i.teaser }}

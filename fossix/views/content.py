@@ -239,6 +239,41 @@ class ContentView(FlaskView):
 
 	return resp
 
+    # The search function taken form
+    # http://lowmanio.co.uk/blog/entries/postgresql-full-text-search-and-sqlalchemy/
+    def search(self):
+	terms = request.args.get('search')
+	q = db.session.query(Content).filter('content.search_vector '\
+						 '@@ plainto_tsquery(:sterms)')
+	q = q.params(sterms=terms)
+	q = q.add_column(func.ts_headline('pg_catalog.english',
+					  Content.content,
+					  func.plainto_tsquery(terms),
+					  'MaxFragments=5,FragmentDelimiter=|||,'\
+					      'StartSel="<span class=""shighlight"">", '\
+					      'StopSel = "</span>", ',
+					  ))
+
+	q = q.add_column(func.ts_headline('pg_catalog.english',
+					  Content.title,
+					  func.plainto_tsquery(terms),
+					  'HighlightAll=TRUE, '\
+					      'StartSel="<span class=""shighlight"">", '\
+					      'StopSel = "</span>"'))
+
+	q = q.order_by('ts_rank_cd(content.search_vector, '\
+			   'plainto_tsquery(:sterms)) DESC')
+
+	print q
+
+	results = [(entry, fragments.split('|||'), title) for entry, fragments,
+		   title in q]
+
+	print results
+
+	return render_template('content/search.html', term=terms,
+			       results=results)
+
 
 class CommentView(FlaskView):
     def get(self, id, last=0):
@@ -287,7 +322,7 @@ class CommentView(FlaskView):
 	    db.session.add(comment)
 	    db.session.commit()
 	    db.session.expire_all()
-	    # Since we opted not to destroy objects after comment, we need to
+	    # Since we opted not to destroy objects after commit, we need to
 	    # query again to get the latest posted comment
 	    c = db.session.query(Content).get(id)
 	    return redirect(url_for('.ContentView:get', id=id, title="test"));

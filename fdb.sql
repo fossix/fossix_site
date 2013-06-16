@@ -60,6 +60,15 @@ CREATE TABLE content_versions (
 	FOREIGN KEY(id) REFERENCES content_meta (id),
 	FOREIGN KEY(modifier_id) REFERENCES "users" (id)
 );
+-- Support search for content_versions
+alter table content_versions add column search_vector tsvector;
+create index content_versions_search_index on content_versions using gin(search_vector);
+create trigger content_versions_search_update before update or insert on content_versions
+	for each row execute procedure
+        tsvector_update_trigger('search_vector',
+                                'pg_catalog.english',
+                                'content',
+                                'title');
 
 CREATE TABLE tags_assoc (
 	content_id INTEGER NOT NULL,
@@ -81,6 +90,7 @@ SELECT
     a.title,
     a.content,
     a.state,
+    a.search_vector,
     b.teaser,
     b.author_id,
     b.create_date,

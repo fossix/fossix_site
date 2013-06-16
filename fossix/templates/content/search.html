@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% from 'utils.html' import archive_content_info %}
+{% set pagetitle="Search" %}
+{% set subtitle=term %}
+
+{% block content %}
+
+{% if not results %}
+  No results were found. Try looking in the
+  <a href="{{url_for('content.ArchiveView:index')}}"> Archives </a>
+{% else %}
+  Found {{ results|count }} results for your query
+  {% for result in results %}
+    {% set content, fragments, title = result %}
+    <h4>
+      <a href="{{url_for('content.ContentView:get', id=content.id,
+               title=content.title)}}">
+        {{title|safe}}
+      </a>
+    </h4>
+    {% for frag in fragments %}
+      <p>&hellip;{{ frag|safe }} &hellip; </p>
+    {% endfor %}
+  {% endfor %}
+{% endif %}
+{% endblock %}

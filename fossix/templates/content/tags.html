@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
-{% set pagetitle="Tag" %}
+{% set pagetitle="All Tags" %}
+{% set subtitle="Page %(current)s of %(total)s" % {'current':current, 'total':total+1} %}
 
 {% block __block_1 %}
 <div class="span1"></div>
@@ -11,6 +12,15 @@
   <div id="info">
     <div id="message"></div>
   </div>
+
+  {% if pagetitle %}
+  <div class="page-header">
+    <h1> {{ pagetitle }}
+      {% if subtitle %} <small>{{ subtitle }} </small>{% endif %}
+    </h1>
+  </div>
+  {% endif %}
+
 
   <form>
     <input type="text" id="tags-search" name="tags-search" placeholder="Search tags"/>

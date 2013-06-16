@@ -169,10 +169,33 @@ function load_comments()
     $('#loading').delay(1000).fadeOut();
 }
 
+function show_comment_box(event)
+{
+    parent_id = $(this).data("parent");
+    article = $('#comments').data("parent");
+    parent = $("#comment"+parent_id);
+    var div = $("#comment-form");
+    $('#comment-cancel').show();
+    $('#comment-form #refers_to').val(parent_id);
+    parent.append(div);
+
+    return (false);
+};
+
 function fossix_event_setup()
 {
     $(document).on('click', '#like', like_content);
     $(document).on('click', '.vote', vote_comment);
+    $(document).on('click', '.comment-reply', show_comment_box);
+    $(document).on('click', '#comment-cancel',
+                   function(e) {
+                       var div = $("#comment-form");
+                       var article = $('#comments').data("parent");
+                       $("#comment-cancel").hide();
+                       $("#comment-form-main").append(div);
+                       $('#comment-form #refers_to').val(article);
+                   });
+
     scroll_hook(document, 40, load_comments);
 
     $(function ($) {

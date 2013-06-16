@@ -87,8 +87,7 @@ class Content(db.Model):
     meta = relationship(ContentMeta,
 			primaryjoin=foreign(__table__.c.id) == ContentMeta.id)
 
-    comments = relationship('Content')
-
+    comments = relationship('Content', order_by='asc(Content.create_date)')
 
     def __repr_(self):
         return 'id: %r\ntitle: %r\ndate:%r' % (self.id, self.title, self.create_date)

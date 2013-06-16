@@ -66,13 +66,19 @@
 </div>
 
 {% if g.user.is_authenticated() %}
-  <form method="POST" id="comment_form">
-    {{ comment.hidden_tag() }}
-    {{ render_field(comment.content, rows=4, required=True, class="span12") }}
-    <input type="submit" value="Comment" name="submit"
-           formaction="{{request.path}}">
-    {{ perror(comment.errors) }}
-  </form>
+  <div id="comment-form-main">
+    <form method="POST" id="comment-form">
+      {{ comment.hidden_tag() }}
+      {{ render_field(comment.content, rows=4, required=True, class="span12") }}
+      <input type="submit" value="Comment" name="submit"
+             formaction="{{url_for('content.CommentView:post', id=content.id)}}"
+             id="comment-submit">
+      <a class="btn btn-inverse" id="comment-cancel" style="display:none;">
+        Cancel
+      </a>
+      {{ perror(comment.errors) }}
+    </form>
+  </div>
 {% else %}
   Login to Comment
 {% endif %}

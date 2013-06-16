@@ -178,6 +178,7 @@ class ContentView(FlaskView):
 	c.inc_read_count()
 	if g.user.is_authenticated():
 	    form = Comment_Form()
+	    form.refers_to.data = c.id
 
 	return render_template('content/article.html', content=c, comment=form)
 
@@ -209,6 +210,7 @@ class ContentView(FlaskView):
 	if g.user.is_authenticated():
 	    form = Comment_Form()
 	    form.content.data = ""
+	    form.refers_to.data = c.id
 
 	return render_template('content/article.html', content=c, comment=form)
 
@@ -219,7 +221,7 @@ class ContentView(FlaskView):
 	if not c:
 	    return abort(500)
 
-	if vote=='down':
+	if vote =='down':
 	    count = c.dec_like_count()
 	else:
 	    count = c.inc_like_count()
@@ -233,30 +235,9 @@ class ContentView(FlaskView):
 
 	jd = json.dumps(data)
 	resp = Response(jd, status=200, mimetype='application/json')
+	db.session.expire_all()
 
 	return resp
-
-    @login_required
-    def post(self, id=None, title=None):
-	c = db.session.query(Content).get(id)
-	form = Comment_Form()
-
-	if form.validate_on_submit():
-	    comment = Content()
-	    comment.category = 'comment'
-	    comment.state = 'published'
-	    comment.modifier_id = g.user.id
-	    comment.refers_to = c.id
-	    c.inc_comment_count()
-	    form.populate_obj(comment)
-	    db.session.add(comment)
-	    db.session.commit()
-	    # Since we opted not to destroy objects after comment, we need to
-	    # query again to get the latest posted comment
-	    c = db.session.query(Content).get(id)
-	    return redirect(url_for('.ContentView:get', id=id, title=title));
-
-	return render_template('content/article.html', content=c, comment=form)
 
 
 class CommentView(FlaskView):
@@ -286,6 +267,32 @@ class CommentView(FlaskView):
 	resp = Response(jd, status=200, mimetype='application/json')
 
 	return resp
+
+    @login_required
+    def post(self, id):
+	c = db.session.query(Content).get(id)
+
+        if c is None:
+	    abort(404)
+
+	form = Comment_Form()
+
+	if form.validate_on_submit():
+	    comment = Content()
+	    comment.category = 'comment'
+	    comment.state = 'published'
+	    comment.modifier_id = g.user.id
+	    c.inc_comment_count()
+	    form.populate_obj(comment)
+	    db.session.add(comment)
+	    db.session.commit()
+	    db.session.expire_all()
+	    # Since we opted not to destroy objects after comment, we need to
+	    # query again to get the latest posted comment
+	    c = db.session.query(Content).get(id)
+	    return redirect(url_for('.ContentView:get', id=id, title="test"));
+
+	return render_template('content/article.html', content=c, comment=form)
 
 
 class ArchiveView(FlaskView):

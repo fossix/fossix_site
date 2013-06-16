@@ -22,3 +22,4 @@ class ContentEdit_Form(ContentCreate_Form):
 class Comment_Form(Form):
     content = TextAreaField("Comment", validators=[validators.required(),
 						   validators.Length(max=1024)])
+    refers_to = HiddenField()

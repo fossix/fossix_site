@@ -6,8 +6,20 @@
 
 {% block content %}
 <p>
-  {{ tag.description }}
+  {{ tag.description if tag.description }}
 </p>
+<div class="row-fluid">
+  <div title="Number of Articles with tag {{ tag.keyword }}" class="pull-left" style="margin:10px;">
+    <i class="icon-pencil"> </i> x {{ tag.contents|count }}
+  </div>
+  <div title="Number of users watching {{ tag.keyword }}" class="pull-left" style="margin:10px;">
+    <i class="icon-eye-open"> </i> x 0
+  </div>
+  <div class="pull-left" style="margin:10px;">
+    <a href="{{url_for('content.TagsView:index')}}?page=1">View all tags</a>
+  </div>
+</div>
+
 {% for c in tag.contents %}
   <div class="box">
     <a class="item" href="{{ url_for('content.ContentView:get', id=c.id, title=c.title) }}">

@@ -137,8 +137,17 @@ class EditView(FlaskView):
 
 class TagsView(FlaskView):
     def index(self):
+	page = int(request.args.get('page'))
+	limit = 20
+	start = (page - 1) * limit
 	tags = db.session.query(Keywords).order_by(asc(Keywords.keyword)).all()
-	return render_template('content/tags.html', tags=tags)
+	page_total = len(tags) / limit
+	tags = tags[start:start+limit]
+	if not tags:
+	    abort(404)
+
+	return render_template('content/tags.html', tags=tags, current=page,
+			       total=page_total)
 
     def get(self, label):
 	tag = db.session.query(Keywords).filter(Keywords.keyword == label).first()
@@ -249,6 +258,7 @@ class ContentView(FlaskView):
 
 	return render_template('content/article.html', content=c, comment=form)
 
+
 class CommentView(FlaskView):
     def get(self, id, last=0):
 	c = db.session.query(Content).get(id)
@@ -276,6 +286,7 @@ class CommentView(FlaskView):
 	resp = Response(jd, status=200, mimetype='application/json')
 
 	return resp
+
 
 class ArchiveView(FlaskView):
     def index(self):

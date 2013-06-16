@@ -12,30 +12,63 @@
     <div id="message"></div>
   </div>
 
-<form>
-<label for="tags-search">Search tags</label>
-<input type="text" id="tags-search" name="tags-search" />
-</form>
+  <form>
+    <input type="text" id="tags-search" name="tags-search" placeholder="Search tags"/>
+  </form>
 
-{% for tag in tags %}
-<div class="tag-box">
-  <a href="{{url_for('content.TagsView:get', label=tag.keyword) }}"
-     role="button">
-    <span class="label label-inverse tag">{{tag.keyword}}</span>
-  </a>
-  <div class="clear-fix">
-    <p class="muted">
-      {{tag.description if tag.description}}
-    </p>
-      <div title="Number of Articles with tag {{ tag.keyword }}" class="pull-left">
-        <i class="icon-pencil"> </i> x {{ tag.contents|count }}
+  {% for tag in tags %}
+    <div id="tags">
+      <div class="tag-box">
+        <a href="{{url_for('content.TagsView:get', label=tag.keyword) }}"
+           role="button">
+          <span class="label label-inverse tag">{{tag.keyword}}</span>
+        </a>
+        <div class="clear-fix">
+          <p class="muted">
+            {{tag.description if tag.description}}
+          </p>
+          <div title="Number of Articles with tag {{ tag.keyword }}"
+               class="pull-left">
+            <i class="icon-pencil"> </i> x {{ tag.contents|count }}
+          </div>
+          <div title="Number of users watching {{ tag.keyword }}" class="pull-left">
+            <i class="icon-eye-open"> </i> x 0
+          </div>
+        </div>
       </div>
-      <div title="Number of users watching {{ tag.keyword }}" class="pull-left">
-        <i class="icon-eye-open"> </i> x 0
+    </div>
+  {% endfor %}
+
+  <div class="row-fluid">
+    {% if total > 1 %}
+      <div class="span12">
+        <div class="pagination pagination-right">
+          <ul>
+            <li class="{% if current == 1 %} disabled {% endif %}">
+              <a href="{{url_for('content.TagsView:index')}}?page={{current-1}}">
+                &laquo;
+              </a>
+            </li>
+
+            {% for i in range(1,total+1) %}
+              <li class="{% if current == i %} active {% endif %}">
+                <a href="{{url_for('content.TagsView:index')}}?page={{i}}">
+                  {{i}}
+                </a>
+              </li>
+            {% endfor %}
+
+            <li class="{% if current == total %} disabled {% endif %}">
+              <a href="{{url_for('content.TagsView:index')}}?page={{current+1}}">
+                &raquo;
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
+    {% endif %}
   </div>
-</div>
-{% endfor %}
+
 </div>
 {% endblock %}
 

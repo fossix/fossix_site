@@ -3,13 +3,19 @@
 {% set title="My Profile" %}
 {% set pagetitle=g.user.fullname or g.user.username %}
 {% set subtitle="Profile View" %}
+{% block head %}
+<script>
+    $(function () {
+        $('#profiletab a:last').tab('show');
+    })
+</script>
+{% endblock %}
 
 <!-- We don't want twitter and +1 buttons on this page -->
 {% block lsb_content %}
 {% endblock %}
 
 {% block content %}
-
 <div class="row">
   <div class="span4">
     <ul class="thumbnails">
@@ -27,18 +33,19 @@
 
   <div class="span5">
     <dl>
-    {% if g.user.fullname  %}
-    <dt>Name</dt>
-    <dd>{{ g.user.fullname }}</dd>
-    {% endif %}
-    <dt>Email</dt> <dd>{{ g.user.email }}</dd>
-    <dt>Privileges</dt>
-    <dd>
-      <ul style="unstyled">
-        <li>Some permission 1</li>
-        <li>Some permission 2</li>
-      </ul>
-    </dd>
+      {% if g.user.fullname  %}
+      <dt>Name</dt>
+      <dd>{{ g.user.fullname }}</dd>
+      {% endif %}
+      <dt>Email</dt> <dd>{{ g.user.email }}</dd>
+      <dt>Privileges</dt>
+      <dd>
+        <ul style="unstyled">
+          <li>Some permission 1</li>
+          <li>Some permission 2</li>
+        </ul>
+      </dd>
+    </dl>
   </div>
 </div>
 {% endblock %}

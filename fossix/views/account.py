@@ -6,7 +6,7 @@ from fossix.forms import OpenID_LoginForm, ProfileEdit_Form
 from fossix.extensions import oid
 from fossix.models import User, Identity, fdb as db
 from flask.ext.login import login_user, logout_user, \
-    login_required, fresh_login_required
+    login_required, fresh_login_required, confirm_login
 from flask.ext.classy import FlaskView
 
 account = Blueprint('account', __name__)
@@ -20,6 +20,8 @@ def create_or_login(resp):
 	user = db.session.query(User).get(identity.user_id)
 
     if user is not None:
+	if g.user.is_authenticated():
+	    confirm_login()
         g.user = user
 	login_user(user, remember=True)
 	flash(u'Successfully signed in')
@@ -28,7 +30,6 @@ def create_or_login(resp):
     return redirect(url_for('account.ProfileView:create', next=oid.get_next_url(),
                             name=resp.fullname or resp.nickname,
                             email=resp.email))
-
 
 class LoginView(FlaskView):
     @oid.loginhandler
@@ -106,7 +107,7 @@ class ProfileView(FlaskView):
 
 	return render_template('account/edit_profile.html', form=form)
 
-    @login_required
+    @fresh_login_required
     def edit(self):
 	form = ProfileEdit_Form(obj=g.user)
 	form.next.data = redirect_url()

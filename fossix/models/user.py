@@ -48,3 +48,6 @@ class User(db.Model):
 
     def is_editor(self, content = None):
 	return self.is_author(content) or self.is_moderator()
+
+    def is_watching_tag(self, tag):
+	return False

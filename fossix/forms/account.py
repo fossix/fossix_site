@@ -1,5 +1,6 @@
 from flask.ext.wtf import Form, HiddenField, TextField, RecaptchaField, \
-    SubmitField, ValidationError, required, email, url, validators
+    SubmitField, ValidationError, required, email, url, validators, \
+    BooleanField
 from flask.ext.wtf.html5 import URLField, EmailField
 from fossix.models import User, fdb as db
 
@@ -25,4 +26,6 @@ class ProfileEdit_Form(Form):
 		       [required("You have to provide an email address")])
     username = TextField("Nick Name", validators=[check_uniqueid])
     recaptcha = RecaptchaField()
+    email_alerts = BooleanField("Do you wish to get email notifications for updates and stuff?")
+    receive_email = BooleanField("Allow fossix or other members to be able to leave a message over email?")
     submit = SubmitField("Update Profile")

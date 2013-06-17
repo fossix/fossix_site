@@ -63,6 +63,11 @@ def configure_extensions(app):
 				'CACHE_DEFAULT_TIMEOUT' : 86400}) # one day
     lm.init_app(app)
     lm.login_view = "account.LoginView:index"
+    lm.refresh_view = "account.LoginView:index"
+    lm.needs_refresh_message = {
+	u"The page you are visiting needs re-authentication."
+    }
+    lm.needs_refresh_message_category = "info"
 
     Markdown(app, extensions = ["extra", "sane_lists", "codehilite",
 				"smartypants"],

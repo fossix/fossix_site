@@ -14,6 +14,8 @@
       {{ render_field(form.fullname, size=30) }}
       {{ render_field(form.email, size=30, required=True) }}
       {{ render_field(form.username, size=30, required=True) }}
+      {{ render_field(form.email_alerts) }}
+      {{ render_field(form.receive_email) }}
       {{ render_field(form.recaptcha) }}
       <br/>{{ form.submit }}
     </dl>

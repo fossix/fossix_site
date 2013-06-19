@@ -21,11 +21,16 @@
   {% if g.user.is_authenticated() %}
     {% if g.user.is_watching_tag(tag) %}
       <div class="pull-left" style="margin:10px;">
-        <a href="#" class="btn btn-mini disabled">Already Watching</a>
+        <p> You are already watching this tag. Click here to modify the tags you
+        are watching.
+          <a href="{{url_for('content.TagsView:watched')}}" class="btn btn-mini">
+            Show watched tags
+          </a>
       </div>
     {% else %}
       <div class="pull-left" style="margin:10px;">
-        <a href="#" class="btn btn-mini">Watch this tag</a>
+        <a href="{{url_for('content.TagsView:put', tag=tag, action='watch')}}"
+           class="btn btn-mini" id="watchtag">Watch tag</a>
       </div>
     {% endif %}
   {% endif %}

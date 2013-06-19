@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% set pagetitle='Tags' %}
+{% set subtitle='Watched' %}
+
+{% block content %}
+{% if g.user.is_authenticated() %}
+  {% if not g.user.tags %}
+    You are not watching any tags currently
+  {% endif %}
+  {% for tag in g.user.tags %}
+    <a href="#" role="button">
+      <span class="tag">{{tag}}</span>
+    </a>
+  {% endfor %}
+{% else %}
+  You should be logged in to access this page
+{% endif %}
+
+{% endblock %}

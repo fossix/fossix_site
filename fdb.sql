@@ -60,6 +60,7 @@ CREATE TABLE content_versions (
 	FOREIGN KEY(id) REFERENCES content_meta (id),
 	FOREIGN KEY(modifier_id) REFERENCES "users" (id)
 );
+
 -- Support search for content_versions
 alter table content_versions add column search_vector tsvector;
 create index content_versions_search_index on content_versions using gin(search_vector);
@@ -76,6 +77,13 @@ CREATE TABLE tags_assoc (
 	keyword_id INTEGER,
 	FOREIGN KEY(content_id, content_version) REFERENCES content_versions (id, version),
 	FOREIGN KEY(keyword_id) REFERENCES keywords (id)
+);
+
+CREATE TABLE tags_watch (
+	keyword_id INTEGER,
+	user_id INTEGER,
+	FOREIGN KEY(keyword_id) REFERENCES keywords(id),
+	FOREIGN KEY(user_id) REFERENCES users(id)
 );
 
 -- A view comprising of content meta and content versions, and

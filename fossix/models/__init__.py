@@ -36,5 +36,6 @@ fdb = SQLBase(get_dburi('postgresql', DB_SERVER, DB_PORT,
 			DB_NAME,DB_USER, DB_PASSWD))
 fdb.metadata.reflect(views=True)
 
+from fossix.models.models import Keywords
 from fossix.models.user import User, Identity
-from fossix.models.content import Content, Keywords, ContentVersions, ContentMeta
+from fossix.models.content import Content, ContentVersions, ContentMeta

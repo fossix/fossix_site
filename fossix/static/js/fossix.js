@@ -182,6 +182,27 @@ function show_comment_box(event)
     return (false);
 };
 
+function watch_tag(event)
+{
+    var link = $(this).attr('href');
+
+    $.ajax({
+        type        : "PUT",
+        contentType : "application/json; charset=utf-8;",
+        url         : link,
+        datatype    : "json",
+        success     : function(data) {
+            $('#watchtag').addClass('disabled');
+            flash_info(data.message);
+        },
+        error       : function(jqXHR, textStatus, errorThrown) {
+            flash_error(errorThrown);
+        }
+    });
+
+    return (false);
+}
+
 function fossix_event_setup()
 {
     $(document).on('click', '#like', like_content);

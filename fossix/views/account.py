@@ -1,10 +1,15 @@
+"""
+This file is where we put all view information which is operated when a user is
+already logged in or for logging in/out.
+"""
+
 from flask import Module, render_template, request, session, g, redirect, \
     url_for, flash, Blueprint
 from fossix.utils import cached, render_page, get_uniqueid, redirect_url, \
     redirect_back, is_safe_url
 from fossix.forms import OpenID_LoginForm, ProfileEdit_Form
 from fossix.extensions import oid
-from fossix.models import User, Identity, fdb as db
+from fossix.models import User, Keywords, Identity, fdb as db
 from flask.ext.login import login_user, logout_user, \
     login_required, fresh_login_required, confirm_login
 from flask.ext.classy import FlaskView

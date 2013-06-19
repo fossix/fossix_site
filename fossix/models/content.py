@@ -3,26 +3,8 @@ from datetime import datetime
 from sqlalchemy import func, text, and_, Table, Column, Integer, ForeignKey, \
     and_, ForeignKeyConstraint, select
 from sqlalchemy.orm import relationship, backref, column_property, foreign
-from fossix.models import User
+from fossix.models import User, Keywords
 from flask import g
-
-# This table contains keywords that are tagged in articles
-class Keywords(db.Model):
-    __table__ = db.metadata.tables['keywords']
-
-    @staticmethod
-    def get(k):
-	obj = db.session.query(Keywords).filter(Keywords.keyword == k).first()
-	if not obj:
-	    obj = Keywords(k)
-
-	return obj
-
-    def __init__(self, k):
-        self.keyword = k
-
-    def __repr__(self):
-        return '%s' % self.keyword
 
 tags_assoc = Table('tags_assoc', db.metadata, autoload=True)
 

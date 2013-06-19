@@ -1,13 +1,18 @@
-from fossix.models import fdb as db
+from fossix.models import fdb as db, Keywords
 from datetime import datetime
 from hashlib import md5
 from sqlalchemy import Table
+from sqlalchemy.orm import relationship, backref
 
 class Identity(db.Model):
     __table__ = Table('identity', db.metadata, autoload=True)
 
+tags_watch = Table('tags_watch', db.metadata, autoload=True)
+
 class User(db.Model):
     __table__ = Table('users', db.metadata, autoload=True)
+
+    tags = relationship(Keywords, secondary=tags_watch, lazy=True)
 
     def is_authenticated(self):
 	return True
@@ -50,4 +55,4 @@ class User(db.Model):
 	return self.is_author(content) or self.is_moderator()
 
     def is_watching_tag(self, tag):
-	return False
+	return tag in self.tags

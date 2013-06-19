@@ -165,6 +165,31 @@ class TagsView(FlaskView):
 	    result.append({'tag': str(tag)})
 	return jsonify(tags=result)
 
+    @login_required
+    def put(self, tag, action):
+	# watch a particular tag
+	tag = db.session.query(Keywords).filter(Keywords.keyword==tag).one()
+	if tag is None:
+	    abort(404)
+
+	if action=='watch':
+	    if tag not in g.user.tags:
+		g.user.tags.append(tag)
+	elif action=='unwatch':
+	    if tag in g.user.tags:
+		g.user.tags.remove(tag)
+
+	db.session.commit()
+	data = {
+	    'message': "Sucessfully added tag to your watchlist"
+	}
+
+	return jsonify(data)
+
+    @login_required
+    def watched(self):
+	return render_template('content/watched_tags.html')
+
 
 class ContentView(FlaskView):
     route_base = '/'

@@ -50,7 +50,6 @@ class LoginView(FlaskView):
 	login_form = OpenID_LoginForm()
 	if login_form.validate_on_submit():
 	    openid = request.form.get('openid')
-	    print openid
 	    if openid:
 		return oid.try_login(openid,
 				     ask_for=['email', 'fullname', 'nickname'])
@@ -90,10 +89,15 @@ class ProfileView(FlaskView):
 	form = ProfileEdit_Form()
 	if form.validate_on_submit():
 	    user = User()
-	    user.openid = session['openid']
 	    form.populate_obj(user)
+	    identity = Identity()
 	    db.session.add(user)
 	    db.session.commit()
+
+	    identity.url = session['openid']
+	    user.identity.append(identity)
+	    db.session.commit()
+
 	    flash(u'Profile created')
 	    login_user(user, False)
 	    return redirect(oid.get_next_url())

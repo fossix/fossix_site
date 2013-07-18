@@ -1,14 +1,20 @@
 * Reference for Developers/Maintainers
 ** Requirements/Installations
-*** Needed Flask ExtensionsA
+*** Needed Flask Extensions
 **** Login
 **** SQLAlchemy
 **** OpenID
 **** Markdown
+**** Script
+**** Cache
+**** Classy
+**** WTF
 *** Needed Python modules
 **** Psycopg2
 **** Pygments
 **** Smartypants
+**** Python-memcached
+**** Alembic
 ** Content Editing/Creating
 *** Supported Markdown in Fossix
     The current markdown is based on python markdown with many extensions. For a
@@ -243,19 +249,3 @@
 **** [[http://flask.pocoo.org/snippets/80/][Flask Push Notifications]]
 **** [[http://www.ibm.com/developerworks/webservices/library/ws-restful/][REST - quick intro]]
 **** [[http://blog.luisrei.com/articles/flaskrest.html][REST using Flask]]
-* Todo List for Fossix
-**** Home Page
-**** Article Page
-     – Comments
-**** Content revision
-**** OpenID selection in login page
-**** Fresh Login (Reauth in some cases)
-**** Multiple OpenID per user
-**** Public User profile
-**** Personal profile page
-**** Profile edit page
-**** Admin Interface
-**** Moderation Interface
-**** User karma
-**** Per user “like” and “Read” tracking
-**** Site static pages

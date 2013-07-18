@@ -1,0 +1,33 @@
+#    -*- mode: org -*-
+* Todo List for Fossix
+** DONE Home Page
+   - State "DONE"       from "TODO"       [2013-07-19 Fri 02:02]
+** DONE Article Page
+   - State "DONE"       from "TODO"       [2013-07-19 Fri 02:02]
+   – Comments
+** DONE Content revision
+   - State "DONE"       from "TODO"       [2013-07-19 Fri 02:02]
+** TODO OpenID selection in login page
+** TODO Fresh Login (Reauth in some cases)
+** TODO Multiple OpenID per user
+   When the user is logged in, ask user to login with new openid.
+
+   #+BEGIN_SRC python
+      # Check if the user is logging from another openid
+      if g.user.is_authenticated():
+          identity = Identity()
+          identity.url = session['openid']
+          user.identity.append(identity)
+          db.session.commit()
+          flash('New Open ID added')
+   #+END_SRC
+** TODO Public User profile
+** DONE Personal profile page
+   - State "DONE"       from "TODO"       [2013-07-19 Fri 02:03]
+** DONE Profile edit page
+   - State "DONE"       from "TODO"       [2013-07-19 Fri 02:03]
+** TODO Admin Interface
+** TODO Moderation Interface
+** TODO User karma
+** TODO Per user “like” and “Read” tracking
+** TODO Site static pages

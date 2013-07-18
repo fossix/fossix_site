@@ -13,6 +13,7 @@ class User(db.Model):
     __table__ = Table('users', db.metadata, autoload=True)
 
     tags = relationship(Keywords, secondary=tags_watch, lazy=True)
+    identity = relationship(Identity)
 
     def is_authenticated(self):
 	return True

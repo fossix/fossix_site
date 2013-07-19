@@ -137,7 +137,11 @@ class EditView(FlaskView):
 
 class TagsView(FlaskView):
     def index(self):
-	page = int(request.args.get('page'))
+	page = request.args.get('page')
+	if page is None:
+	    page = 1
+	else:
+	    page = int(page)
 	limit = 20
 	start = (page - 1) * limit
 	tags = db.session.query(Keywords).order_by(asc(Keywords.keyword)).all()
@@ -194,7 +198,11 @@ class TagsView(FlaskView):
 class ContentView(FlaskView):
     route_base = '/'
     def index(self):
-	c = Content.get_recent(1)[0]
+	c = Content.get_recent(1)
+	if c is None:
+	    abort(404)
+
+	c = c[0]
 	form = None
 	if c is None:
 	    flash(u'Nothing exists :-(.')
@@ -370,7 +378,11 @@ class ArchiveView(FlaskView):
 	start = end - page_limit
 
 	c = content=db.session.query(Content).filter(
-	    Content.category=='article').all()
+	    Content.category=='article')
+	if c.count() == 0:
+	    abort(404)
+
+	c = c.all()
 	contents = c[start:end]
 
 	if not contents:

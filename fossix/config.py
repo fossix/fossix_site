@@ -3,10 +3,10 @@ import os
 class DefaultConfig(object):
     DATABASE_CONNECT_OPTIONS = {}
 
-    SECRET_KEY = 'SecretKeyForSessionSigning'
+    SECRET_KEY = 'SOME_SECURE_PHRASE'
 
     CSRF_ENABLED = True
-    CSRF_SESSION_KEY = "somethingimpossibletoguess"
+    CSRF_SESSION_KEY = "A_SECURE_PHRASE_TO_PROTECT_FORMS"
 
     CACHE_TYPE = 'memcached'
     CACHE_MEMCACHED_SERVERS = ['127.0.0.1:11211']
@@ -46,7 +46,7 @@ class DebugConfig(DefaultConfig):
     DB_SERVER = 'localhost'
     DB_PORT = 5432
     DB_NAME = 'fossix'
-    DB_USER = 'fossguy'
+    DB_USER = 'user'
     DB_PASSWD  = 'db_password'
 
     SQLALCHEMY_DATABASE_URI = get_dburi('postgresql', DB_SERVER, DB_PORT,

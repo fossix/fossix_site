@@ -7,7 +7,6 @@
 {% block head %}
 <link href="{{ config['SITE_CDN'] }}/css/bootstrap-tagmanager.css" rel="stylesheet"
       media="screen">
-<script src="{{ config['SITE_CDN'] }}/js/bootstrap-tagmanager.js"></script>
 {% endblock %}
 
 {% block script %}
@@ -107,4 +106,7 @@
        formnovalidate="True") }}
   </dl>
 </form>
+{% endblock %}
+{% block script_includes %}
+<script src="{{ config['SITE_CDN'] }}/js/bootstrap-tagmanager.js"></script>
 {% endblock %}

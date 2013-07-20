@@ -6,10 +6,6 @@
           media="screen">
     <!-- <link href="{{ config['SITE_CDN'] }}/css/zocial/zocial.css" rel="stylesheet" -->
     <!--       media="screen"> -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-    <script src="/static/js/fossix.js"></script>
 
     {% block master_head %}{% endblock %}
 
@@ -18,12 +14,6 @@
       {% if pagetitle %} {{ pagetitle }} {% else %} Home {% endif %}
       {% endif %}
     </title>
-
-    <script language="javascript">
-      var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-      fossix_event_setup();
-      {% block script %}{% endblock %}
-    </script>
 
     <style>
       {% block style %}{% endblock %}
@@ -121,6 +111,12 @@
 
       {% endblock %}
     </footer>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script src="/static/js/fossix.js"></script>
+
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     {% for message in messages %}
@@ -128,5 +124,23 @@
     {% endfor %}
     {% endif %}
     {% endwith %}
+
+    {% block script_includes %}{% endblock %}
+    <script type="text/javascript">
+      var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+      fossix_event_setup();
+      {% block script %}{% endblock %}
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-10436185-1']);
+      _gaq.push(['_setDomainName', 'fossix.org']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
   </body>
 </html>

@@ -1,5 +1,6 @@
+from fossix.extensions import cache
 from flask import Module, render_template, flash, Blueprint
-from fossix.utils import cached, render_page
+from fossix.utils import render_page
 from fossix.models import Content
 from flask.ext.classy import FlaskView, route
 

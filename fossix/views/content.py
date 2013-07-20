@@ -380,7 +380,8 @@ class ArchiveView(FlaskView):
 	c = content=db.session.query(Content).filter(
 	    Content.category=='article')
 	if c.count() == 0:
-	    abort(404)
+	    flash("No content yet to show in archives.")
+	    return redirect_back('main.MainView:index')
 
 	c = c.all()
 	contents = c[start:end]

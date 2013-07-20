@@ -31,3 +31,4 @@
 ** TODO User karma
 ** TODO Per user “like” and “Read” tracking
 ** TODO Site static pages
+** TODO Add expires header in apache config

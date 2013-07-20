@@ -5,7 +5,7 @@ already logged in or for logging in/out.
 
 from flask import Module, render_template, request, session, g, redirect, \
     url_for, flash, Blueprint
-from fossix.utils import cached, render_page, get_uniqueid, redirect_url, \
+from fossix.utils import render_page, get_uniqueid, redirect_url, \
     redirect_back, is_safe_url
 from fossix.forms import OpenID_LoginForm, ProfileEdit_Form
 from fossix.extensions import oid

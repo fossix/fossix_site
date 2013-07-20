@@ -70,7 +70,7 @@ def configure_extensions(app):
     lm.needs_refresh_message_category = "info"
 
     Markdown(app, extensions = ["extra", "sane_lists", "codehilite",
-				"smartypants"],
+				"smartypants", "toc"],
 	     safe_mode='remove',
 	     output_format="html5")
 

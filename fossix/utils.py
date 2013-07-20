@@ -1,13 +1,9 @@
-from fossix.extensions import cache
 from fossix.models import User, fdb as db
 from flask import g, render_template, request, url_for, redirect
 from urlparse import urlparse, urljoin
 import functools
 from string import Template
 from datetime import datetime
-
-cached = functools.partial(cache.cached,
-                           unless= lambda: g.user is not None)
 
 def render_page(page, title = None, content = None, **kwargs):
     return render_template(page, title = title, content = content, **kwargs)

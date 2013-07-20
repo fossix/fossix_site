@@ -5,6 +5,366 @@
 {% set subtitle="Markdown" %}
 
 {% block content %}
+
 Syntax for writing articles and comments follow the markdown syntax. It is very
-easy to understand and type.
+easy to understand and type. There is an excellent markdown reference by the
+creator himself <a href="daringfireball.net/projects/markdown/syntax">here</a>.
+The syntax followed in this site is very much similar but there are a few
+exceptions and additions. So the entire syntax is explained below with excerpts
+from the reference site.
+
+<h3>Paragraphs</h3>
+Just quoting from the markdown site:
+
+<blockquote>
+A paragraph is simply one or more consecutive lines of text, separated by one or
+more blank lines. (A blank line is any line that looks like a blank line — a
+line containing nothing but spaces or tabs is considered blank.) Normal
+paragraphs should not be indented with spaces or tabs.
+<br/><br/>
+The implication of the “one or more consecutive lines of text” rule is that
+Markdown supports “hard-wrapped” text paragraphs. This differs significantly
+from most other text-to-HTML formatters (including Movable Type’s “Convert Line
+Breaks” option) which translate every line break character in a paragraph into a
+{{"<br />"|escape}} tag.
+<br/><br/>
+When you do want to insert a {{"<br />"|escape}} break tag using Markdown, you
+end a line with two or more spaces, then type return.
+<br/><br/>
+Yes, this takes a tad more effort to create a {{"<br />"|escape}}, but a
+simplistic "every line break is a {{'<br />'|escape}}" rule wouldn’t work for
+Markdown. Markdown’s email-style blockquoting and multi-paragraph list items
+work best — and look better — when you format them with hard breaks.
+
+</blockquote>
+
+<h3>Headings</h3>will produce
+
+    List1
+    List2
+
+Headings are represented by prefixing the text with a series of '#'s. The number
+of # correspond from h1 to h6. For example '## Heading' will give
+
+<pre>
+{{"<h2>Heading</h2>" | escape}}
+</pre>
+
+<h3>Lists</h3>
+Lists are an important part of writing in
+<abbr title="Hypertext Mark-up Language">HTML</abbr>. Both ordered and unordered
+lists can be written using markdown. Here is what is said about lists in the
+markdown reference page mentioned above.
+
+<blockquote>
+Unordered lists use asterisks, pluses, and hyphens — interchangeably — as list
+markers.
+
+Ordered lists use numbers followed by periods
+</blockquote>
+
+For example:
+
+<pre>
+  * List 1
+  * List 2
+</pre>
+
+will produce
+
+<pre>
+  {{"<ul>
+    <li>List 1</li>
+    <li>List 2</li>
+  </ul>" | escape}}
+</pre>
+
+Also for ordered list:
+
+<pre>
+  1. One
+  2. Two
+</pre>
+
+will produce
+
+<pre>
+  {{"<ol>
+    <li>List 1</li>
+    <li>List 2</li>
+  </ol>" | escape}}
+</pre>
+
+<h3>Links</h3>
+Links can be represented using the following syntax:
+
+<pre>
+[Fossix](http://fossix.org)
+</pre>
+
+Or if you are referencing the same link multiple times, then you can omit the
+link in the parenthesis, and just use a empty square brackets ([]) and
+then define the link somewhere in the document.
+
+<pre>
+[Fossix][] here [Fossix][] there.
+
+[Fossix]: http://fossix.org
+</pre>
+
+Optionally a title attribute can be given to the link.
+
+<pre>
+[Fossix]: http://fossix.org "Fossix Website"
+</pre>
+
+While specifying the link we give a empty [], but we can give an id, and the id
+can be defined later in the document.
+
+<pre>
+[Fossix][1] here [Google][2] there.
+
+[1]: Fossix.org "Fossix Website"
+[2]: Google.com "Google Search"
+</pre>
+
+Which will give us
+
+{{'[Fossix][1] here [Google][2] there.
+
+[1]: Fossix.org "Fossix Website"
+[2]: Google.com "Google Search"
+' | markdown }}
+
+If you want to put a url without any names and references, automatic URL feature
+is just there. Use any URL inside angular brackets and you are done.
+
+<pre>
+  {{'<http://www.google.com>' | escape}}
+</pre>
+
+Now let's go to more important parts. The code block.
+
+<h3>Code Block</h3>
+In the simplest case, a code block can be created just by indenting each line of
+code by a minimum of 8 spaces.
+
+The below code
+<pre>
+	main()
+	{
+	    printf("Hello, World!!\n");
+	}
+</pre>
+
+Will give us:
+
+{{"
+	main()
+	{
+	    printf(\"Hello, World!!\");
+	}
+" | markdown
+}}
+
+But that's really hard for the lazy.
+
+So here is another syntax to get the same output. Just surround your code block
+with '~~~' or '```'. Here is an example:
+
+<pre>
+```
+  main()
+  {
+      printf("Hello, World!!\n");
+  }
+```
+</pre>
+
+{{"
+```
+  main()
+  {
+     printf(\"Hello, World!!\");
+  }
+```
+" | markdown
+}}
+
+This is cool. But the code highlighting requirements vary between languages, and
+yes, there is a way to mention what language the code snippet is in. Just after
+the start of the code block, we type three colons (:) and then the language name
+as shown in the example below. The example show how the highlight works with and
+without specifying the language.
+
+<table class="table">
+  <tr>
+    <td>
+      <pre>```
+:::sh
+    i="test"
+    echo $i
+```</pre>
+    </td>
+    <td>
+      <pre>
+```
+
+    i="test"
+    echo $i
+```
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td>
+    {{'
+```
+:::sh
+    i="test"
+    echo $i
+```'|markdown}}
+    </td>
+    <td>
+{{'
+```
+    i="test"
+    echo $i
+```'|markdown}}
+    </td>
+  </tr>
+</table>
+
+<h3>Images</h3>
+Images can be placed in the document with the following syntax:
+
+<pre>
+  ![Alternate text](/path/to/image "Optional title")
+</pre>
+
+This is similar to the using links. So, reference style can also be used by
+adding an id in square brackets as following:
+
+<pre>
+   ![Alternate text][id]
+
+   [id]: /path/to/image "Optional title"
+</pre>
+
+The following inserts an image
+
+<pre>
+  ![A bird](http://pixabay.com/static/uploads/photo/2013/07/18/10/59/vector-163723_150.jpg)
+</pre>
+
+{{'![A bird](http://pixabay.com/static/uploads/photo/2013/07/18/10/59/vector-163723_150.jpg)' |markdown}}
+
+<h3>Miscellaneous</h3>
+<h4>Horizontal Rules</h4>
+{{'<hr/>'|escape}} can be produced by placing three or more asterisks, hyphens,
+or underscores on a separate line.
+
+<pre>
+  *****
+
+  ---
+
+  ---------------------------------------
+</pre>
+
+The characters themselves can be spaced apart.
+
+<h4>Emphasis</h4>
+  <table class="table">
+    <tr>
+      <td>*Text*</td>
+      <td>{{'<em>Text</em>'|escape}}</td>
+      <td><em>Text</em></td>
+    </tr>
+    <tr>
+      <td>_Text_</td>
+      <td>{{'<em>Text</em>'|escape}}</td>
+      <td><em>Text</em></td>
+    </tr>
+    <tr>
+      <td>**Text**</td>
+      <td>{{'<strong>Text</strong>'|escape}}</td>
+      <td><strong>Text</strong></td>
+    </tr>
+    <tr>
+      <td>__Text__</td>
+      <td>{{'<strong>Text</strong>'|escape}}</td>
+      <td><strong>Text</strong></td>
+    </tr>
+</table>
+
+<h4>Blockquotes</h4>
+Blockquotes can be created by prefixing the line or the paragraph by '>'.
+
+<pre>
+&gt; This is a blockquote
+</pre>
+
+{{'> This is a blockquote'|markdown}}
+
+<h3>Extras</h3>
+The below extra functionality for the markdown are part of the python-markdown's
+extras package. The documentation for the same can be
+found <a href="http://pythonhosted.org/Markdown/extensions/">here</a>
+
+<h4>Footnotes</h4>
+<pre>
+  Footnotes[^1] have a label[^label] and a definition[^!DEF].
+
+  [^1]: This is a footnote
+  [^label]: A footnote on "label"
+  [^!DEF]: The definition of a footnote.
+</pre>
+
+<h4>Abbreviations</h4>
+<pre>
+  HTML is used in web pages.
+
+  *[HTML]: Hyper Text Markup Language
+</pre>
+
+{{ 'HTML is used in web pages.\n\n*[HTML]: Hyper Text Markup Language' | markdown}}
+
+<h4>Attribute Lists</h4>
+The HTML tag attributes can be added using the following syntax:
+
+<pre>
+  {: #someid .someclass somekey='some value' }
+</pre>
+
+So this can be used to assign an id or class or any key-value pair using the #,
+. and = respectively.
+
+Since bootstrap is used here, we can add an alert class to a paragraph to give
+more emphasis.
+
+<pre>
+  This is a warning
+  {: .alert .alert-warning }
+</pre>
+
+{{'This is a warning\n{: .alert .alert-warning }' | markdown }}
+
+<h4>Definition lists</h4>
+<pre>
+  Linux
+  : An Operating System kernel.
+
+  Fedora
+  : An operating system built on Linux and GNU tools.
+</pre>
+
+will produce:
+
+{{'Linux
+  : An Operating System kernel.
+
+  Fedora
+  : An operating system built on Linux and GNU tools.'|markdown}}
+
 {% endblock %}

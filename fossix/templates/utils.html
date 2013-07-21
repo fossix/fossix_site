@@ -40,7 +40,7 @@
 {%- endmacro %}
 
 {% macro print_author(author) -%}
-<a href="/profiles/{{ author.username }}" class="author">
+<a href="{{url_for('account.ProfileView:get', username=author.username) }}" class="author">
   {{ author.fullname or author.username }}
 </a>
 {%- endmacro %}
@@ -70,9 +70,7 @@
 
 {% macro archive_content_info(c, tag=None) -%}
   <div class="muted">
-    <a href="/profiles/{{ c.author.username }}" class="author">
-      {{ c.author.fullname }}
-    </a>
+    {{ print_author(c.author) }}
     - {{c.create_date | relative_now("%d days")}} ago
     <div class="taglist pull-right">
       {% for t in c.tags %}

@@ -54,6 +54,7 @@ class CreateView(FlaskView):
 	    db.session.commit()
 
 	    if state == 'published':
+		g.user.karma = g.user.karma + 20
 		return redirect(url_for('content.ContentView:get', id=c.id,
 					title=c.title))
 	    else:

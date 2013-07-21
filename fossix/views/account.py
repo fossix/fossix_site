@@ -70,7 +70,6 @@ class ProfileView(FlaskView):
 	return self.get(g.user.username)
 
     def get(self, username):
-	print username
 	if username:
 	    u = db.session.query(User).filter(User.username == username)
 	    if u.count() > 0:

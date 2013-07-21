@@ -65,6 +65,7 @@ class LoginView(FlaskView):
 	return redirect(oid.get_next_url())
 
 class ProfileView(FlaskView):
+    @login_required
     def index(self):
 	return self.get(g.user.username)
 
@@ -72,10 +73,11 @@ class ProfileView(FlaskView):
 	print username
 	if username:
 	    u = db.session.query(User).filter(User.username == username)
-	    if u is not None:
+	    if u.count() > 0:
 		u = u.one()
 	    else:
-		abort(404)
+		flash('No user named ' + username)
+		return redirect(url_for('content.ContentView:index'))
 	elif g.user.is_authenticated():
 	    u = g.user
 

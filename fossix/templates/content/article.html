@@ -52,18 +52,18 @@
   </div>
 </div>
 
-<div class="span12 recommended well well-small">
-  <h4>Also read</h4>
-  <div class="box">
-    <a class="item" href="{{ url_for('content.ContentView:get', id=content.id, title=content.title) }}">
-      <h3>{{ content.title }}</h3>
-      <p>
-        {{ content.teaser }}
-      </p>
-    </a>
-    {{archive_content_info(content)}}
-  </div>
-</div>
+<!-- <div class="span12 recommended well well-small"> -->
+<!--   <h4>Also read</h4> -->
+<!--   <div class="box"> -->
+<!--     <a class="item" href="{{ url_for('content.ContentView:get', id=content.id, title=content.title) }}"> -->
+<!--       <h3>{{ content.title }}</h3> -->
+<!--       <p> -->
+<!--         {{ content.teaser }} -->
+<!--       </p> -->
+<!--     </a> -->
+<!--     {{archive_content_info(content)}} -->
+<!--   </div> -->
+<!-- </div> -->
 
 {% if g.user.is_authenticated() %}
   <div id="comment-form-main">

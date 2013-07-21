@@ -117,12 +117,13 @@ function like_content(event) {
 
 function openid_login(provider)
 {
-    if (provider == 'google')
-        url = 'https://www.google.com/accounts/o8/id';
-    else if (provider == 'yahoo')
-        url = 'https://me.yahoo.com';
+    var link = $(this).attr('data-href');
+    var type = $(this).attr('data-type');
 
-    window.location.replace('/user/login?oid='+url);
+    if (type == 'openid')
+        $('input[name="openid"]').val(link);
+
+    $('#openid-form').submit();
 }
 
 function scroll_hook(target, percent, callback)
@@ -228,4 +229,6 @@ function fossix_event_setup()
             function(){ $(this).toggleClass('label-inverse') }
         );
     });
+
+    $(document).on('click', '.openid-signin', openid_login);
 }

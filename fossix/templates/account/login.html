@@ -1,23 +1,103 @@
-{% extends "base.html" %}
+{% extends "master.html" %}
 {% from "utils.html" import field_errors, perror %}
 
 {% set pagetitle="Login" %}
 
-{% block content %}
-{{ perror(error) }}
-<div class="container offset1">
-  <p>
-    Sign in with <a target="_blank" href="http://openid.net/get-an-openid/">OpenID</a>
-  </p>
-  <form method="POST" action="{{ url_for('account.LoginView:post') }}">
-    {{ form.hidden_tag() }}
-    <div class="input-append">
-      {{ form.openid(size=30, class_="openid", placeholder="OpenID URL", required=True) }}
-      {{ form.submit(class="btn") }}
+{% block master_head %}
+<link href="/static/css/zocial.css" rel="stylesheet"
+      media="screen">
+{% endblock %}
+
+{% block body %}
+<div class="clearfix row-fluid">
+  <div class="hero-unit">
+      <h2>Login<small>to create, comment and more</small></h2>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row-fluid">
+    <div class="span7 offset2">
+      <!-- Error content -->
+      <div id="info">
+        <div id="message"></div>
+      </div>
     </div>
-    <div class="pull-right">
-      {{ field_errors(form.openid) }}
+  </div>
+
+  <div class="row-fluid offset1">
+    <div class="span6">
+      {{ perror(error) }}
+      <form method="POST" action="{{ url_for('account.LoginView:post') }}" id="openid-form">
+        {{ form.hidden_tag() }}
+        <br>
+        <button type="submit" data-href="https://www.google.com/accounts/o8/id"
+                data-type="openid" class="zocial google openid-signin">
+          Sign in with Google
+        </button>
+        <button type="submit" data-href="https://me.yahoo.com"
+                data-type="openid" class="zocial yahoo openid-signin">
+          Sign in with Yahoo
+        </button>
+        <br><br>
+        <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#otherURL">
+          or any openid URL ...
+        </button>
+
+        <div id="otherURL" class="collapse">
+          <div class="input-append">
+            {{ form.openid(size=40, class_="openid", placeholder="OpenID URL", required=True) }}
+            {{ form.submit(class="btn") }}
+          </div>
+        </div>
+
+        <div class="pull-right">
+          {{ field_errors(form.openid) }}
+        </div>
+      </form>
     </div>
-  </form>
+
+    <div class="span4">
+      <h4>Sign in with OpenID</h4>
+       But why Open ID?
+      <p> It has many benifits. Some of them from the OpenID website:
+        <ul>
+          <li> Accelerate sign up process at your favourite websites
+          <li> Reduce frustration associated with maintaining multiple usernames
+          and passwords
+          <li> Gain greater control over your online identity
+          <li> Minimize password security risks
+        </ul>
+        For more information visit
+        <a target="_blank" href="http://openid.net/get-an-openid/">OpenID</a>
+        website.
+    </div>
+  </div>
 </div>
 {% endblock %}
+
+<!--   {{ perror(error) }}
+<!--   <\!-- Sign in with <a target="_blank" href="http://openid.net/get-an-openid/">OpenID</a> -\-> -->
+<!--   <form method="POST" action="{{ url_for('account.LoginView:post') }}" id="openid-form"> -->
+<!--     {{ form.hidden_tag() }} -->
+<!--     <br> -->
+<!--     <button type="submit" data-href="https://www.google.com/profiles/me" -->
+<!--             data-type="openid" class="zocial google openid-signin"> -->
+<!--       Sign in with Google -->
+<!--     </button> -->
+<!--     <button type="submit" data-href="https://me.yahoo.com" -->
+<!--             data-type="openid" class="zocial yahoo openid-signin"> -->
+<!--       Sign in with Yahoo -->
+<!--     </button> -->
+<!--     <br><br> -->
+<!--     <center> -->
+<!--       <div class="input-append"> -->
+<!--         {{ form.openid(size=30, class_="openid", placeholder="OpenID URL", required=True) }} -->
+<!--         {{ form.submit(class="btn") }} -->
+<!--       </div> -->
+<!--     </center> -->
+<!--     <div class="pull-right"> -->
+<!--       {{ field_errors(form.openid) }} -->
+<!--     </div> -->
+<!--   </form> -->
+<!-- </div> -->

@@ -1,7 +1,11 @@
 {% extends "base.html" %}
 
+{% if user.id == user.id %}
 {% set title="My Profile" %}
-{% set pagetitle=g.user.fullname or g.user.username %}
+{% else %}
+{% set title="Profile" %}
+{% endif %}
+{% set pagetitle=user.fullname or user.username %}
 {% set subtitle="Profile View" %}
 {% block head %}
 <script>
@@ -11,45 +15,125 @@
 </script>
 {% endblock %}
 
-<!-- We don't want twitter and +1 buttons on this page -->
+<!-- We don't want twitter and +1 buttons on this page but we do the karma-->
 {% block lsb_content %}
+<center>
+</center>
 {% endblock %}
 
 {% block content %}
 <div class="row">
+  <div class="span8">
+
+    <table class="table table-hover">
+      <tr>
+        <td>Username</td>
+        <td><strong>{{ user.username }}</strong></td>
+      </tr>
+      {% if user.fullname  %}
+      <tr>
+        <td>Name</td>
+        <td><strong>{{ user.fullname }}</strong></td>
+      </tr>
+      {% endif %}
+      <tr>
+        <td>Email</td> <td><strong>{{ user.email }}</strong></td>
+      </tr>
+    </table>
+
+    {% if user.id == g.user.id and g.user.is_authenticated() %}
+    <h4>Alerts</h4>
+    <ul>
+      {% if user.receive_email %}
+      <li> Subscribed to fossix mail list to receive site updates</li>
+      {% else %}
+      <li> Not subscribed to receive site updates through email</li>
+      {% endif %}
+      <div class="accordion" id="accordion2">
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse"
+               data-parent="#accordion2" href="#alert-details">
+              {% if user.email_alerts %}
+              <li>Receive email alerts
+                {% else %}
+              <li> You will not receive email alerts
+                {% endif %}
+            </a>
+          </div>
+
+          <div id="alert-details" class="accordion-body collapse">
+            <div class="accordion-inner">
+              <p>
+                Email alert to send you e-mail for the following events
+                <ul>
+                  <li> Comments on your posts
+                  <li> Replies to your comments
+                  <li> Watched posts
+                  <li> Watched tags
+                </ul>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ul>
+    {% endif %}
+
+  </div>
+
   <div class="span4">
     <ul class="thumbnails">
       <li class="span12">
+        {% if user.id == g.user.id and g.user.is_authenticated()%}
         <a href="http://gravatar.com/emails" class="thumbnail tooltips"
            title="Change your avatar at Gravatar" data-toggle="tooltip"
            data-placement="top" target="_blank">
-          <img src="{{g.user.avatar(256)}}" style="max-width:100%;
+        {% endif %}
+          <img src="{{user.avatar(256)}}" style="max-width:100%;
                max-height:100%; height:auto;"
-               alt="{{ g.user.fullname or g.user.username }}"/>
+               alt="{{ user.fullname or user.username }}"/>
+        {% if user.id == g.user.id and g.user.is_authenticated()%}
         </a>
+        {% endif %}
       </li>
     </ul>
   </div>
 
-  <div class="span5">
-    <dl>
-      {% if g.user.fullname  %}
-      <dt>Name</dt>
-      <dd>{{ g.user.fullname }}</dd>
-      {% endif %}
-      <dt>Email</dt> <dd>{{ g.user.email }}</dd>
-      <dt>Privileges</dt>
-      <dd>
-        <ul style="unstyled">
-          <li>Some permission 1</li>
-          <li>Some permission 2</li>
-        </ul>
-      </dd>
-    </dl>
-  </div>
 </div>
 {% endblock %}
 
 {% block rsb_content %}
-  <a href="{{ url_for('account.ProfileView:edit') }}" class="btn btn-primary">Edit Profile</a>
+<div class="span3">
+  <center>
+    {% if user.id == g.user.id and g.user.is_authenticated() %}
+    <a href="{{ url_for('account.ProfileView:edit') }}"
+       class="btn btn-primary">Edit Profile</a>
+    {% endif %}
+  <br><br><br><br>
+  <p class="muted"><strong>Karma</strong></p>
+  <h2>9{{user.karma}}7</h2>
+
+  <strong>
+    <a href="{{url_for('main.MainView:roles')}}" style="text-decoration:none;">
+      {{ user.role | capitalize }}
+    </a>
+  </strong>
+
+  </center>
+  </div>
+  <div class="span6">
+    {% if user.posts %}
+    <ul class="nav nav-list">
+      <li class="nav-header">Authored Content</li>
+      {% for post in user.posts %}
+      <li>
+        <a href="{{ url_for('content.ContentView:get', id=post.id, title=post.title)
+                 }}">{{post.title|capitalize}}</a>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+
 {% endblock %}

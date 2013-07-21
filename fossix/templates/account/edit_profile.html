@@ -2,7 +2,7 @@
 
 {% from "utils.html" import render_field %}
 
-{% set pagetitle="Create Profile" %}
+{% set pagetitle="Edit Profile" %}
 
 {% block content %}
   <p>
@@ -18,9 +18,8 @@
       {{ render_field(form.receive_email) }}
       {{ render_field(form.recaptcha) }}
       <br/>{{ form.submit }}
+      <a href="{{url_for('account.ProfileView:index')}}" class="btn-link">Cancel</a>
     </dl>
   </form>
   <p>
-    If you don't want to proceed, you can <a href="{{ url_for('account.LoginView:logout') }}">
-      sign out</a> again.
 {% endblock %}

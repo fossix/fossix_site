@@ -52,8 +52,8 @@ class Content(db.Model):
 	    ['id', 'version'],
 	    ['ContentVersions.id', 'ContentVersions.version']),
     )
-    author = relationship(User, primaryjoin='Content.author_id == User.id')
-    modifier = relationship(User, primaryjoin='Content.modifier_id == User.id')
+    author = relationship(User, primaryjoin='Content.author_id == User.id', backref="posts")
+    modifier = relationship(User, primaryjoin='Content.modifier_id == User.id', backref="modified")
     history = relationship(ContentVersions,
 			   primaryjoin=
 			   foreign(__table__.c.id) == ContentVersions.id)

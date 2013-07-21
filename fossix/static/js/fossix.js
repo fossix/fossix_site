@@ -206,6 +206,7 @@ function watch_tag(event)
 function fossix_event_setup()
 {
     $(document).on('click', '#like', like_content);
+    $(document).on('click', '#watchtag', watch_tag);
     $(document).on('click', '.vote', vote_comment);
     $(document).on('click', '.comment-reply', show_comment_box);
     $(document).on('click', '#comment-cancel',

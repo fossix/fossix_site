@@ -22,8 +22,9 @@
   {% endif %}
 
 
-  <form>
-    <input type="text" id="tags-search" name="tags-search" placeholder="Search tags"/>
+  <form class="form-search">
+    <input type="text" id="tags-search" class="input-medium search-query"
+           placeholder="Search tags">
   </form>
 
   {% for tag in tags %}

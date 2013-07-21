@@ -65,9 +65,21 @@ class LoginView(FlaskView):
 	return redirect(oid.get_next_url())
 
 class ProfileView(FlaskView):
-    @login_required
     def index(self):
-	return render_template('account/profile.html')
+	return self.get(g.user.username)
+
+    def get(self, username):
+	print username
+	if username:
+	    u = db.session.query(User).filter(User.username == username)
+	    if u is not None:
+		u = u.one()
+	    else:
+		abort(404)
+	elif g.user.is_authenticated():
+	    u = g.user
+
+	return render_template('account/profile.html', user=u)
 
     def create(self):
 	form = ProfileEdit_Form(next=oid.get_next_url())

@@ -19,4 +19,10 @@ class MainView(FlaskView):
     def policy(self):
 	return render_template('site/policy.html')
 
+    def roles(self):
+	return "About roles in fossix"
+
+    def karma(self):
+	return "About karma in fossix"
+
 MainView.register(main, route_base="/")

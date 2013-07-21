@@ -21,7 +21,8 @@
           db.session.commit()
           flash('New Open ID added')
    #+END_SRC
-** TODO Public User profile
+** DONE Public User profile
+   - State "DONE"       from "TODO"       [2013-07-21 Sun 12:46]
 ** DONE Personal profile page
    - State "DONE"       from "TODO"       [2013-07-19 Fri 02:03]
 ** DONE Profile edit page

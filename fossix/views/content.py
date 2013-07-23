@@ -298,12 +298,8 @@ class ContentView(FlaskView):
 	q = q.order_by('ts_rank_cd(content.search_vector, '\
 			   'plainto_tsquery(:sterms)) DESC')
 
-	print q
-
 	results = [(entry, fragments.split('|||'), title) for entry, fragments,
 		   title in q]
-
-	print results
 
 	return render_template('content/search.html', term=terms,
 			       results=results)

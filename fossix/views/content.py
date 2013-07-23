@@ -197,7 +197,6 @@ class TagsView(FlaskView):
 
 
 class ContentView(FlaskView):
-    route_base = '/'
     def index(self):
 	c = Content.get_recent(1)
 	if c is None:
@@ -207,7 +206,7 @@ class ContentView(FlaskView):
 	form = None
 	if c is None:
 	    flash(u'Nothing exists :-(.')
-	    return redirect(url_for('main.index'))
+	    return redirect(url_for('main.MainView:index'))
 
 	c.inc_read_count()
 	if g.user.is_authenticated():
@@ -219,6 +218,14 @@ class ContentView(FlaskView):
     def get(self, id, title=None):
 	form = None
 	redir = False
+
+	# id would always be an int
+	try:
+	    id = int(id)
+	except ValueError:
+	    print("That's not an int!")
+	    return redirect(url_for('content.ContentView:index'))
+
 	c = db.session.query(Content).get(id)
 	if c is None and title is not None:
 	    c = db.session.query(Content).filter(func.lower(Content.title)

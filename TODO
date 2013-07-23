@@ -35,3 +35,6 @@
 ** DONE Site static pages
    - State "DONE"       from "TODO"       [2013-07-23 Tue 07:53]
 ** TODO Add expires header in apache config
+** TODO Image and file upload option in content creation page
+** TODO User information (a text block) in the profile page
+** TODO Update sitemap to include tags pages and user profile pages

@@ -36,9 +36,11 @@
         <td><strong>{{ user.fullname }}</strong></td>
       </tr>
       {% endif %}
+      {% if g.user.is_authenticated() and user.id == g.user.id %}
       <tr>
         <td>Email</td> <td><strong>{{ user.email }}</strong></td>
       </tr>
+      {% endif %}
     </table>
 
     {% if user.id == g.user.id and g.user.is_authenticated() %}

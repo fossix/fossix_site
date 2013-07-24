@@ -92,10 +92,19 @@
   <h3> {{content.comment_count}} Comment </h3>
 {% endif %}
 
+{% if content.comment_count < 5 %}
+  {% set last = content.comment_count %}
+{% else %}
+  {% set last=5 %}
+{% endif %}
+
 <div id="comments" data-url="{{url_for('content.CommentView:get',
-                             id=content.id, last=0)}}"
+                             id=content.id, last=last)}}"
      data-total="{{content.comment_count}}"
      data-parent="{{content.id}}">
+  {% set comments = content.comments[0:last] %}
+  {% set parent = content %}
+  {% include 'content/comment.html' %}
 </div>
 
 <div id="loading" class="loading alert alert-info" style="display:none;"></div>

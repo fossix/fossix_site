@@ -223,7 +223,6 @@ class ContentView(FlaskView):
 	try:
 	    id = int(id)
 	except ValueError:
-	    print("That's not an int!")
 	    return redirect(url_for('content.ContentView:index'))
 
 	c = db.session.query(Content).get(id)

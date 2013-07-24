@@ -41,8 +41,10 @@
                 </a>
 	        <ul class="dropdown-menu">
                   <li><a href="#">Submit News</a></li>
+                  {% if g.user.is_authenticated() and g.user.is_author() %}
                   <li><a href="{{ url_for('content.CreateView:index') }}">Create
                   Content</a></li>
+                  {% endif %}
                   {% if g.user.is_authenticated() and g.user.is_moderator() %}
                   <li><a href="#">Moderation</a></li>
                   {% endif %}

@@ -7,18 +7,9 @@
 {% endif %}
 {% set pagetitle=user.fullname or user.username %}
 {% set subtitle="Profile View" %}
-{% block head %}
-<script>
-    $(function () {
-        $('#profiletab a:last').tab('show');
-    })
-</script>
-{% endblock %}
 
 <!-- We don't want twitter and +1 buttons on this page but we do the karma-->
 {% block lsb_content %}
-<center>
-</center>
 {% endblock %}
 
 {% block content %}

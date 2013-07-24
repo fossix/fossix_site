@@ -38,13 +38,16 @@ class User(db.Model):
 	return self.role == 'superuser'
 
     def is_admin(self):
-	return self.is_super or self.role == 'administrator'
+	return self.is_super() or self.role == 'administrator'
 
     def is_moderator(self):
 	# or I should be a moderator to edit
-	return self.is_admin() or self.role in ('moderator', 'superuser')
+	return self.is_admin() or self.role == 'moderator'
 
-    def is_author(self, content):
+    def is_author(self):
+	return self.is_moderator() or self.role == 'author'
+
+    def is_owner(self, content):
 	if content:
 	    # check if the user is the owner
 	    if content.author_id == self.id:
@@ -53,7 +56,7 @@ class User(db.Model):
 	return False
 
     def is_editor(self, content = None):
-	return self.is_author(content) or self.is_moderator()
+	return self.is_owner(content) or self.is_moderator()
 
     def is_watching_tag(self, tag):
 	return tag in self.tags

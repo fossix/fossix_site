@@ -39,6 +39,15 @@
                 data-type="openid" class="zocial yahoo openid-signin">
           Sign in with Yahoo
         </button>
+        <button type="submit"
+                data-type="openid-uname" class="zocial googleplus openid-signin"
+                data-toggle="collapse" data-target="#get-uname">
+          Sign in with Google Profile
+        </button>
+        <div id="get-uname" class="collapse">
+          Enter your <span id="provider-name">Google</span> Username <br>
+          <input type="text">
+        </div>
         <br><br>
         <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#otherURL">
           or any openid URL ...

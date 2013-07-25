@@ -13,14 +13,18 @@ from fossix.models import User, Keywords, Identity, fdb as db
 from flask.ext.login import login_user, logout_user, \
     login_required, fresh_login_required, confirm_login
 from flask.ext.classy import FlaskView
+import hashlib
 
 account = Blueprint('account', __name__)
 
 @oid.after_login
 def create_or_login(resp):
+    h = hashlib.new('ripemd160')
     session['openid'] = resp.identity_url
     user = None
-    identity = db.session.query(Identity).filter_by(url=resp.identity_url).first()
+    h.update(resp.identity_url)
+    print session['openid'], h.hexdigest()
+    identity = db.session.query(Identity).filter_by(url=h.hexdigest()).first()
     if identity:
 	user = db.session.query(User).get(identity.user_id)
 
@@ -50,6 +54,7 @@ class LoginView(FlaskView):
 	login_form = OpenID_LoginForm()
 	if login_form.validate_on_submit():
 	    openid = request.form.get('openid')
+	    print openid
 	    if openid:
 		return oid.try_login(openid,
 				     ask_for=['email', 'fullname', 'nickname'])
@@ -99,6 +104,7 @@ class ProfileView(FlaskView):
 	    return self.create_profile()
 
     def create_profile(self):
+	h = hashlib.new('ripemd160')
 	form = ProfileEdit_Form()
 	if form.validate_on_submit():
 	    user = User()
@@ -107,7 +113,8 @@ class ProfileView(FlaskView):
 	    db.session.add(user)
 	    db.session.commit()
 
-	    identity.url = session['openid']
+	    identity_url = session['openid']
+	    identity.url = h.update(identity_url).hexdigest()
 	    user.identity.append(identity)
 	    db.session.commit()
 

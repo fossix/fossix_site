@@ -22,6 +22,7 @@
           db.session.commit()
           flash('New Open ID added')
    #+END_SRC
+** TODO OpenID URL encryption
 ** DONE Public User profile
    - State "DONE"       from "TODO"       [2013-07-21 Sun 12:46]
 ** DONE Personal profile page

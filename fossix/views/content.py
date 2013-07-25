@@ -313,6 +313,13 @@ class ContentView(FlaskView):
 
 class CommentView(FlaskView):
     def get(self, id, last=0):
+	# id would always be an int
+        # This error comes when old fossix urls are accessed (comment/reply/<id>
+	try:
+	    id = int(id)
+	except ValueError:
+            abort(404)
+        
 	c = db.session.query(Content).get(id)
 	if c is None or (c.category != 'book' and c.category != 'article'):
 	    data = {

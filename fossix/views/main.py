@@ -28,14 +28,15 @@ class MainView(FlaskView):
 
     @route('/sitemap.xml', )
     def sitemap(self):
-	pages = []
-	contents = db.session.query(Content).order_by(Content.modified_date).all()
+	active = []
+	contents = c = content=db.session.query(Content).filter(
+	    Content.category=='article').order_by(Content.modified_date).all()
 	for c in contents:
 	    url = url_for('content.ContentView:get', id=c.id, title=c.title)
 	    modified_time = c.modified_date.date().isoformat()
-	    pages.append([url, modified_time])
+	    active.append([url, modified_time])
 	    sitemap = render_template('site/sitemap.xml',
-				      pages=pages)
+				      active=active)
 	response = make_response(sitemap)
 	response.headers["Content-Type"] = "application/xml"
 	return response

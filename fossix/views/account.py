@@ -136,7 +136,7 @@ class ProfileView(FlaskView):
 
 	return render_template('account/edit_profile.html', form=form)
 
-    @fresh_login_required
+    #@fresh_login_required
     def edit(self):
 	form = ProfileEdit_Form(obj=g.user)
 	form.next.data = redirect_url()

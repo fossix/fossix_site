@@ -6,6 +6,16 @@
 {% block master_head %}
 <link href="/static/css/zocial.css" rel="stylesheet"
       media="screen">
+<link type="text/css" rel="stylesheet" href="/static/css/openid.css" />
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="/static/js/openid-jquery.js"></script>
+<script type="text/javascript" src="/static/js/openid-en.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        openid.init('openid');
+        openid.setDemoMode(false); //Stops form submission for client javascript-only test purposes
+    });
+</script>
 {% endblock %}
 
 {% block body %}
@@ -28,37 +38,30 @@
   <div class="row-fluid offset1">
     <div class="span6">
       {{ perror(error) }}
-      <form method="POST" action="{{ url_for('account.LoginView:post') }}" id="openid-form">
+      <form method="POST" action="{{ url_for('account.LoginView:post') }}" id="openid_form">
         {{ form.hidden_tag() }}
-        <br>
-        <button type="submit" data-href="https://www.google.com/accounts/o8/id"
-                data-type="openid" class="zocial google openid-signin">
-          Sign in with Google
-        </button>
-        <button type="submit" data-href="https://me.yahoo.com"
-                data-type="openid" class="zocial yahoo openid-signin">
-          Sign in with Yahoo
-        </button>
-        <button type="submit"
-                data-type="openid-uname" class="zocial googleplus openid-signin"
-                data-toggle="collapse" data-target="#get-uname">
-          Sign in with Google Profile
-        </button>
-        <div id="get-uname" class="collapse">
-          Enter your <span id="provider-name">Google</span> Username <br>
-          <input type="text">
-        </div>
-        <br><br>
-        <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#otherURL">
-          or any openid URL ...
-        </button>
-
-        <div id="otherURL" class="collapse">
-          <div class="input-append">
+	<input type="hidden" name="action" value="verify" />
+	<fieldset>
+	  <legend>Sign-in or Create New Account</legend>
+	  <div id="openid_choice">
+	    <p>Please click your account provider:</p>
+	    <div id="openid_btns"></div>
+	  </div>
+	  <div id="openid_input_area">
             {{ form.openid(size=40, class_="openid", placeholder="OpenID URL", required=True) }}
             {{ form.submit(class="btn") }}
-          </div>
-        </div>
+	  </div>
+	  <noscript>
+	    <p>
+              OpenID is service that allows you to log-on to many different
+	      websites using a single indentity.  Find
+	      out <a href="http://openid.net/what/">more about OpenID</a>
+	      and <a href="http://openid.net/get/">how to get an OpenID enabled
+	      account</a>.
+            </p>
+	  </noscript>
+	</fieldset>
+	</form>
 
         <div class="pull-right">
           {{ field_errors(form.openid) }}
@@ -85,28 +88,5 @@
 </div>
 {% endblock %}
 
-<!--   {{ perror(error) }}
-<!--   <\!-- Sign in with <a target="_blank" href="http://openid.net/get-an-openid/">OpenID</a> -\-> -->
-<!--   <form method="POST" action="{{ url_for('account.LoginView:post') }}" id="openid-form"> -->
-<!--     {{ form.hidden_tag() }} -->
-<!--     <br> -->
-<!--     <button type="submit" data-href="https://www.google.com/profiles/me" -->
-<!--             data-type="openid" class="zocial google openid-signin"> -->
-<!--       Sign in with Google -->
-<!--     </button> -->
-<!--     <button type="submit" data-href="https://me.yahoo.com" -->
-<!--             data-type="openid" class="zocial yahoo openid-signin"> -->
-<!--       Sign in with Yahoo -->
-<!--     </button> -->
-<!--     <br><br> -->
-<!--     <center> -->
-<!--       <div class="input-append"> -->
-<!--         {{ form.openid(size=30, class_="openid", placeholder="OpenID URL", required=True) }} -->
-<!--         {{ form.submit(class="btn") }} -->
-<!--       </div> -->
-<!--     </center> -->
-<!--     <div class="pull-right"> -->
-<!--       {{ field_errors(form.openid) }} -->
-<!--     </div> -->
-<!--   </form> -->
-<!-- </div> -->
+{% block script_includes %}
+{% endblock %}

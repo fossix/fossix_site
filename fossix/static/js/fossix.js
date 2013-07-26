@@ -37,34 +37,6 @@ data-dismiss="alert">&times;</button>' + string + '</div>';
     flash_warn_timer = window.setInterval(clear_info, 5000);
 }
 
-function dologin(event) {
-    var target = event.data.target1;
-    var form = $(this);
-
-    event.preventDefault();
-
-    $.ajax({
-        type : form.attr("method"),
-        url: form.attr("action"),
-        data: {
-            'email': $("#uemail").val(),
-            'password': $("#passwd").val(),
-            'j':$(location).attr('href'),
-        },
-        success :function(data) {
-            if (data.error == 'true')
-                flash_error(data.errortext);
-            else {
-                window.location.replace(location.href);
-                $('#lform').slideUp();
-            }
-        },
-        error : function(jqXHR, textStatus, errorThrown) {
-        },
-    });
-    return (false);
-}
-
 function vote_comment(event) {
     var link = $(this).attr('data-url');
 
@@ -113,17 +85,6 @@ function like_content(event) {
     });
 
     return (false);
-}
-
-function openid_login(provider)
-{
-    var link = $(this).attr('data-href');
-    var type = $(this).attr('data-type');
-
-    if (type == 'openid')
-        $('input[name="openid"]').val(link);
-
-    $('#openid-form').submit();
 }
 
 function scroll_hook(target, percent, callback)
@@ -229,6 +190,4 @@ function fossix_event_setup()
             function(){ $(this).toggleClass('label-inverse') }
         );
     });
-
-    $(document).on('click', '.openid-signin', openid_login);
 }

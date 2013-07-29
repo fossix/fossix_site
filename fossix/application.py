@@ -7,6 +7,7 @@ from fossix.config import CurrentConfig
 from flask.ext.login import current_user
 from flask.ext.markdown import Markdown
 from fossix.utils import relative_now
+from sqlalchemy.orm import sessionmaker, scoped_session
 
 __all__ = ['create_app']
 
@@ -32,6 +33,7 @@ def create_app(config=None):
     configure_errorhandlers(app)
     configure_extensions(app)
     configure_before_handlers(app)
+    configure_after_handlers(app)
 
     return app
 
@@ -56,6 +58,11 @@ def configure_before_handlers(app):
 	return dict(popular=popular, recent=recent)
 
     app.jinja_env.filters['relative_now'] = relative_now
+
+def configure_after_handlers(app):
+    @app.teardown_appcontext
+    def shutdown_session(exception=None):
+	fdb.session.remove()
 
 def configure_extensions(app):
     oid.init_app(app)

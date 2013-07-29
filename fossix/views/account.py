@@ -114,7 +114,8 @@ class ProfileView(FlaskView):
 	    db.session.commit()
 
 	    identity_url = session['openid']
-	    identity.url = h.update(identity_url).hexdigest()
+	    h.update(identity_url)
+	    identity.url = h.hexdigest()
 	    user.identity.append(identity)
 	    db.session.commit()
 

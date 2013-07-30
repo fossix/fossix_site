@@ -226,6 +226,9 @@ class ContentView(FlaskView):
 	    return redirect(url_for('content.ContentView:index'))
 
 	c = db.session.query(Content).get(id)
+	if c is not None and c.category!='article':
+	    abort(404)
+
 	if c is None and title is not None:
 	    c = db.session.query(Content).filter(func.lower(Content.title)
 						 == func.lower(title))

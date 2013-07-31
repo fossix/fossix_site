@@ -40,8 +40,11 @@
 ** DONE Add expires header in apache config
    - State "DONE"       from "TODO"       [2013-07-30 Tue 15:24]
 ** TODO Image and file upload option in content creation page
-** TODO User information (a text block) in the profile page
-** TODO Update sitemap to include tags pages and user profile pages
+** CANCELLED User information (a text block) in the profile page
+   - State "CANCELLED"  from "TODO"       [2013-07-31 Wed 20:01] \\
+     Not required in a site like fossix
+** DONE Update sitemap to include tags pages and user profile pages
+   - State "DONE"       from "TODO"       [2013-07-31 Wed 21:21]
 ** DONE remove link from cc-by-sa and make link on policies
    - State "DONE"       from "TODO"       [2013-07-30 Tue 15:24]
 ** DONE Create privacy policy in compliance to Google analytics and Adsense

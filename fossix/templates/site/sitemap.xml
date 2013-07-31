@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    {% for element in active %}
-    <url>
-        <loc>{{config['SITE_URL']}}{{element[0]|safe}}</loc>
-        <lastmod>{{element[1]}}</lastmod>
-        <changefreq>monthly</changefreq>
-    </url>
-    {% endfor %}
+  {% for u in sitemap %}
+  <url>
+    <loc>{{config['SITE_URL']}}{{u[0]|safe}}</loc>
+    <lastmod>{{u[1]}}</lastmod>
+    <changefreq>{{u[2]}}</changefreq>
+  </url>
+  {% endfor %}
 </urlset>

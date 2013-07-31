@@ -1,0 +1,37 @@
+{% extends 'error/error.html' %}
+
+{% set title="Not Found" %}
+{% set error="404" %}
+
+{% block body %}
+<div class="row-fluid">
+  <div class="hero-unit center">
+    <h1>{{ title }}
+      <small>
+        <font face="Tahoma" color="red">Error {{error}}</font>
+      </small>
+    </h1>
+    <p>
+      Nothing here. The page you requested could not be found. You can search
+      the site using the form below or navigate to Home to checkout other
+      pages.
+    </p>
+
+    <p>
+      <form method="GET" action="{{url_for('content.ContentView:search')}}"
+            name="search-form">
+        <input type="text" class="search-query" placeholder="Search"
+               name='search'>
+      </form>
+    </p>
+    <div class="btn-group">
+      <a href="{{url_for('main.MainView:index')}}" class="btn btn-info">
+        <i class="icon-home icon-white"></i> Home
+      </a>
+      <a href="{{url_for('content.ArchiveView:index')}}" class="btn btn-info">
+        <i class="icon-home icon-white"></i> Archive
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

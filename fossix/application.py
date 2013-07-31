@@ -1,4 +1,4 @@
-from flask import Flask, g
+from flask import Flask, g, render_template
 from fossix.extensions import oid, cache, lm
 from fossix.models import fdb
 from fossix import views
@@ -81,5 +81,8 @@ def configure_extensions(app):
 	     safe_mode='remove',
 	     output_format="html5")
 
+# This function also has the error pages
 def configure_errorhandlers(app):
-    pass
+    @app.errorhandler(404)
+    def not_found(e):
+	return render_template('error/404.html', err=e), 404

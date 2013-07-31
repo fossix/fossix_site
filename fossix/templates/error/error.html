@@ -1,0 +1,26 @@
+<html lang="en">
+  <head>
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+    <link href="{{ config['SITE_CDN'] }}/css/fossix.css" rel="stylesheet"
+          media="screen">
+    {% block master_head %}{% endblock %}
+
+    <style>
+      body{margin:7% auto 0;}
+      .center {text-align: center; margin-left: auto; margin-right: auto; margin-bottom: auto; margin-top: auto;}
+    </style>
+
+    <title>
+      {{ config['SITE_TITLE'] }} - {{error}}:{{ title }}
+    </title>
+
+    <!-- For different screen types -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+
+  <body>
+    <div class="container">
+      {% block body %}{% endblock %}
+    </div>
+  </body>
+</html>

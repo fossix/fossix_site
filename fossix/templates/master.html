@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
-    <link href="{{ config['SITE_CDN'] }}/css/fossix.css" rel="stylesheet"
+    <link href="{{ config['SITE_CDN'] }}/css/fossix.min.css" rel="stylesheet"
           media="screen">
     {% block master_head %}{% endblock %}
 
@@ -115,7 +115,7 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-    <script src="/static/js/fossix.js"></script>
+    <script src="/static/js/fossix.min.js"></script>
 
     {% with messages = get_flashed_messages() %}
     {% if messages %}

@@ -5,6 +5,10 @@
 
 {% set pagetitle=content.title %}
 
+{% block head %}
+<meta name="description" content="{{content.meta.teaser}}">
+{% endblock %}
+
 {% block content %}
 <div class="contenthead muted">
   {{ article_info(content.author, content.get_create_date()) }}

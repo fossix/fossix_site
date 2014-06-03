@@ -102,12 +102,13 @@ class EditView(FlaskView):
 	    c.title = form.title.data
 	    c.content = form.content.data
 	    c.edit_summary = form.edit_summary.data
+	    c.modifier_id=current_user.id
 
 	    old_version = c.version
 	    db.session.add(c)
 	    db.session.commit()
 	    c = db.session.query(Content).get(c.id)
-	    c.history.tags_csv = form.tags_csv.data
+	    c.tags_csv = form.tags_csv.data
 	    db.session.commit()
 
 	    if state == 'publish' and c.version == old_version:

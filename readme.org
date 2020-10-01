@@ -1,20 +1,22 @@
 * Reference for Developers/Maintainers
 ** Requirements/Installations
 *** Needed Flask Extensions
-**** Login
-**** SQLAlchemy
-**** OpenID
-**** Markdown
-**** Script
-**** Cache
-**** Classy
-**** WTF
+    - Login
+    - SQLAlchemy
+    - OpenID
+    - Markdown
+    - Script
+    - Cache
+    - Classy
+    - WTF
+
 *** Needed Python modules
-**** Psycopg2
-**** Pygments
-**** Smartypants
-**** Python-memcached
-**** Alembic
+    - Psycopg2
+    - Pygments
+    - Smartypants
+    - Python-memcached
+    - Alembic
+
 ** Content Editing/Creating
 *** Supported Markdown in Fossix
     The current markdown is based on python markdown with many extensions. For a
@@ -34,10 +36,10 @@
     - discontinued usage of justification, seems it is a bad idea to use it.
 *** User authentication
 **** Roles
-***** Administrator
-***** Moderator
-***** Author
-***** Member
+     - Administrator
+     - Moderator
+     - Author
+     - Member
 **** Workflow
      - Author writes a Content [Draft] and submits for review [Review]
      - Mails sent to all reviewers (based on the tags)
@@ -212,40 +214,40 @@
       alembic upgrade|downgrade version|head
 ** URL Tree
 *** Public
-**** /article
-     The last published article will be displayed
-**** /article/<id>/[<title>]
-**** /article/edit/<id> (Login required - author/moderator)
-**** /article/create (login required)
-**** /account/login
-**** /account/create
-**** /account/profile (login required)
-**** /account/edit[profile] (login required)
-**** /user/<username>
-**** /user/following
-**** /user/followers
-**** /moderate/comments (login required - moderator)
-**** /moderate/posts (login required - moderator)
-**** /moderate/users
-**** /about
-**** /about/<id>/<title>
-**** /sitemap [,.xml]
-**** /feed.[rss, json, xml]
-**** /api(?)
+    - /article
+      The last published article will be displayed
+    - /article/<id>/[<title>]
+    - /article/edit/<id> (Login required - author/moderator)
+    - /article/create (login required)
+    - /account/login
+    - /account/create
+    - /account/profile (login required)
+    - /account/edit[profile] (login required)
+    - /user/<username>
+    - /user/following
+    - /user/followers
+    - /moderate/comments (login required - moderator)
+    - /moderate/posts (login required - moderator)
+    - /moderate/users
+    - /about
+    - /about/<id>/<title>
+    - /sitemap [,.xml]
+    - /feed.[rss, json, xml]
+    - /api(?)
 *** Ajax
 * Misc Info
 ** References/Documents
 *** Implementation references
-**** [[https://github.com/danjac/newsmeme/tree/master/newsmeme/views][newmeme]]
-**** [[https://github.com/mitsuhiko/flask/tree/website/flask_website][Flask Website]]
-**** [[http://docs.mongodb.org/manual/tutorial/write-a-tumblelog-application-with-flask-mongoengine/][A blog app using MongoDB]]
-**** [[https://github.com/imwilsonxu/fbone][Flask Bone (Flask Boilerplate application)]]
+    - [[https://github.com/danjac/newsmeme/tree/master/newsmeme/views][newmeme]]
+    - [[https://github.com/mitsuhiko/flask/tree/website/flask_website][Flask Website]]
+    - [[http://docs.mongodb.org/manual/tutorial/write-a-tumblelog-application-with-flask-mongoengine/][A blog app using MongoDB]]
+    - [[https://github.com/imwilsonxu/fbone][Flask Bone (Flask Boilerplate application)]]
 *** Features that might be used in fossix
-**** [[http://flask.pocoo.org/docs/patterns/appdispatch][App dispatcher]] - Combining multiple applications
-**** [[http://flask.pocoo.org/docs/blueprints][Flask Blueprints]] - Modular applications (new method)
-**** [[http://flask.pocoo.org/docs/patterns/lazyloading/][Lazy Loading]] - Don’t load all views at startup
-**** [[http://pythonhosted.org/Flask-Classy/][Flask Classy]] - Class based view, alternative to blueprints(?)
+    - [[http://flask.pocoo.org/docs/patterns/appdispatch][App dispatcher]] - Combining multiple applications
+    - [[http://flask.pocoo.org/docs/blueprints][Flask Blueprints]] - Modular applications (new method)
+    - [[http://flask.pocoo.org/docs/patterns/lazyloading/][Lazy Loading]] - Don’t load all views at startup
+    - [[http://pythonhosted.org/Flask-Classy/][Flask Classy]] - Class based view, alternative to blueprints(?)
 *** Documentations/Snippets/QA
-**** [[http://flask.pocoo.org/snippets/80/][Flask Push Notifications]]
-**** [[http://www.ibm.com/developerworks/webservices/library/ws-restful/][REST - quick intro]]
-**** [[http://blog.luisrei.com/articles/flaskrest.html][REST using Flask]]
+    - [[http://flask.pocoo.org/snippets/80/][Flask Push Notifications]]
+    - [[http://www.ibm.com/developerworks/webservices/library/ws-restful/][REST - quick intro]]
+    - [[http://blog.luisrei.com/articles/flaskrest.html][REST using Flask]]
